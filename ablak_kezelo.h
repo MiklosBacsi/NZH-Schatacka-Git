@@ -4,7 +4,7 @@
 #include "SDL2/SDL.h"
 #include "SDL2/SDL2_gfxPrimitives.h"
 
-typedef enum Ablak_tipus {MENU, JATEK, SUGO, DICS_LISTA} Ablak_tipus;
+typedef enum Ablak_tipus {MENU = 0, JATEK, SUGO, DICS_LISTA} Ablak_tipus;
 
 typedef struct Ablak {
     SDL_Window* ablak;
@@ -12,8 +12,6 @@ typedef struct Ablak {
     int szelesseg, magassag;
     Ablak_tipus abl_tip;
 } Ablak;
-
-void menu_init();
 
 
 

@@ -22,7 +22,20 @@ int main(void) {
     inicializalas(ablakok);
     
     
-  
+    
+    //Átmeneti - töröld ki!!!
+    /* az elvegzett rajzolasok a kepernyore */
+    SDL_RenderPresent(ablakok[MENU].megjelenito);
+    
+    /* varunk a kilepesre */
+    SDL_Event ev;
+    while (SDL_WaitEvent(&ev) && ev.type != SDL_QUIT) {
+        /* SDL_RenderPresent(renderer); - MacOS Mojave esetén */
+    }
+    // EDDIG!!!
+
+    /* Ablak bezarasa */
+    SDL_Quit();
     felszabadit(ablakok);
 
     return 0;

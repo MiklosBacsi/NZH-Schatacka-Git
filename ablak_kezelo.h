@@ -3,6 +3,7 @@
 
 #include "SDL2/SDL.h"
 #include "SDL2/SDL2_gfxPrimitives.h"
+#include <SDL2/SDL_image.h>
 #include "debugmalloc.h"
 
 typedef enum Ablak_tipus {MENU = 0, JATEK, SUGO, DICS_LISTA} Ablak_tipus;
@@ -13,8 +14,11 @@ typedef struct Ablak {
     int szelesseg, magassag;
     char* cim;
     Ablak_tipus abl_tip;
+    SDL_Texture* logo;
 } Ablak;
 
 void ablakot_letrehoz (Ablak* ablak);
+
+void logot_rajzol(Ablak* ablak, int x, int y);
 
 #endif

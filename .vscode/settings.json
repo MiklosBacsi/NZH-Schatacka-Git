@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "sdl.h": "c",
-        "sdl2_gfxprimitives.h": "c"
+        "sdl2_gfxprimitives.h": "c",
+        "ablak_kezelo.h": "c"
     }
 }

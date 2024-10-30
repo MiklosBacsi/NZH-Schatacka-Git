@@ -3,6 +3,7 @@
 
 #include "SDL2/SDL.h"
 #include "SDL2/SDL2_gfxPrimitives.h"
+#include "debugmalloc.h"
 
 typedef enum Ablak_tipus {MENU = 0, JATEK, SUGO, DICS_LISTA} Ablak_tipus;
 

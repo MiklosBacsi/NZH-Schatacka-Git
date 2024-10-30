@@ -1,0 +1,17 @@
+#ifndef JATEK_VEZERLO_H
+#define JATEK_VEZERLO_H
+
+#include "SDL2/SDL.h"
+#include "SDL2/SDL2_gfxPrimitives.h"
+#include "debugmalloc.h"
+
+typedef enum Szin {PIROS = 0, SARGA, ZOLD, KEK} Szin;
+typedef enum Irany {BAL = 0, LO, JOBB} Irany;
+
+typedef struct Jatekos {
+    Szin szin;
+} Jatekos;
+
+
+
+#endif

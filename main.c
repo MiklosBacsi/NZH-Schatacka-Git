@@ -2,6 +2,8 @@
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <stdlib.h>
 #include "ablak_kezelo.h"
+#include "jatek_vezerlo.h"
+#include "debugmalloc.h"
 
 void inicializalas();
 void felszabadit(Ablak* ablakok);

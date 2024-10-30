@@ -4,6 +4,7 @@
 #include "SDL2/SDL.h"
 #include "SDL2/SDL2_gfxPrimitives.h"
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include "debugmalloc.h"
 
 typedef enum Ablak_tipus {MENU = 0, JATEK, SUGO, DICS_LISTA} Ablak_tipus;
@@ -16,6 +17,12 @@ typedef struct Ablak {
     Ablak_tipus abl_tip;
     SDL_Texture* logo;
 } Ablak;
+
+typedef struct Betutipusok{
+    TTF_Font* reg20;
+    TTF_Font* bold20;
+} Betutipusok;
+
 
 void ablakot_letrehoz (Ablak* ablak);
 

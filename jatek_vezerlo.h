@@ -10,6 +10,7 @@ typedef enum Irany {BAL = 0, LO, JOBB} Irany;
 
 typedef struct Jatekos {
     Szin szin;
+    bool aktiv;
 } Jatekos;
 
 

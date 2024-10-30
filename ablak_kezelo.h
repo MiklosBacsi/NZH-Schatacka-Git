@@ -11,9 +11,10 @@ typedef struct Ablak {
     SDL_Window* ablak;
     SDL_Renderer* megjelenito;
     int szelesseg, magassag;
+    char* cim;
     Ablak_tipus abl_tip;
 } Ablak;
 
-
+void ablakot_letrehoz (Ablak* ablak);
 
 #endif

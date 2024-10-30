@@ -16,10 +16,10 @@ int main(void) {
     SDL_Window *menu_ablak=NULL, *jatek_ablak=NULL, *sugo_ablak=NULL, *dics_lista_ablak=NULL;
     SDL_Renderer *menu_megj=NULL, *jatek_megj=NULL, *sugo_megj=NULL, *dics_lista_megj=NULL;
     
-    ablakok[MENU] = (Ablak) { menu_ablak, menu_megj, 1000, 500, MENU};
-    ablakok[JATEK] = (Ablak) { jatek_ablak, jatek_megj, 1280, 960, JATEK};
-    ablakok[SUGO] = (Ablak) { sugo_ablak, sugo_megj, 1000, 500, SUGO};
-    ablakok[DICS_LISTA] = (Ablak) { dics_lista_ablak, dics_lista_megj, 1000, 500, DICS_LISTA};
+    ablakok[MENU] = (Ablak) { menu_ablak, menu_megj, 1000, 500, "Schatacka - Menu", MENU};
+    ablakok[JATEK] = (Ablak) { jatek_ablak, jatek_megj, 1280, 960, "Schatacka - Jatek", JATEK};
+    ablakok[SUGO] = (Ablak) { sugo_ablak, sugo_megj, 1000, 500, "Schatacka - Sugo", SUGO};
+    ablakok[DICS_LISTA] = (Ablak) { dics_lista_ablak, dics_lista_megj, 1000, 500, "Schatacka - Dicsoseg Lista", DICS_LISTA};
 
     inicializalas(ablakok);
     
@@ -49,19 +49,23 @@ void inicializalas(Ablak* ablakok) {
         SDL_Log("Nem indithato az SDL: %s", SDL_GetError());
         exit(1);
     }
-    /* SDL Ablak létrehozása */
+    
+    ablakot_letrehoz(&ablakok[MENU]);
+    
+    /* Menu megnyitása
     ablakok[MENU].ablak = SDL_CreateWindow("Schatacka - Menu", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, ablakok[MENU].szelesseg, ablakok[MENU].magassag, 0);
     if (ablakok[MENU].ablak == NULL) {
         SDL_Log("Nem hozhato letre az ablak: %s", SDL_GetError());
         exit(1);
     }
-    /* SDL Megjelenítő létrehozása */
+
     ablakok[MENU].megjelenito = SDL_CreateRenderer(ablakok[MENU].ablak, -1, SDL_RENDERER_SOFTWARE);
     if (ablakok[MENU].megjelenito == NULL) {
         SDL_Log("Nem hozhato letre a megjelenito: %s", SDL_GetError());
         exit(1);
     }
     SDL_RenderClear(ablakok[MENU].megjelenito);
+    */
 }
 
 void felszabadit(Ablak* ablakok) {

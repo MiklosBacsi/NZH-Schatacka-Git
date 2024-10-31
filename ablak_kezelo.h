@@ -19,6 +19,8 @@ typedef struct Ablak {
 } Ablak;
 
 typedef struct Betutipusok{
+    SDL_Surface* felirat;
+    SDL_Texture* felirat_t;
     TTF_Font* reg20;
     TTF_Font* bold20;
 } Betutipusok;

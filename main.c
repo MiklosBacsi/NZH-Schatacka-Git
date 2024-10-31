@@ -10,7 +10,7 @@
 void inicializalas();
 void felszabadit(Ablak* ablakok);
 void texturak_torlese(Ablak* ablakok);
-void betutipus_betoltese(TTF_Font* betutipus, char* nev, int meret);
+TTF_Font* betutipus_betoltese(char* nev, int meret);
 void betutipusok_bezarasa(Betutipusok* bt);
 
 int main(void) {
@@ -27,7 +27,7 @@ int main(void) {
     ablakok[SUGO] = (Ablak) { sugo_ablak, sugo_megj, 1000, 500, "Schatacka - Sugo", SUGO, sugo_logo};
     ablakok[DICS_LISTA] = (Ablak) { dics_lista_ablak, dics_lista_megj, 1000, 500, "Schatacka - Dicsoseg Lista", DICS_LISTA, dics_lista_logo};
 
-    Betutipusok bt = {NULL, NULL};
+    Betutipusok bt = {NULL, NULL, NULL, NULL};
 
     inicializalas(ablakok, &bt);
     
@@ -68,16 +68,60 @@ void inicializalas(Ablak* ablakok, Betutipusok* bt) {
     logot_rajzol(&ablakok[MENU], 50, 10);
 
     /* Bal teglalap */
-    rectangleRGBA(ablakok->megjelenito, 20, 80, 330, 330, 255, 255, 255, 255);
+    rectangleRGBA(ablakok[MENU].megjelenito, 20, 80, 330, 330, 255, 255, 255, 255);
     /* Jobb teglalap */
-    rectangleRGBA(ablakok->megjelenito, 350, 80, 820, 330, 255, 255, 255, 255);
+    rectangleRGBA(ablakok[MENU].megjelenito, 350, 80, 820, 330, 255, 255, 255, 255);
 
 
     /* Betutipus betoltese, 20 pont magassaggal */
     TTF_Init();
-    betutipus_betoltese(bt->reg20, "OpenSans-Regular.ttf", 20);
-    betutipus_betoltese(bt->bold20, "OpenSans-Bold.ttf", 20);
+    bt->reg20 = betutipus_betoltese("OpenSans-Regular.ttf", 20);
+    bt->bold20 = betutipus_betoltese("OpenSans-Bold.ttf", 20);
 
+
+
+    //ddddddddddddddddddddddddddddddddddd@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    SDL_Rect hova = { 0, 0, 0, 0 };
+    SDL_Color feher = {255, 255, 255};//, piros = {255, 0, 0};
+
+
+    // DEMO -- TESZT -- EZT TÖRÖLD KIIIIII !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    SDL_Surface* felirat;
+    SDL_Texture* felirat_t;
+    
+    felirat = TTF_RenderUTF8_Blended(bt->reg20, "TTF_RenderUTF8_Blended()", feher);
+
+    felirat_t = SDL_CreateTextureFromSurface(ablakok[MENU].megjelenito, felirat);
+    
+    printf("Felirat->w: %d\nKiscicaaaaaaaaaaaaaaaaaaaaaaaaa\n", felirat->w);
+    
+    hova.x = (480 - felirat->w) / 2;
+    hova.y = 100;                               
+    hova.w = felirat->w;
+    hova.h = felirat->h;
+    SDL_RenderCopy(ablakok[MENU].megjelenito, felirat_t, NULL, &hova);
+    SDL_FreeSurface(felirat);
+    SDL_DestroyTexture(felirat_t);
+    //EDDIG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+
+
+    /* ha sajat kodban hasznalod, csinalj belole fuggvenyt! !!!!!!!!!!!!!!!!!!!!!!!!!!*/
+    /*
+    bt->felirat = TTF_RenderUTF8_Shaded(bt->reg20, "Jatekmod", feher, piros);
+    bt->felirat_t = SDL_CreateTextureFromSurface(ablakok[MENU].megjelenito, bt->felirat);
+    
+    hova.x = 300;//(480 - bt->felirat->w) / 2;
+    hova.y = 60;
+    hova.w = 30;//bt->felirat->w;
+    hova.h = 20;//bt->felirat->h;
+    
+    SDL_RenderCopy(ablakok[MENU].megjelenito, bt->felirat_t, NULL, &hova);
+    SDL_FreeSurface(bt->felirat);
+    SDL_DestroyTexture(bt->felirat_t);
+    */
 }
 
 void felszabadit(Ablak* ablakok) {
@@ -95,10 +139,11 @@ void betutipusok_bezarasa(Betutipusok* bt) {
     TTF_CloseFont(bt->bold20);
 }
 
-void betutipus_betoltese(TTF_Font* betutipus, char* nev, int meret) {
-    betutipus = TTF_OpenFont(nev, meret);
+TTF_Font* betutipus_betoltese(char* nev, int meret) {
+    TTF_Font* betutipus = TTF_OpenFont(nev, meret);
     if (!betutipus) {
         SDL_Log("Nem sikerult megnyitni a betutipust! %s\n", TTF_GetError());
         exit(1);
     }
+    return betutipus;
 }

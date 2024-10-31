@@ -3,20 +3,22 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "ablak_kezelo.h"
 #include "jatek_vezerlo.h"
 #include "debugmalloc.h"
 
-void inicializalas();
-void felszabadit(Ablak* ablakok);
+void inicializalas(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek);
+void felszabadit(Ablak* ablakok, SDL_Color* szinek);
 void texturak_torlese(Ablak* ablakok);
 TTF_Font* betutipus_betoltese(char* nev, int meret);
 void betutipusok_bezarasa(Betutipusok* bt);
+SDL_Color* szinek_letrehozasa();
 
 int main(void) {
     Ablak* ablakok = NULL;
 
-    ablakok = (Ablak*) malloc(4 * sizeof(Ablak));
+    ablakok = (Ablak*) malloc(4 * sizeof(Ablak)); if (!ablakok) printf("Nem sikerult az ablakoknak memoriat foglalni :c");
     
     SDL_Window *menu_ablak=NULL, *jatek_ablak=NULL, *sugo_ablak=NULL, *dics_lista_ablak=NULL;
     SDL_Renderer *menu_megj=NULL, *jatek_megj=NULL, *sugo_megj=NULL, *dics_lista_megj=NULL;
@@ -28,8 +30,9 @@ int main(void) {
     ablakok[DICS_LISTA] = (Ablak) { dics_lista_ablak, dics_lista_megj, 1000, 500, "Schatacka - Dicsoseg Lista", DICS_LISTA, dics_lista_logo};
 
     Betutipusok bt = {NULL, NULL, NULL, NULL};
+    SDL_Color* szinek = szinek_letrehozasa();
 
-    inicializalas(ablakok, &bt);
+    inicializalas(ablakok, &bt, szinek);
     
     
     
@@ -47,16 +50,16 @@ int main(void) {
     
     
     
-    /* Ablak bezarasa */
+    /* KILEPES */
     texturak_torlese(ablakok);
     betutipusok_bezarasa(&bt);
     SDL_Quit();
-    felszabadit(ablakok);
+    felszabadit(ablakok, szinek);
 
     return 0;
 }
 
-void inicializalas(Ablak* ablakok, Betutipusok* bt) {
+void inicializalas(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek) {
     /* SDL inicializalasa */
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
         SDL_Log("Nem indithato az SDL: %s", SDL_GetError());
@@ -65,67 +68,70 @@ void inicializalas(Ablak* ablakok, Betutipusok* bt) {
     
     ablakot_letrehoz(&ablakok[MENU]);
 
-    logot_rajzol(&ablakok[MENU], 50, 10);
-
-    /* Bal teglalap */
-    rectangleRGBA(ablakok[MENU].megjelenito, 20, 80, 330, 330, 255, 255, 255, 255);
-    /* Jobb teglalap */
-    rectangleRGBA(ablakok[MENU].megjelenito, 350, 80, 820, 330, 255, 255, 255, 255);
-
-
     /* Betutipus betoltese, 20 pont magassaggal */
     TTF_Init();
+    bt->med20 = betutipus_betoltese("OpenSans-Medium.ttf", 20);
+    bt->ita20 = betutipus_betoltese("OpenSans-Italic.ttf", 20);
     bt->reg20 = betutipus_betoltese("OpenSans-Regular.ttf", 20);
     bt->bold20 = betutipus_betoltese("OpenSans-Bold.ttf", 20);
 
 
 
-    //ddddddddddddddddddddddddddddddddddd@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    SDL_Rect hova = { 0, 0, 0, 0 };
-    SDL_Color feher = {255, 255, 255};//, piros = {255, 0, 0};
+    /* *****MENU KIRAJZOLASA***** */
+    boxRGBA(ablakok[MENU].megjelenito, 0, 0, 840, 360, 30, 30, 30, 255);
 
-
-    // DEMO -- TESZT -- EZT TÖRÖLD KIIIIII !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    SDL_Surface* felirat;
-    SDL_Texture* felirat_t;
+    logot_rajzol(&ablakok[MENU], 50, 10);
     
-    felirat = TTF_RenderUTF8_Blended(bt->reg20, "TTF_RenderUTF8_Blended()", feher);
+    /* Bal teglalap */
+    rectangleRGBA(ablakok[MENU].megjelenito, 20, 80, 380, 330, 255, 255, 255, 255);
+    /* Jobb teglalap */
+    rectangleRGBA(ablakok[MENU].megjelenito, 400, 80, 820, 330, 255, 255, 255, 255);
 
-    felirat_t = SDL_CreateTextureFromSurface(ablakok[MENU].megjelenito, felirat);
+    szoveget_kiir("Játékmód", 50, 65, szinek[FEHER], szinek[SZURKE], bt->med20, ablakok[MENU].megjelenito, true);
+    szoveget_kiir("Játékosok", 430, 65, szinek[FEHER], szinek[SZURKE], bt->med20, ablakok[MENU].megjelenito, true);
+
+    szoveget_kiir("Súgó: F10", 520, 20, szinek[FEHER], szinek[SZURKE], bt->bold20, ablakok[MENU].megjelenito, true);
+    szoveget_kiir("Dicsőséglista: F11", 640, 20, szinek[FEHER], szinek[SZURKE], bt->bold20, ablakok[MENU].megjelenito, true);
+
+    /* Szines negyzetek */
+    boxRGBA(ablakok[MENU].megjelenito, 450, 120, 470, 140, 255, 0, 0, 255);
+    boxRGBA(ablakok[MENU].megjelenito, 450, 170, 470, 190, 255, 0, 255, 255);
+    boxRGBA(ablakok[MENU].megjelenito, 450, 220, 470, 240, 0, 255, 0, 255);
+    boxRGBA(ablakok[MENU].megjelenito, 450, 270, 470, 290, 0, 0, 255, 255);
+
+    /* Betuk kiirasa */
+    szoveget_kiir("Q", 500, 115, szinek[PIROS], szinek[SZURKE], bt->med20, ablakok[MENU].megjelenito, true);
+    szoveget_kiir("/", 500, 165, szinek[ROZSA], szinek[SZURKE], bt->med20, ablakok[MENU].megjelenito, true);
+    szoveget_kiir("M", 500, 215, szinek[ZOLD], szinek[SZURKE], bt->med20, ablakok[MENU].megjelenito, true);
+    szoveget_kiir("Bal", 500, 265, szinek[KEK], szinek[SZURKE], bt->med20, ablakok[MENU].megjelenito, true);
+
+    szoveget_kiir("2", 550, 115, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
+    szoveget_kiir("*", 550, 165, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
+    szoveget_kiir("K", 550, 215, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
+    szoveget_kiir("Fel", 550, 265, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
+
+    szoveget_kiir("W", 600, 115, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
+    szoveget_kiir("-", 600, 165, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
+    szoveget_kiir(",", 600, 215, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
+    szoveget_kiir("Jobb", 600, 265, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
+
+
+
+    /* !!!OPCIONÁLIS!!! */
+    szoveget_kiir("Kiválasztva", 670, 115, szinek[PIROS], szinek[SZURKE], bt->bold20, ablakok[MENU].megjelenito, true);
+    szoveget_kiir("Kiválasztva", 670, 165, szinek[ROZSA], szinek[SZURKE], bt->bold20, ablakok[MENU].megjelenito, true);
+    szoveget_kiir("Kiválasztva", 670, 215, szinek[ZOLD], szinek[SZURKE], bt->bold20, ablakok[MENU].megjelenito, true);
+    szoveget_kiir("Kiválasztva", 670, 265, szinek[KEK], szinek[SZURKE], bt->bold20, ablakok[MENU].megjelenito, true);
+
+    szoveget_kiir("Normál mód (F1)", 70, 130, szinek[FEHER], szinek[SZURKE], bt->bold20, ablakok[MENU].megjelenito, true);
+    szoveget_kiir("Fal nélküli (F2)", 70, 190, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
+    szoveget_kiir("Felvehető elemek tiltása (F3)", 70, 250, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
     
-    printf("Felirat->w: %d\nKiscicaaaaaaaaaaaaaaaaaaaaaaaaa\n", felirat->w);
-    
-    hova.x = (480 - felirat->w) / 2;
-    hova.y = 100;                               
-    hova.w = felirat->w;
-    hova.h = felirat->h;
-    SDL_RenderCopy(ablakok[MENU].megjelenito, felirat_t, NULL, &hova);
-    SDL_FreeSurface(felirat);
-    SDL_DestroyTexture(felirat_t);
-    //EDDIG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-
-
-
-    /* ha sajat kodban hasznalod, csinalj belole fuggvenyt! !!!!!!!!!!!!!!!!!!!!!!!!!!*/
-    /*
-    bt->felirat = TTF_RenderUTF8_Shaded(bt->reg20, "Jatekmod", feher, piros);
-    bt->felirat_t = SDL_CreateTextureFromSurface(ablakok[MENU].megjelenito, bt->felirat);
-    
-    hova.x = 300;//(480 - bt->felirat->w) / 2;
-    hova.y = 60;
-    hova.w = 30;//bt->felirat->w;
-    hova.h = 20;//bt->felirat->h;
-    
-    SDL_RenderCopy(ablakok[MENU].megjelenito, bt->felirat_t, NULL, &hova);
-    SDL_FreeSurface(bt->felirat);
-    SDL_DestroyTexture(bt->felirat_t);
-    */
 }
 
-void felszabadit(Ablak* ablakok) {
+void felszabadit(Ablak* ablakok, SDL_Color* szinek) {
     free(ablakok);
+    free(szinek);
 }
 
 void texturak_torlese(Ablak* ablakok) {
@@ -135,6 +141,8 @@ void texturak_torlese(Ablak* ablakok) {
 }
 
 void betutipusok_bezarasa(Betutipusok* bt) {
+    TTF_CloseFont(bt->bold20);
+    TTF_CloseFont(bt->ita20);
     TTF_CloseFont(bt->reg20);
     TTF_CloseFont(bt->bold20);
 }
@@ -146,4 +154,19 @@ TTF_Font* betutipus_betoltese(char* nev, int meret) {
         exit(1);
     }
     return betutipus;
+}
+
+SDL_Color* szinek_letrehozasa() {
+    SDL_Color* szinek = (SDL_Color*) malloc(7 * sizeof(SDL_Color));
+    if (!szinek) printf("Nem sikerult a szineknek memoriat foglalni :c\n");
+
+    szinek[FEHER] = (SDL_Color) {255, 255, 255};
+    szinek[FEKETE] = (SDL_Color) {0, 0, 0};
+    szinek[PIROS] = (SDL_Color) {255, 0, 0};
+    szinek[ROZSA] = (SDL_Color) {255, 0, 255};
+    szinek[ZOLD] = (SDL_Color) {0, 255, 0};
+    szinek[KEK] = (SDL_Color) {0, 0, 255};
+    szinek[SZURKE] = (SDL_Color) {30, 30, 30};
+
+    return szinek;
 }

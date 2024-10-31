@@ -36,4 +36,6 @@ void logot_rajzol(Ablak* ablak, int x, int y);
 
 void szoveget_kiir(char* szoveg, int x, int y, SDL_Color betu_szin, SDL_Color hatter_szin, TTF_Font* font, SDL_Renderer* megjelenito, bool hatterrel);
 
+void fix_menut_kirajzol(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek);
+
 #endif

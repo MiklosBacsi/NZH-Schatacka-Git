@@ -35,6 +35,10 @@ int main(void) {
     inicializalas(ablakok, &bt, szinek);
     
     
+    /* TEST - Sugo ablak */
+    //ablakot_letrehoz(&ablakok[SUGO]);
+    //SDL_RenderPresent(&ablakok[SUGO]->megjelenito);
+
     
     //Atmeneti - torold ki!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     /* az elvegzett rajzolasok a kepernyore */
@@ -75,45 +79,7 @@ void inicializalas(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek) {
     bt->reg20 = betutipus_betoltese("OpenSans-Regular.ttf", 20);
     bt->bold20 = betutipus_betoltese("OpenSans-Bold.ttf", 20);
 
-
-
-    /* *****MENU KIRAJZOLASA***** */
-    boxRGBA(ablakok[MENU].megjelenito, 0, 0, 840, 360, 30, 30, 30, 255);
-
-    logot_rajzol(&ablakok[MENU], 50, 10);
-    
-    /* Bal teglalap */
-    rectangleRGBA(ablakok[MENU].megjelenito, 20, 80, 380, 330, 255, 255, 255, 255);
-    /* Jobb teglalap */
-    rectangleRGBA(ablakok[MENU].megjelenito, 400, 80, 820, 330, 255, 255, 255, 255);
-
-    szoveget_kiir("Játékmód", 50, 65, szinek[FEHER], szinek[SZURKE], bt->med20, ablakok[MENU].megjelenito, true);
-    szoveget_kiir("Játékosok", 430, 65, szinek[FEHER], szinek[SZURKE], bt->med20, ablakok[MENU].megjelenito, true);
-
-    szoveget_kiir("Súgó: F10", 520, 20, szinek[FEHER], szinek[SZURKE], bt->bold20, ablakok[MENU].megjelenito, true);
-    szoveget_kiir("Dicsőséglista: F11", 640, 20, szinek[FEHER], szinek[SZURKE], bt->bold20, ablakok[MENU].megjelenito, true);
-
-    /* Szines negyzetek */
-    boxRGBA(ablakok[MENU].megjelenito, 450, 120, 470, 140, 255, 0, 0, 255);
-    boxRGBA(ablakok[MENU].megjelenito, 450, 170, 470, 190, 255, 0, 255, 255);
-    boxRGBA(ablakok[MENU].megjelenito, 450, 220, 470, 240, 0, 255, 0, 255);
-    boxRGBA(ablakok[MENU].megjelenito, 450, 270, 470, 290, 0, 0, 255, 255);
-
-    /* Betuk kiirasa */
-    szoveget_kiir("Q", 500, 115, szinek[PIROS], szinek[SZURKE], bt->med20, ablakok[MENU].megjelenito, true);
-    szoveget_kiir("/", 500, 165, szinek[ROZSA], szinek[SZURKE], bt->med20, ablakok[MENU].megjelenito, true);
-    szoveget_kiir("M", 500, 215, szinek[ZOLD], szinek[SZURKE], bt->med20, ablakok[MENU].megjelenito, true);
-    szoveget_kiir("Bal", 500, 265, szinek[KEK], szinek[SZURKE], bt->med20, ablakok[MENU].megjelenito, true);
-
-    szoveget_kiir("2", 550, 115, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
-    szoveget_kiir("*", 550, 165, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
-    szoveget_kiir("K", 550, 215, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
-    szoveget_kiir("Fel", 550, 265, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
-
-    szoveget_kiir("W", 600, 115, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
-    szoveget_kiir("-", 600, 165, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
-    szoveget_kiir(",", 600, 215, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
-    szoveget_kiir("Jobb", 600, 265, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
+    fix_menut_kirajzol(ablakok, bt, szinek);
 
 
 

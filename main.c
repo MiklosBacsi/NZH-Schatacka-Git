@@ -24,10 +24,10 @@ int main(void) {
     SDL_Renderer *menu_megj=NULL, *jatek_megj=NULL, *sugo_megj=NULL, *dics_lista_megj=NULL;
     SDL_Texture *menu_logo=NULL, *jatek_logo=NULL, *sugo_logo=NULL, *dics_lista_logo=NULL;
     
-    ablakok[MENU] = (Ablak) { menu_ablak, menu_megj, 840, 360, "Schatacka - Menu", MENU, menu_logo, false};
-    ablakok[JATEK] = (Ablak) { jatek_ablak, jatek_megj, 1280, 960, "Schatacka - Jatek", JATEK, jatek_logo, false};
-    ablakok[SUGO] = (Ablak) { sugo_ablak, sugo_megj, 1000, 500, "Schatacka - Sugo", SUGO, sugo_logo, false};
-    ablakok[DICS_LISTA] = (Ablak) { dics_lista_ablak, dics_lista_megj, 1000, 500, "Schatacka - Dicsoseg Lista", DICS_LISTA, dics_lista_logo, false};
+    ablakok[MENU] = (Ablak) { menu_ablak, menu_megj, 840, 360, "Schatacka - Menü", MENU, menu_logo, false};
+    ablakok[JATEK] = (Ablak) { jatek_ablak, jatek_megj, 1600, 900, "Schatacka - Játék", JATEK, jatek_logo, false};
+    ablakok[SUGO] = (Ablak) { sugo_ablak, sugo_megj, 800, 600, "Schatacka - Súgó", SUGO, sugo_logo, false};
+    ablakok[DICS_LISTA] = (Ablak) { dics_lista_ablak, dics_lista_megj, 1000, 500, "Schatacka - Dicsőség Lista", DICS_LISTA, dics_lista_logo, false};
 
     Betutipusok bt = {NULL, NULL, NULL, NULL};
     SDL_Color* szinek = szinek_letrehozasa();
@@ -52,7 +52,7 @@ int main(void) {
 
         //sugo_es_dics_lista_ablakok_kezelese(&bill, ablakok);
 
-        
+        // Sugo bezarasa
         if (bill.sugo_Esc && ablakok[SUGO].nyitva) {
             SDL_DestroyRenderer(ablakok[SUGO].megjelenito);
             SDL_DestroyWindow(ablakok[SUGO].ablak);
@@ -60,6 +60,7 @@ int main(void) {
             ablakok[SUGO].megjelenito = NULL;
             ablakok[SUGO].nyitva = false;
         }
+        // Dicsoseglista bezarasa
         if (bill.dics_Esc && ablakok[DICS_LISTA].nyitva) {
             SDL_DestroyRenderer(ablakok[DICS_LISTA].megjelenito);
             SDL_DestroyWindow(ablakok[DICS_LISTA].ablak);
@@ -67,13 +68,21 @@ int main(void) {
             ablakok[DICS_LISTA].megjelenito = NULL;
             ablakok[DICS_LISTA].nyitva = false;
         }
-
+        // Sugo megnyitasa
         if (bill.menu_F10 && !ablakok[SUGO].nyitva) {
             ablakot_letrehoz(ablakok+SUGO);
             SDL_RenderPresent(ablakok[SUGO].megjelenito);
+
+            sugot_kirajzol(ablakok+SUGO, &bt, szinek);
         }
+        // Dicsoseglista megnyitasa
         if (bill.menu_F11 && !ablakok[DICS_LISTA].nyitva) {
             ablakot_letrehoz(ablakok+DICS_LISTA);
+            SDL_RenderPresent(ablakok[DICS_LISTA].megjelenito);
+
+
+
+
             SDL_RenderPresent(ablakok[DICS_LISTA].megjelenito);
         }
 
@@ -106,11 +115,11 @@ void inicializalas(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek) {
     /* Betutipus betoltese, 20 pont magassaggal */
     TTF_Init();
     bt->med20 = betutipus_betoltese("OpenSans-Medium.ttf", 20);
-    bt->ita20 = betutipus_betoltese("OpenSans-Italic.ttf", 20);
+    bt->reg15 = betutipus_betoltese("OpenSans-Regular.ttf", 15);
     bt->reg20 = betutipus_betoltese("OpenSans-Regular.ttf", 20);
     bt->bold20 = betutipus_betoltese("OpenSans-Bold.ttf", 20);
 
-    fix_menut_kirajzol(ablakok, bt, szinek);
+    fix_menut_kirajzol(ablakok+MENU, bt, szinek);
 
 
 
@@ -139,7 +148,7 @@ void texturak_torlese(Ablak* ablakok) {
 
 void betutipusok_bezarasa(Betutipusok* bt) {
     TTF_CloseFont(bt->bold20);
-    TTF_CloseFont(bt->ita20);
+    TTF_CloseFont(bt->reg15);
     TTF_CloseFont(bt->reg20);
     TTF_CloseFont(bt->bold20);
 }

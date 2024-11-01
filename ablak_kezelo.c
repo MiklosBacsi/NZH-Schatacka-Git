@@ -58,44 +58,44 @@ void szoveget_kiir(char* szoveg, int x, int y, SDL_Color betu_szin, SDL_Color ha
     SDL_DestroyTexture(felirat_t);
 }
 
-void fix_menut_kirajzol(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek) {
+void fix_menut_kirajzol(Ablak* ablak, Betutipusok* bt, SDL_Color* szinek) {
     /* *****MENU KIRAJZOLASA***** */
-    boxRGBA(ablakok[MENU].megjelenito, 0, 0, 840, 360, 30, 30, 30, 255);
+    boxRGBA(ablak->megjelenito, 0, 0, 840, 360, 30, 30, 30, 255);
 
-    logot_rajzol(&ablakok[MENU], 50, 10);
+    logot_rajzol(ablak, 50, 10);
     
     /* Bal es jobb teglalap */
-    rectangleRGBA(ablakok[MENU].megjelenito, 20, 80, 380, 330, 255, 255, 255, 255);
-    rectangleRGBA(ablakok[MENU].megjelenito, 400, 80, 820, 330, 255, 255, 255, 255);
+    rectangleRGBA(ablak->megjelenito, 20, 80, 380, 330, 255, 255, 255, 255);
+    rectangleRGBA(ablak->megjelenito, 400, 80, 820, 330, 255, 255, 255, 255);
 
     /* Fix feliratok */
-    szoveget_kiir("Játékmód", 50, 65, szinek[FEHER], szinek[SZURKE], bt->med20, ablakok[MENU].megjelenito, true);
-    szoveget_kiir("Játékosok", 430, 65, szinek[FEHER], szinek[SZURKE], bt->med20, ablakok[MENU].megjelenito, true);
+    szoveget_kiir("Játékmód", 50, 65, szinek[FEHER], szinek[SZURKE], bt->med20, ablak->megjelenito, true);
+    szoveget_kiir("Játékosok", 430, 65, szinek[FEHER], szinek[SZURKE], bt->med20, ablak->megjelenito, true);
 
-    szoveget_kiir("Súgó: F10", 520, 20, szinek[FEHER], szinek[SZURKE], bt->bold20, ablakok[MENU].megjelenito, true);
-    szoveget_kiir("Dicsőséglista: F11", 640, 20, szinek[FEHER], szinek[SZURKE], bt->bold20, ablakok[MENU].megjelenito, true);
+    szoveget_kiir("Súgó: F10", 520, 20, szinek[FEHER], szinek[SZURKE], bt->bold20, ablak->megjelenito, true);
+    szoveget_kiir("Dicsőséglista: F11", 640, 20, szinek[FEHER], szinek[SZURKE], bt->bold20, ablak->megjelenito, true);
 
     /* Szines negyzetek */
-    boxRGBA(ablakok[MENU].megjelenito, 450, 120, 470, 140, 255, 0, 0, 255);
-    boxRGBA(ablakok[MENU].megjelenito, 450, 170, 470, 190, 255, 0, 255, 255);
-    boxRGBA(ablakok[MENU].megjelenito, 450, 220, 470, 240, 0, 255, 0, 255);
-    boxRGBA(ablakok[MENU].megjelenito, 450, 270, 470, 290, 0, 0, 255, 255);
+    boxRGBA(ablak->megjelenito, 450, 120, 470, 140, 255, 0, 0, 255);
+    boxRGBA(ablak->megjelenito, 450, 170, 470, 190, 255, 0, 255, 255);
+    boxRGBA(ablak->megjelenito, 450, 220, 470, 240, 0, 255, 0, 255);
+    boxRGBA(ablak->megjelenito, 450, 270, 470, 290, 0, 0, 255, 255);
 
     /* Betuk kiirasa */
-    szoveget_kiir("Q", 500, 115, szinek[PIROS], szinek[SZURKE], bt->med20, ablakok[MENU].megjelenito, true);
-    szoveget_kiir("/", 500, 165, szinek[ROZSA], szinek[SZURKE], bt->med20, ablakok[MENU].megjelenito, true);
-    szoveget_kiir("M", 500, 215, szinek[ZOLD], szinek[SZURKE], bt->med20, ablakok[MENU].megjelenito, true);
-    szoveget_kiir("Bal", 500, 265, szinek[KEK], szinek[SZURKE], bt->med20, ablakok[MENU].megjelenito, true);
+    szoveget_kiir("Q", 500, 115, szinek[PIROS], szinek[SZURKE], bt->med20, ablak->megjelenito, true);
+    szoveget_kiir("/", 500, 165, szinek[ROZSA], szinek[SZURKE], bt->med20, ablak->megjelenito, true);
+    szoveget_kiir("M", 500, 215, szinek[ZOLD], szinek[SZURKE], bt->med20, ablak->megjelenito, true);
+    szoveget_kiir("Bal", 500, 265, szinek[KEK], szinek[SZURKE], bt->med20, ablak->megjelenito, true);
 
-    szoveget_kiir("2", 550, 115, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
-    szoveget_kiir("*", 550, 165, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
-    szoveget_kiir("K", 550, 215, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
-    szoveget_kiir("Fel", 550, 265, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
+    szoveget_kiir("2", 550, 115, szinek[FEHER], szinek[SZURKE], bt->reg20, ablak->megjelenito, true);
+    szoveget_kiir("*", 550, 165, szinek[FEHER], szinek[SZURKE], bt->reg20, ablak->megjelenito, true);
+    szoveget_kiir("K", 550, 215, szinek[FEHER], szinek[SZURKE], bt->reg20, ablak->megjelenito, true);
+    szoveget_kiir("Fel", 550, 265, szinek[FEHER], szinek[SZURKE], bt->reg20, ablak->megjelenito, true);
 
-    szoveget_kiir("W", 600, 115, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
-    szoveget_kiir("-", 600, 165, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
-    szoveget_kiir(",", 600, 215, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
-    szoveget_kiir("Jobb", 600, 265, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
+    szoveget_kiir("W", 600, 115, szinek[FEHER], szinek[SZURKE], bt->reg20, ablak->megjelenito, true);
+    szoveget_kiir("-", 600, 165, szinek[FEHER], szinek[SZURKE], bt->reg20, ablak->megjelenito, true);
+    szoveget_kiir(",", 600, 215, szinek[FEHER], szinek[SZURKE], bt->reg20, ablak->megjelenito, true);
+    szoveget_kiir("Jobb", 600, 265, szinek[FEHER], szinek[SZURKE], bt->reg20, ablak->megjelenito, true);
 }
 
 /*
@@ -128,3 +128,42 @@ void sugo_es_dics_lista_ablakok_kezelese(Billentyuk* bill, Ablak* ablakok) {
     }
 }
 */
+
+
+void sugot_kirajzol(Ablak* ablak, Betutipusok* bt, SDL_Color* szinek) {
+    /* *****SUGO KIRAJZOLASA***** */
+    boxRGBA(ablak->megjelenito, 0, 0, 800, 600, 30, 30, 30, 255);  
+    
+    /* Kepek betoltese */
+    SDL_Texture* billenytu_kep = IMG_LoadTexture(ablak->megjelenito, "Schatacka_keyboard.png");
+    if (billenytu_kep == NULL) {
+        SDL_Log("Nem nyithato meg a kepfajl: %s", IMG_GetError());
+        exit(1);
+    }
+    SDL_Rect cel = { 59, 30, 682, 209 };
+    /* Kep atmasolasa az ablakra */
+    SDL_RenderCopy(ablak->megjelenito, billenytu_kep, NULL, &cel);
+
+    logot_rajzol(ablak, 560, 250);
+
+    szoveget_kiir("A játékosok ki- és bekapcsolása a játékosokhoz tartozó balgomb", 50, 260, szinek[FEHER], szinek[SZURKE], bt->reg15, ablak->megjelenito, false);
+    szoveget_kiir("megnyomásával történik (menüben színessel jelölve.)", 50, 280, szinek[FEHER], szinek[SZURKE], bt->reg15, ablak->megjelenito, false);
+
+    szoveget_kiir("A játékosokhoz tartozó vonal a bal- és jobbgombokkal irányítható, illetve lőni is lehet, ha a játékosnak", 50, 315, szinek[FEHER], szinek[SZURKE], bt->reg15, ablak->megjelenito, false);
+    szoveget_kiir("elegendő pontja van, vagy ha rendelkezik speciális fegyverrel, amit piktogramok jeleznek a pontszám", 50, 335, szinek[FEHER], szinek[SZURKE], bt->reg15, ablak->megjelenito, false);
+    szoveget_kiir("mellett.", 50, 355, szinek[FEHER], szinek[SZURKE], bt->reg15, ablak->megjelenito, false);
+    
+    szoveget_kiir("Ha egy játékos a játékmenet alatt vonalba, falba fut (kivéve 'Fal nélküli' játékmódban), vagy lövedékkel", 50, 390, szinek[FEHER], szinek[SZURKE], bt->reg15, ablak->megjelenito, false);
+    szoveget_kiir("ütközik, akkor az adott körből kiesik, és a még játékban lévő játékosok pontokat kapnak.", 50, 410, szinek[FEHER], szinek[SZURKE], bt->reg15, ablak->megjelenito, false);
+    
+    szoveget_kiir("A játékmenet alatt felvehető elemek jelennek meg. Ezek lehetőséget adnak a játékosoknak arra, hogy", 50, 445, szinek[FEHER], szinek[SZURKE], bt->reg15, ablak->megjelenito, false);
+    szoveget_kiir("(1) a normálnál nagyobb lövedékeket lőhessenek", 50, 465, szinek[FEHER], szinek[SZURKE], bt->reg15, ablak->megjelenito, false);
+    szoveget_kiir("(2) normál méretű lövedékeket lőhessenek az előttük lévő 120 fokos tartományba", 50, 485, szinek[FEHER], szinek[SZURKE], bt->reg15, ablak->megjelenito, false);
+    szoveget_kiir("(3) pajzs használatával védve legyenek az ütközésektől", 50, 505, szinek[FEHER], szinek[SZURKE], bt->reg15, ablak->megjelenito, false);
+    
+    szoveget_kiir("A játéknak akkor van vége, ha a legnagyobb pontszám eléri a következőt: (N-1)*40, ahol N a játékosok száma.", 25, 550, szinek[FEHER], szinek[SZURKE], bt->reg15, ablak->megjelenito, false);
+    
+    SDL_RenderPresent(ablak->megjelenito);
+
+    SDL_DestroyTexture(billenytu_kep);
+}

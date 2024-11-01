@@ -24,7 +24,7 @@ typedef struct Ablak {
 
 typedef struct Betutipusok{
     TTF_Font* med20;
-    TTF_Font* ita20;
+    TTF_Font* reg15;
     TTF_Font* reg20;
     TTF_Font* bold20;
 } Betutipusok;
@@ -38,8 +38,12 @@ void logot_rajzol(Ablak* ablak, int x, int y);
 
 void szoveget_kiir(char* szoveg, int x, int y, SDL_Color betu_szin, SDL_Color hatter_szin, TTF_Font* font, SDL_Renderer* megjelenito, bool hatterrel);
 
-void fix_menut_kirajzol(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek);
+void fix_menut_kirajzol(Ablak* ablak, Betutipusok* bt, SDL_Color* szinek);
 
 //void sugo_es_dics_lista_ablakok_kezelese(Billentyuk* bill, Ablak* ablakok);
+
+void sugot_kirajzol(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek);
+
+//void dics_listat_kirajzol();
 
 #endif

@@ -3,7 +3,8 @@
     "sdl.h": "c",
     "sdl2_gfxprimitives.h": "c",
     "ablak_kezelo.h": "c",
-    "jatek_vezerlo.h": "c"
+    "jatek_vezerlo.h": "c",
+    "stdbool.h": "c"
   },
   "C_Cpp_Runner.msvcBatchPath": "",
   "C_Cpp_Runner.cCompilerPath": "gcc",

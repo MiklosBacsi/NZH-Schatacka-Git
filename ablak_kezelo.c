@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "ablak_kezelo.h"
-#include "jatek_vezerlo.h" // ezt 2.5-ben kommenteztem ki
+//#include "jatek_vezerlo.h"
 #include "debugmalloc.h"
 
 void ablakot_letrehoz (Ablak* ablak) {
@@ -98,9 +98,9 @@ void fix_menut_kirajzol(Ablak* ablak, Betutipusok* bt, SDL_Color* szinek) {
     szoveget_kiir("Jobb", 600, 265, szinek[FEHER], szinek[SZURKE], bt->reg20, ablak->megjelenito, true);
 }
 
-
-void sugo_es_dics_lista_ablakok_kezelese(Billentyuk* bill, Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek) {
-    /* Sugo bezarasa */
+/*
+void sugo_es_dics_lista_ablakok_kezelese(Billentyuk* bill, Ablak* ablakok) {
+    / Sugo bezarasa /
     if (bill->sugo_Esc && ablakok[SUGO].nyitva) {
         SDL_DestroyRenderer(ablakok[SUGO].megjelenito);
         SDL_DestroyWindow(ablakok[SUGO].ablak);
@@ -108,7 +108,7 @@ void sugo_es_dics_lista_ablakok_kezelese(Billentyuk* bill, Ablak* ablakok, Betut
         ablakok[SUGO].megjelenito = NULL;
         ablakok[SUGO].nyitva = false;
     }
-    /* Dicsoseglista bezarasa */
+    / Dicsoseglista bezarasa /
     if (bill->dics_Esc && ablakok[DICS_LISTA].nyitva) {
         SDL_DestroyRenderer(ablakok[DICS_LISTA].megjelenito);
         SDL_DestroyWindow(ablakok[DICS_LISTA].ablak);
@@ -116,18 +116,18 @@ void sugo_es_dics_lista_ablakok_kezelese(Billentyuk* bill, Ablak* ablakok, Betut
         ablakok[DICS_LISTA].megjelenito = NULL;
         ablakok[DICS_LISTA].nyitva = false;
     }
-    /* Sugo megnyitasa */
+    / Sugo megnyitasa /
     if (bill->menu_F10 && !ablakok[SUGO].nyitva) {
         ablakot_letrehoz(ablakok+SUGO);
-        sugot_kirajzol(ablakok+SUGO, bt, szinek);
+        SDL_RenderPresent(ablakok[SUGO].megjelenito);
     }
-    /* Dicsoseglista megnyitasa */
+    / Dicsoseglista megnyitasa /
     if (bill->menu_F11 && !ablakok[DICS_LISTA].nyitva) {
         ablakot_letrehoz(ablakok+DICS_LISTA);
-        dics_listat_kirajzol(ablakok+DICS_LISTA, bt, szinek);
+        SDL_RenderPresent(ablakok[DICS_LISTA].megjelenito);
     }
 }
-
+*/
 
 
 void sugot_kirajzol(Ablak* ablak, Betutipusok* bt, SDL_Color* szinek) {
@@ -166,8 +166,4 @@ void sugot_kirajzol(Ablak* ablak, Betutipusok* bt, SDL_Color* szinek) {
     SDL_RenderPresent(ablak->megjelenito);
 
     SDL_DestroyTexture(billenytu_kep);
-}
-
-void dics_listat_kirajzol(Ablak* ablak, Betutipusok* bt, SDL_Color* szinek) {
-    SDL_RenderPresent(ablak->megjelenito);
 }

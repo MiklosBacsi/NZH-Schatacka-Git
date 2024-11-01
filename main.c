@@ -50,9 +50,8 @@ int main(void) {
         SDL_WaitEvent(&event);
         billentyuk_erzekelese(&event, &bill, ablakok);
 
-        sugo_es_dics_lista_ablakok_kezelese(&bill, ablakok, &bt, szinek);
+        //sugo_es_dics_lista_ablakok_kezelese(&bill, ablakok);
 
-        /*
         // Sugo bezarasa
         if (bill.sugo_Esc && ablakok[SUGO].nyitva) {
             SDL_DestroyRenderer(ablakok[SUGO].megjelenito);
@@ -72,14 +71,20 @@ int main(void) {
         // Sugo megnyitasa
         if (bill.menu_F10 && !ablakok[SUGO].nyitva) {
             ablakot_letrehoz(ablakok+SUGO);
+            SDL_RenderPresent(ablakok[SUGO].megjelenito);
+
             sugot_kirajzol(ablakok+SUGO, &bt, szinek);
         }
         // Dicsoseglista megnyitasa
         if (bill.menu_F11 && !ablakok[DICS_LISTA].nyitva) {
             ablakot_letrehoz(ablakok+DICS_LISTA);
-            dics_listat_kirajzol(ablakok+DICS_LISTA, &bt, szinek);
+            SDL_RenderPresent(ablakok[DICS_LISTA].megjelenito);
+
+
+
+
+            SDL_RenderPresent(ablakok[DICS_LISTA].megjelenito);
         }
-        */
 
         
         

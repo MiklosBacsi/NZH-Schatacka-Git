@@ -5,7 +5,7 @@
 #include "SDL2/SDL2_gfxPrimitives.h"
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
-//#include "jatek_vezerlo.h" ??????? ez az az include ami igy is rossz meg ugy is rossz :c
+//#include "jatek_vezerlo.h"
 #include <stdlib.h>
 #include <stdbool.h>
 #include "debugmalloc.h"
@@ -40,10 +40,10 @@ void szoveget_kiir(char* szoveg, int x, int y, SDL_Color betu_szin, SDL_Color ha
 
 void fix_menut_kirajzol(Ablak* ablak, Betutipusok* bt, SDL_Color* szinek);
 
-void sugo_es_dics_lista_ablakok_kezelese(Billentyuk* bill, Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek);
+//void sugo_es_dics_lista_ablakok_kezelese(Billentyuk* bill, Ablak* ablakok);
 
 void sugot_kirajzol(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek);
 
-void dics_listat_kirajzol(Ablak* ablak, Betutipusok* bt, SDL_Color* szinek);
+//void dics_listat_kirajzol();
 
 #endif

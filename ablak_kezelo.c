@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "ablak_kezelo.h"
+//#include "jatek_vezerlo.h"
 #include "debugmalloc.h"
 
 void ablakot_letrehoz (Ablak* ablak) {
@@ -96,3 +97,34 @@ void fix_menut_kirajzol(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek) {
     szoveget_kiir(",", 600, 215, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
     szoveget_kiir("Jobb", 600, 265, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
 }
+
+/*
+void sugo_es_dics_lista_ablakok_kezelese(Billentyuk* bill, Ablak* ablakok) {
+    / Sugo bezarasa /
+    if (bill->sugo_Esc && ablakok[SUGO].nyitva) {
+        SDL_DestroyRenderer(ablakok[SUGO].megjelenito);
+        SDL_DestroyWindow(ablakok[SUGO].ablak);
+        ablakok[SUGO].ablak = NULL;
+        ablakok[SUGO].megjelenito = NULL;
+        ablakok[SUGO].nyitva = false;
+    }
+    / Dicsoseglista bezarasa /
+    if (bill->dics_Esc && ablakok[DICS_LISTA].nyitva) {
+        SDL_DestroyRenderer(ablakok[DICS_LISTA].megjelenito);
+        SDL_DestroyWindow(ablakok[DICS_LISTA].ablak);
+        ablakok[DICS_LISTA].ablak = NULL;
+        ablakok[DICS_LISTA].megjelenito = NULL;
+        ablakok[DICS_LISTA].nyitva = false;
+    }
+    / Sugo megnyitasa /
+    if (bill->menu_F10 && !ablakok[SUGO].nyitva) {
+        ablakot_letrehoz(ablakok+SUGO);
+        SDL_RenderPresent(ablakok[SUGO].megjelenito);
+    }
+    / Dicsoseglista megnyitasa /
+    if (bill->menu_F11 && !ablakok[DICS_LISTA].nyitva) {
+        ablakot_letrehoz(ablakok+DICS_LISTA);
+        SDL_RenderPresent(ablakok[DICS_LISTA].megjelenito);
+    }
+}
+*/

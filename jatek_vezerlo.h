@@ -3,15 +3,10 @@
 
 #include "SDL2/SDL.h"
 #include "SDL2/SDL2_gfxPrimitives.h"
+//#include "ablak_kezelo.h"
 #include <stdbool.h>
 #include "debugmalloc.h"
 
-typedef enum Irany {BAL = 0, LO, JOBB} Irany;
-
-typedef struct Jatekos {
-    Szin szin;
-    bool aktiv;
-} Jatekos;
 
 typedef struct Billentyuk {
     bool menu_Esc; bool jatek_Esc; bool sugo_Esc; bool dics_Esc;
@@ -22,7 +17,7 @@ typedef struct Billentyuk {
     bool jatek_Per; bool jatek_Csillag; bool jatek_Kotojel;
 } Billentyuk;
 
-
+void billentyuk_erzekelese(SDL_Event* event, Billentyuk* bill, Ablak* ablakok);
 
 
 #endif

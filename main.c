@@ -45,71 +45,14 @@ int main(void) {
 
    while (!bill.menu_Esc)
     {
+        /* Billentyuk erzekelese */
         SDL_Event event;
         SDL_WaitEvent(&event);
+        billentyuk_erzekelese(&event, &bill, ablakok);
 
-        switch (event.type) {
-            /* felhasznaloi esemeny: ilyeneket general az idozito fuggveny */
-            case SDL_KEYUP:
-                switch (event.key.keysym.sym) {
-                    // Esc
-                    case SDLK_ESCAPE:  // Mert nem mindig erzekeli jol az ablakot, es funkcionalitasban nem valtoztat
-                        bill.menu_Esc = false;
-                        bill.jatek_Esc = false;
-                        bill.sugo_Esc = false;
-                        bill.dics_Esc = false;
-                        break;
-                    
-                    // F10
-                    case SDLK_F10: if (event.key.windowID == SDL_GetWindowID(ablakok[MENU].ablak)) bill.menu_F10 = false; break;
-                    // F11
-                    case SDLK_F11: if (event.key.windowID == SDL_GetWindowID(ablakok[MENU].ablak)) bill.menu_F11 = false; break;
-                    
-                    // Mas billentyuk
-                    //case SDLK_LEFT: left = false; rajz = true; break;
-                    //case SDLK_RIGHT: right = false; rajz = true; break;
-                    
-                }
-                break;
-                
-            case SDL_KEYDOWN:
-                switch (event.key.keysym.sym) {
-                    case SDLK_ESCAPE:
-                        if (event.key.windowID == SDL_GetWindowID(ablakok[MENU].ablak))
-                            bill.menu_Esc = true;
-                        else if (event.key.windowID == SDL_GetWindowID(ablakok[JATEK].ablak))
-                            bill.jatek_Esc = true;
-                        else if (event.key.windowID == SDL_GetWindowID(ablakok[SUGO].ablak))
-                            bill.sugo_Esc = true;
-                        else if (event.key.windowID == SDL_GetWindowID(ablakok[DICS_LISTA].ablak))
-                            bill.dics_Esc = true;
-                        break;
-                    // F10
-                    case SDLK_F10: if (event.key.windowID == SDL_GetWindowID(ablakok[MENU].ablak)) bill.menu_F10 = true; break;
-                    // F11
-                    case SDLK_F11: if (event.key.windowID == SDL_GetWindowID(ablakok[MENU].ablak)) bill.menu_F11 = true; break;
-                    
-                    // Mas billentyuk
-                    //case SDLK_RIGHT: right = true; rajz = true; break;
-                }
-                break;
-            
-            case SDL_QUIT:
-                /* Nem mukodik :c - Nem lehet bezarni az ablakot kiikszelessel (csak ha egy van nyitva) */
-                /*
-                if (event.window.windowID == SDL_GetWindowID(ablakok[MENU].ablak))
-                    bill.menu_Esc = true;
-                else if (event.window.windowID == SDL_GetWindowID(ablakok[JATEK].ablak))
-                    bill.jatek_Esc = true;
-                else if (event.window.windowID == SDL_GetWindowID(ablakok[SUGO].ablak))
-                    bill.sugo_Esc = true;
-                else if (event.window.windowID == SDL_GetWindowID(ablakok[DICS_LISTA].ablak))
-                    bill.dics_Esc = true;
-                */
-               bill.menu_Esc = true;
-                break;
-        }
+        //sugo_es_dics_lista_ablakok_kezelese(&bill, ablakok);
 
+        
         if (bill.sugo_Esc && ablakok[SUGO].nyitva) {
             SDL_DestroyRenderer(ablakok[SUGO].megjelenito);
             SDL_DestroyWindow(ablakok[SUGO].ablak);
@@ -137,6 +80,7 @@ int main(void) {
         
         
         
+ 
     }
     
     

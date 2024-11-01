@@ -147,7 +147,7 @@ void texturak_torlese(Ablak* ablakok) {
 }
 
 void betutipusok_bezarasa(Betutipusok* bt) {
-    TTF_CloseFont(bt->bold20);
+    TTF_CloseFont(bt->med20);
     TTF_CloseFont(bt->reg15);
     TTF_CloseFont(bt->reg20);
     TTF_CloseFont(bt->bold20);

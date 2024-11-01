@@ -21,6 +21,7 @@ void ablakot_letrehoz (Ablak* ablak) {
         exit(1);
     }
     SDL_RenderClear(ablak->megjelenito);
+    ablak->nyitva = true;
 }
 
 void logot_rajzol(Ablak* ablak, int x, int y) {

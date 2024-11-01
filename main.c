@@ -24,33 +24,120 @@ int main(void) {
     SDL_Renderer *menu_megj=NULL, *jatek_megj=NULL, *sugo_megj=NULL, *dics_lista_megj=NULL;
     SDL_Texture *menu_logo=NULL, *jatek_logo=NULL, *sugo_logo=NULL, *dics_lista_logo=NULL;
     
-    ablakok[MENU] = (Ablak) { menu_ablak, menu_megj, 840, 360, "Schatacka - Menu", MENU, menu_logo};
-    ablakok[JATEK] = (Ablak) { jatek_ablak, jatek_megj, 1280, 960, "Schatacka - Jatek", JATEK, jatek_logo};
-    ablakok[SUGO] = (Ablak) { sugo_ablak, sugo_megj, 1000, 500, "Schatacka - Sugo", SUGO, sugo_logo};
-    ablakok[DICS_LISTA] = (Ablak) { dics_lista_ablak, dics_lista_megj, 1000, 500, "Schatacka - Dicsoseg Lista", DICS_LISTA, dics_lista_logo};
+    ablakok[MENU] = (Ablak) { menu_ablak, menu_megj, 840, 360, "Schatacka - Menu", MENU, menu_logo, false};
+    ablakok[JATEK] = (Ablak) { jatek_ablak, jatek_megj, 1280, 960, "Schatacka - Jatek", JATEK, jatek_logo, false};
+    ablakok[SUGO] = (Ablak) { sugo_ablak, sugo_megj, 1000, 500, "Schatacka - Sugo", SUGO, sugo_logo, false};
+    ablakok[DICS_LISTA] = (Ablak) { dics_lista_ablak, dics_lista_megj, 1000, 500, "Schatacka - Dicsoseg Lista", DICS_LISTA, dics_lista_logo, false};
 
     Betutipusok bt = {NULL, NULL, NULL, NULL};
     SDL_Color* szinek = szinek_letrehozasa();
+    Billentyuk bill = (Billentyuk) {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
+
 
     inicializalas(ablakok, &bt, szinek);
-    
-    
-    /* TEST - Sugo ablak */
-    //ablakot_letrehoz(&ablakok[SUGO]);
-    //SDL_RenderPresent(&ablakok[SUGO]->megjelenito);
 
-    
+
     //Atmeneti - torold ki!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     /* az elvegzett rajzolasok a kepernyore */
     SDL_RenderPresent(ablakok[MENU].megjelenito);
-    
-    /* varunk a kilepesre */
-    SDL_Event ev;
-    while (SDL_WaitEvent(&ev) && ev.type != SDL_QUIT) {
-        /* SDL_RenderPresent(renderer); - MacOS Mojave esetén */
-    }
-    // EDDIG!!!
 
+   
+
+   while (!bill.menu_Esc)
+    {
+        SDL_Event event;
+        SDL_WaitEvent(&event);
+
+        switch (event.type) {
+            /* felhasznaloi esemeny: ilyeneket general az idozito fuggveny */
+            case SDL_KEYUP:
+                switch (event.key.keysym.sym) {
+                    // Esc
+                    case SDLK_ESCAPE:  // Mert nem mindig erzekeli jol az ablakot, es funkcionalitasban nem valtoztat
+                        bill.menu_Esc = false;
+                        bill.jatek_Esc = false;
+                        bill.sugo_Esc = false;
+                        bill.dics_Esc = false;
+                        break;
+                    
+                    // F10
+                    case SDLK_F10: if (event.key.windowID == SDL_GetWindowID(ablakok[MENU].ablak)) bill.menu_F10 = false; break;
+                    // F11
+                    case SDLK_F11: if (event.key.windowID == SDL_GetWindowID(ablakok[MENU].ablak)) bill.menu_F11 = false; break;
+                    
+                    // Mas billentyuk
+                    //case SDLK_LEFT: left = false; rajz = true; break;
+                    //case SDLK_RIGHT: right = false; rajz = true; break;
+                    
+                }
+                break;
+                
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.sym) {
+                    case SDLK_ESCAPE:
+                        if (event.key.windowID == SDL_GetWindowID(ablakok[MENU].ablak))
+                            bill.menu_Esc = true;
+                        else if (event.key.windowID == SDL_GetWindowID(ablakok[JATEK].ablak))
+                            bill.jatek_Esc = true;
+                        else if (event.key.windowID == SDL_GetWindowID(ablakok[SUGO].ablak))
+                            bill.sugo_Esc = true;
+                        else if (event.key.windowID == SDL_GetWindowID(ablakok[DICS_LISTA].ablak))
+                            bill.dics_Esc = true;
+                        break;
+                    // F10
+                    case SDLK_F10: if (event.key.windowID == SDL_GetWindowID(ablakok[MENU].ablak)) bill.menu_F10 = true; break;
+                    // F11
+                    case SDLK_F11: if (event.key.windowID == SDL_GetWindowID(ablakok[MENU].ablak)) bill.menu_F11 = true; break;
+                    
+                    // Mas billentyuk
+                    //case SDLK_RIGHT: right = true; rajz = true; break;
+                }
+                break;
+            
+            case SDL_QUIT:
+                /* Nem mukodik :c - Nem lehet bezarni az ablakot kiikszelessel (csak ha egy van nyitva) */
+                /*
+                if (event.window.windowID == SDL_GetWindowID(ablakok[MENU].ablak))
+                    bill.menu_Esc = true;
+                else if (event.window.windowID == SDL_GetWindowID(ablakok[JATEK].ablak))
+                    bill.jatek_Esc = true;
+                else if (event.window.windowID == SDL_GetWindowID(ablakok[SUGO].ablak))
+                    bill.sugo_Esc = true;
+                else if (event.window.windowID == SDL_GetWindowID(ablakok[DICS_LISTA].ablak))
+                    bill.dics_Esc = true;
+                */
+               bill.menu_Esc = true;
+                break;
+        }
+
+        if (bill.sugo_Esc && ablakok[SUGO].nyitva) {
+            SDL_DestroyRenderer(ablakok[SUGO].megjelenito);
+            SDL_DestroyWindow(ablakok[SUGO].ablak);
+            ablakok[SUGO].ablak = NULL;
+            ablakok[SUGO].megjelenito = NULL;
+            ablakok[SUGO].nyitva = false;
+        }
+        if (bill.dics_Esc && ablakok[DICS_LISTA].nyitva) {
+            SDL_DestroyRenderer(ablakok[DICS_LISTA].megjelenito);
+            SDL_DestroyWindow(ablakok[DICS_LISTA].ablak);
+            ablakok[DICS_LISTA].ablak = NULL;
+            ablakok[DICS_LISTA].megjelenito = NULL;
+            ablakok[DICS_LISTA].nyitva = false;
+        }
+
+        if (bill.menu_F10 && !ablakok[SUGO].nyitva) {
+            ablakot_letrehoz(ablakok+SUGO);
+            SDL_RenderPresent(ablakok[SUGO].megjelenito);
+        }
+        if (bill.menu_F11 && !ablakok[DICS_LISTA].nyitva) {
+            ablakot_letrehoz(ablakok+DICS_LISTA);
+            SDL_RenderPresent(ablakok[DICS_LISTA].megjelenito);
+        }
+
+        
+        
+        
+    }
     
     
     
@@ -70,7 +157,7 @@ void inicializalas(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek) {
         exit(1);
     }
     
-    ablakot_letrehoz(&ablakok[MENU]);
+    ablakot_letrehoz(ablakok+MENU);
 
     /* Betutipus betoltese, 20 pont magassaggal */
     TTF_Init();

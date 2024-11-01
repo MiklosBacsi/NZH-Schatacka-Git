@@ -18,6 +18,7 @@ typedef struct Ablak {
     char* cim;
     Ablak_tipus abl_tip;
     SDL_Texture* logo;
+    bool nyitva;
 } Ablak;
 
 typedef struct Betutipusok{

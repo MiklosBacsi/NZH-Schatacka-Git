@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include "ablak_kezelo.h"
 #include "jatek_vezerlo.h"
+#include "bemenet_es_fajlkezeles.h"
 #include "debugmalloc.h"
 
 void inicializalas(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek);
@@ -45,46 +46,15 @@ int main(void) {
 
    while (!bill.menu_Esc)
     {
+        Uint32 ablakIDk[4] = { SDL_GetWindowID(ablakok[MENU].ablak), SDL_GetWindowID(ablakok[JATEK].ablak), SDL_GetWindowID(ablakok[SUGO].ablak), SDL_GetWindowID(ablakok[DICS_LISTA].ablak) };
         /* Billentyuk erzekelese */
         SDL_Event event;
         SDL_WaitEvent(&event);
-        billentyuk_erzekelese(&event, &bill, ablakok);
+        billentyuk_erzekelese(&event, &bill, ablakIDk);
 
-        //sugo_es_dics_lista_ablakok_kezelese(&bill, ablakok);
-
-        // Sugo bezarasa
-        if (bill.sugo_Esc && ablakok[SUGO].nyitva) {
-            SDL_DestroyRenderer(ablakok[SUGO].megjelenito);
-            SDL_DestroyWindow(ablakok[SUGO].ablak);
-            ablakok[SUGO].ablak = NULL;
-            ablakok[SUGO].megjelenito = NULL;
-            ablakok[SUGO].nyitva = false;
-        }
-        // Dicsoseglista bezarasa
-        if (bill.dics_Esc && ablakok[DICS_LISTA].nyitva) {
-            SDL_DestroyRenderer(ablakok[DICS_LISTA].megjelenito);
-            SDL_DestroyWindow(ablakok[DICS_LISTA].ablak);
-            ablakok[DICS_LISTA].ablak = NULL;
-            ablakok[DICS_LISTA].megjelenito = NULL;
-            ablakok[DICS_LISTA].nyitva = false;
-        }
-        // Sugo megnyitasa
-        if (bill.menu_F10 && !ablakok[SUGO].nyitva) {
-            ablakot_letrehoz(ablakok+SUGO);
-            SDL_RenderPresent(ablakok[SUGO].megjelenito);
-
-            sugot_kirajzol(ablakok+SUGO, &bt, szinek);
-        }
-        // Dicsoseglista megnyitasa
-        if (bill.menu_F11 && !ablakok[DICS_LISTA].nyitva) {
-            ablakot_letrehoz(ablakok+DICS_LISTA);
-            SDL_RenderPresent(ablakok[DICS_LISTA].megjelenito);
+        sugo_es_dics_lista_ablakok_kezelese(&bill, ablakok, &bt, szinek);
 
 
-
-
-            SDL_RenderPresent(ablakok[DICS_LISTA].megjelenito);
-        }
 
         
         

@@ -4,7 +4,8 @@
     "sdl2_gfxprimitives.h": "c",
     "ablak_kezelo.h": "c",
     "jatek_vezerlo.h": "c",
-    "stdbool.h": "c"
+    "stdbool.h": "c",
+    "sdl_image.h": "c"
   },
   "C_Cpp_Runner.msvcBatchPath": "",
   "C_Cpp_Runner.cCompilerPath": "gcc",

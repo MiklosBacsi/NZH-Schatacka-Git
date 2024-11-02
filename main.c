@@ -9,12 +9,18 @@
 #include "bemenet_es_fajlkezeles.h"
 #include "debugmalloc.h"
 
+typedef struct Kivalasztas {
+    int kiv_jt_mod;
+    bool aktiv_jatekosok[4];
+} Kivalasztas;
+
 void inicializalas(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek);
 void felszabadit(Ablak* ablakok, SDL_Color* szinek);
 void texturak_torlese(Ablak* ablakok);
 TTF_Font* betutipus_betoltese(char* nev, int meret);
 void betutipusok_bezarasa(Betutipusok* bt);
 SDL_Color* szinek_letrehozasa();
+void menu_kivalasztas(Kivalasztas* kiv, Billentyuk* bill, Ablak* menu, Betutipusok* bt, SDL_Color* szinek);
 
 int main(void) {
     Ablak* ablakok = NULL;
@@ -32,17 +38,12 @@ int main(void) {
 
     Betutipusok bt = {NULL, NULL, NULL, NULL};
     SDL_Color* szinek = szinek_letrehozasa();
-    Billentyuk bill = (Billentyuk) {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
-
+    Billentyuk bill = (Billentyuk) {false, false,false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
+    Kivalasztas kiv = (Kivalasztas) { 0, {false, false, false, false} };
 
     inicializalas(ablakok, &bt, szinek);
 
 
-    //Atmeneti - torold ki!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    /* az elvegzett rajzolasok a kepernyore */
-    SDL_RenderPresent(ablakok[MENU].megjelenito);
-
-   
 
    while (!bill.menu_Esc)
     {
@@ -53,13 +54,12 @@ int main(void) {
         billentyuk_erzekelese(&event, &bill, ablakIDk);
 
         sugo_es_dics_lista_ablakok_kezelese(&bill, ablakok, &bt, szinek);
+        menu_kivalasztas(&kiv, &bill, ablakok+MENU, &bt, szinek);
 
 
 
         
-        
-        
- 
+        billentyuk_tiltasa(&bill);
     }
     
     
@@ -82,7 +82,7 @@ void inicializalas(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek) {
     
     ablakot_letrehoz(ablakok+MENU);
 
-    /* Betutipus betoltese, 20 pont magassaggal */
+    /* Betutipus betoltese, X pont magassaggal */
     TTF_Init();
     bt->med20 = betutipus_betoltese("OpenSans-Medium.ttf", 20);
     bt->reg15 = betutipus_betoltese("OpenSans-Regular.ttf", 15);
@@ -90,19 +90,6 @@ void inicializalas(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek) {
     bt->bold20 = betutipus_betoltese("OpenSans-Bold.ttf", 20);
 
     fix_menut_kirajzol(ablakok+MENU, bt, szinek);
-
-
-
-    /* !!!OPCIONÁLIS!!! */
-    szoveget_kiir("Kiválasztva", 670, 115, szinek[PIROS], szinek[SZURKE], bt->bold20, ablakok[MENU].megjelenito, true);
-    szoveget_kiir("Kiválasztva", 670, 165, szinek[ROZSA], szinek[SZURKE], bt->bold20, ablakok[MENU].megjelenito, true);
-    szoveget_kiir("Kiválasztva", 670, 215, szinek[ZOLD], szinek[SZURKE], bt->bold20, ablakok[MENU].megjelenito, true);
-    szoveget_kiir("Kiválasztva", 670, 265, szinek[KEK], szinek[SZURKE], bt->bold20, ablakok[MENU].megjelenito, true);
-
-    szoveget_kiir("Normál mód (F1)", 70, 130, szinek[FEHER], szinek[SZURKE], bt->bold20, ablakok[MENU].megjelenito, true);
-    szoveget_kiir("Fal nélküli (F2)", 70, 190, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
-    szoveget_kiir("Felvehető elemek tiltása (F3)", 70, 250, szinek[FEHER], szinek[SZURKE], bt->reg20, ablakok[MENU].megjelenito, true);
-    
 }
 
 void felszabadit(Ablak* ablakok, SDL_Color* szinek) {
@@ -145,4 +132,49 @@ SDL_Color* szinek_letrehozasa() {
     szinek[SZURKE] = (SDL_Color) {30, 30, 30};
 
     return szinek;
+}
+
+void menu_kivalasztas(Kivalasztas* kiv, Billentyuk* bill, Ablak* menu, Betutipusok* bt, SDL_Color* szinek) {   
+    SDL_RenderClear(menu->megjelenito);
+    fix_menut_kirajzol(menu, bt, szinek);
+    
+    /* Jatekmodok kivalasztasa */
+    if (bill->menu_F1) kiv->kiv_jt_mod = 0;
+    else if (bill->menu_F2) kiv->kiv_jt_mod = 1;
+    else if (bill->menu_F3) kiv->kiv_jt_mod = 2;
+
+    // Normal
+    if (kiv->kiv_jt_mod == 0) {        
+        szoveget_kiir("Normál mód (F1)", 70, 130, szinek[FEHER], szinek[SZURKE], bt->bold20, menu->megjelenito, true);
+        szoveget_kiir("Fal nélküli (F2)", 70, 190, szinek[FEHER], szinek[SZURKE], bt->reg20, menu->megjelenito, true);
+        szoveget_kiir("Felvehető elemek tiltása (F3)", 70, 250, szinek[FEHER], szinek[SZURKE], bt->reg20, menu->megjelenito, true);
+    }    
+    // Fal nelkuli
+    else if (kiv->kiv_jt_mod == 1) {        
+        szoveget_kiir("Normál mód (F1)", 70, 130, szinek[FEHER], szinek[SZURKE], bt->reg20, menu->megjelenito, true);
+        szoveget_kiir("Fal nélküli (F2)", 70, 190, szinek[FEHER], szinek[SZURKE], bt->bold20, menu->megjelenito, true);
+        szoveget_kiir("Felvehető elemek tiltása (F3)", 70, 250, szinek[FEHER], szinek[SZURKE], bt->reg20, menu->megjelenito, true);
+    }    
+    // Felveheto elemek tiltasa
+    else if (kiv->kiv_jt_mod) {        
+        szoveget_kiir("Normál mód (F1)", 70, 130, szinek[FEHER], szinek[SZURKE], bt->reg20, menu->megjelenito, true);
+        szoveget_kiir("Fal nélküli (F2)", 70, 190, szinek[FEHER], szinek[SZURKE], bt->reg20, menu->megjelenito, true);
+        szoveget_kiir("Felvehető elemek tiltása (F3)", 70, 250, szinek[FEHER], szinek[SZURKE], bt->bold20, menu->megjelenito, true);
+    }
+
+    /* Jatekosok kivalasztasa */
+    // Piros
+    if (bill->menu_Q && !bill->menu_tilt_Q) kiv->aktiv_jatekosok[0] = !kiv->aktiv_jatekosok[0];
+    if (kiv->aktiv_jatekosok[0] == true) szoveget_kiir("Kiválasztva", 670, 115, szinek[PIROS], szinek[SZURKE], bt->bold20, menu->megjelenito, true);
+    // Rozsa
+    if (bill->menu_Per && !bill->menu_tilt_Per) kiv->aktiv_jatekosok[1] = !kiv->aktiv_jatekosok[1];
+    if (kiv->aktiv_jatekosok[1] == true) szoveget_kiir("Kiválasztva", 670, 165, szinek[ROZSA], szinek[SZURKE], bt->bold20, menu->megjelenito, true);
+    // Zold
+    if (bill->menu_M && !bill->menu_tilt_M) kiv->aktiv_jatekosok[2] = !kiv->aktiv_jatekosok[2];
+    if (kiv->aktiv_jatekosok[2] == true) szoveget_kiir("Kiválasztva", 670, 215, szinek[ZOLD], szinek[SZURKE], bt->bold20, menu->megjelenito, true);
+    // Kek
+    if (bill->menu_Bal && !bill->menu_tilt_Bal) kiv->aktiv_jatekosok[3] = !kiv->aktiv_jatekosok[3];
+    if (kiv->aktiv_jatekosok[3] == true) szoveget_kiir("Kiválasztva", 670, 265, szinek[KEK], szinek[SZURKE], bt->bold20, menu->megjelenito, true);
+    
+    SDL_RenderPresent(menu->megjelenito);
 }

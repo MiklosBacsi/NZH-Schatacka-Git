@@ -6,6 +6,7 @@
 #include "ablak_kezelo.h"
 #include "jatek_vezerlo.h"
 #include <stdbool.h>
+#include <math.h>
 #include "debugmalloc.h"
 
 void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, bool* kiv_jat) {
@@ -15,7 +16,9 @@ void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, b
     /* Ablak megnyitasa */
     if (bill->menu_Szokoz && !jatek_ablak->nyitva && aktiv_jatekosok_szama(kiv_jat) >= 2) {
         ablakot_letrehoz(jatek_ablak);
-        //SDL_RenderPresent(jatek_ablak->megjelenito);
+        
+        /* JATEKOSOK LETREHOZASA */
+        
     }
     /* Ablak bezarasa */
     else if (bill->jatek_Esc && vez->megallitva_felhasznalo && jatek_ablak->nyitva) {
@@ -40,9 +43,10 @@ void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, b
 }
 
 void jatek_hatteret_kirajzol(Ablak* jatek_ablak) {
-    boxRGBA(jatek_ablak->megjelenito, 0, 0, 1400, 900, 30, 30, 30, 255);
+    boxRGBA(jatek_ablak->megjelenito, 0, 0, 1600, 900, 30, 30, 30, 255);
+    boxRGBA(jatek_ablak->megjelenito, 1401, 0, 1402, 900, 255, 255, 255, 255);
 
-    logot_rajzol(jatek_ablak, 1425, 10);   
+    logot_rajzol(jatek_ablak, 1425, 10);
 
 
 

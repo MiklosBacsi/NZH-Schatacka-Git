@@ -36,6 +36,8 @@ void logot_rajzol(Ablak* ablak, int x, int y) {
     SDL_Rect cel = { x, y, 175, 50 };
     /* Logo atmasolasa az ablakra */
     SDL_RenderCopy(ablak->megjelenito, ablak->logo, NULL, &cel);
+    
+    SDL_DestroyTexture(ablak->logo);
 }
 
 void szoveget_kiir(char* szoveg, int x, int y, SDL_Color betu_szin, SDL_Color hatter_szin, TTF_Font* betu_tip, SDL_Renderer* megjelenito, bool hatterrel) {

@@ -16,7 +16,6 @@ typedef struct Kivalasztas {
 
 void inicializalas(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek);
 void felszabadit(Ablak* ablakok, SDL_Color* szinek);
-void texturak_torlese(Ablak* ablakok);
 TTF_Font* betutipus_betoltese(char* nev, int meret);
 void betutipusok_bezarasa(Betutipusok* bt);
 SDL_Color* szinek_letrehozasa();
@@ -25,7 +24,7 @@ void menu_kivalasztas(Kivalasztas* kiv, Billentyuk* bill, Ablak* menu, Betutipus
 int main(void) {
     Ablak* ablakok = NULL;
 
-    ablakok = (Ablak*) malloc(4 * sizeof(Ablak)); if (!ablakok) printf("Nem sikerult az ablakoknak memoriat foglalni :c");
+    ablakok = (Ablak*) malloc(4 * sizeof(Ablak)); if (!ablakok) printf("Nem sikerult az ablakoknak memoriat foglalni :c\n");
     
     SDL_Window *menu_ablak=NULL, *jatek_ablak=NULL, *sugo_ablak=NULL, *dics_lista_ablak=NULL;
     SDL_Renderer *menu_megj=NULL, *jatek_megj=NULL, *sugo_megj=NULL, *dics_lista_megj=NULL;
@@ -61,6 +60,8 @@ int main(void) {
         menu_kivalasztas(&kiv, &bill, ablakok+MENU, &bt, szinek);
 
         jatek_ablak_kezelese(&bill, ablakok+JATEK, &vez, kiv.aktiv_jatekosok);
+        if (ablakok[JATEK].nyitva) jatek_hatteret_kirajzol(ablakok+JATEK);
+        
 
         
         billentyuk_tiltasa(&bill);
@@ -70,7 +71,7 @@ int main(void) {
     
     
     /* KILEPES */
-    texturak_torlese(ablakok);
+    //texturak_torlese(ablakok);
     betutipusok_bezarasa(&bt);
     SDL_Quit();
     felszabadit(ablakok, szinek);
@@ -100,12 +101,6 @@ void inicializalas(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek) {
 void felszabadit(Ablak* ablakok, SDL_Color* szinek) {
     free(ablakok);
     free(szinek);
-}
-
-void texturak_torlese(Ablak* ablakok) {
-    for (int i=0; i<4; ++i) {
-        SDL_DestroyTexture(ablakok[i].logo);
-    }
 }
 
 void betutipusok_bezarasa(Betutipusok* bt) {

@@ -14,9 +14,9 @@ typedef struct Vezerles
 } Vezerles;
 
 
-void jatek_ablak_kezelese(Billentyuk* bill, Ablak* ablak, Vezerles* vez);
+void jatek_ablak_kezelese(Billentyuk* bill, Ablak* ablak, Vezerles* vez, bool* kiv_jat);
 
-
+int aktiv_jatekosok_szama(bool* kiv_jatekosok);
 
 
 

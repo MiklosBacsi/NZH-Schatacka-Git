@@ -49,7 +49,9 @@ int main(void) {
 
    while (!bill.menu_Esc)
     {
+        /* Lekerdezesek a program mukodesehez */
         Uint32 ablakIDk[4] = { SDL_GetWindowID(ablakok[MENU].ablak), SDL_GetWindowID(ablakok[JATEK].ablak), SDL_GetWindowID(ablakok[SUGO].ablak), SDL_GetWindowID(ablakok[DICS_LISTA].ablak) };
+        
         /* Billentyuk erzekelese */
         SDL_Event event;
         SDL_WaitEvent(&event);
@@ -58,7 +60,7 @@ int main(void) {
         sugo_es_dics_lista_ablakok_kezelese(&bill, ablakok, &bt, szinek);
         menu_kivalasztas(&kiv, &bill, ablakok+MENU, &bt, szinek);
 
-        jatek_ablak_kezelese(&bill, ablakok+JATEK, &vez);
+        jatek_ablak_kezelese(&bill, ablakok+JATEK, &vez, kiv.aktiv_jatekosok);
 
         
         billentyuk_tiltasa(&bill);

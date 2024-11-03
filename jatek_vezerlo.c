@@ -6,9 +6,12 @@
 #include <stdbool.h>
 #include "debugmalloc.h"
 
-void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez) {
+void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, bool* kiv_jat) {
+    
+    
+    
     /* Ablak megnyitasa */
-    if (bill->menu_Szokoz && !jatek_ablak->nyitva) {
+    if (bill->menu_Szokoz && !jatek_ablak->nyitva && aktiv_jatekosok_szama(kiv_jat) >= 2) {
         ablakot_letrehoz(jatek_ablak);
         SDL_RenderPresent(jatek_ablak->megjelenito);
     }
@@ -32,4 +35,12 @@ void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez) {
     else if (bill->jatek_Szokoz && vez->megallitva_felhasznalo && jatek_ablak->nyitva) {
         vez->megallitva_felhasznalo = false;
     }
+}
+
+int aktiv_jatekosok_szama(bool* kiv_jatekosok) {
+    int db = 0;
+    for (int i=0; i<4; ++i) {
+        if (kiv_jatekosok[i]) ++db;
+    }
+    return db;
 }

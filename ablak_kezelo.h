@@ -1,5 +1,5 @@
 #ifndef ABLAK_KEZELO_H
-#define ALBLAK_KEZELO_H
+#define ABLAK_KEZELO_H
 
 #include "SDL2/SDL.h"
 #include "SDL2/SDL2_gfxPrimitives.h"

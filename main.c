@@ -38,10 +38,12 @@ int main(void) {
 
     Betutipusok bt = {NULL, NULL, NULL, NULL};
     SDL_Color* szinek = szinek_letrehozasa();
-    Billentyuk bill = (Billentyuk) {false, false,false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
+    Billentyuk bill = (Billentyuk) {false, false, false,false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
     Kivalasztas kiv = (Kivalasztas) { 0, {false, false, false, false} };
 
     inicializalas(ablakok, &bt, szinek);
+    Vezerles vez;
+    vez.megallitva_jatek = true; // uj_menet()-ben benne lesz (jatek altal megallitva -> nem renderel)
 
 
 
@@ -56,10 +58,11 @@ int main(void) {
         sugo_es_dics_lista_ablakok_kezelese(&bill, ablakok, &bt, szinek);
         menu_kivalasztas(&kiv, &bill, ablakok+MENU, &bt, szinek);
 
-
+        jatek_ablak_kezelese(&bill, ablakok+JATEK, &vez);
 
         
         billentyuk_tiltasa(&bill);
+        
     }
     
     

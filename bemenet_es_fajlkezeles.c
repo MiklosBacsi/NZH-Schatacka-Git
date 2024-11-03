@@ -1,6 +1,5 @@
 #include "bemenet_es_fajlkezeles.h"
 #include "SDL2/SDL.h"
-#include "ablak_kezelo.h"
 #include "debugmalloc.h"
 #include <stdbool.h>
 
@@ -16,9 +15,13 @@ void billentyuk_erzekelese(SDL_Event* event, Billentyuk* bill, Uint32* ablakIDk)
                     case SDLK_ESCAPE:
                         // Mert nem mindig erzekeli jol az ablakot (ablak pointer mar nem letezik), es funkcionalitasban nem valtoztat
                         bill->menu_Esc = false;
-                        bill->jatek_Esc = false;
                         bill->sugo_Esc = false;
                         bill->dics_Esc = false;
+                        // JATEK + TILTAS
+                        if (event->key.windowID == ablakIDk[1]) {
+                            bill->jatek_Esc = false;
+                            bill->tilt_Esc = false;
+                        }
                         break;                    
                     // F1 - MENU
                     case SDLK_F1: if (event->key.windowID == ablakIDk[0]) bill->menu_F1 = false; break;
@@ -323,4 +326,6 @@ void billentyuk_tiltasa(Billentyuk* bill) {
     if (bill->jatek_Csillag) bill->tilt_Csillag = true;
     if (bill->jatek_K) bill->tilt_K = true;
     if (bill->jatek_Fel) bill->tilt_Fel = true;
+    /* Jatek - Esc */
+    if (bill->jatek_Esc) bill->tilt_Esc = true;
 }

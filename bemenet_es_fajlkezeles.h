@@ -14,7 +14,7 @@ typedef struct Billentyuk {
     bool jatek_Per; bool jatek_Csillag; bool jatek_Kotojel;
     bool menu_Szokoz; bool jatek_Szokoz;
     // A billentyuk egyszeri megnyomasahoz
-    bool tilt_2; bool tilt_Csillag; bool tilt_K; bool tilt_Fel;
+    bool tilt_2; bool tilt_Csillag; bool tilt_K; bool tilt_Fel; bool tilt_Esc;
     bool menu_Q; bool menu_Per; bool menu_M; bool menu_Bal;
     bool menu_tilt_Q; bool menu_tilt_Per; bool menu_tilt_M; bool menu_tilt_Bal;
 } Billentyuk;

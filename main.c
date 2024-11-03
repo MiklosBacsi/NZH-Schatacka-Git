@@ -14,15 +14,15 @@ typedef struct Kivalasztas {
     bool aktiv_jatekosok[4];
 } Kivalasztas;
 
-void inicializalas(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek);
-void felszabadit(Ablak* ablakok, SDL_Color* szinek);
+void inicializalas(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek, Vezerles* vez);
+void felszabadit(Ablak* ablakok, SDL_Color* szinek, Jatekos** cim_jatekosok);
 TTF_Font* betutipus_betoltese(char* nev, int meret);
 void betutipusok_bezarasa(Betutipusok* bt);
 SDL_Color* szinek_letrehozasa();
 void menu_kivalasztas(Kivalasztas* kiv, Billentyuk* bill, Ablak* menu, Betutipusok* bt, SDL_Color* szinek);
 
 int main(void) {
-    Ablak* ablakok = NULL;
+    Ablak* ablakok = NULL; Jatekos* jatekosok = NULL;
 
     ablakok = (Ablak*) malloc(4 * sizeof(Ablak)); if (!ablakok) printf("Nem sikerult az ablakoknak memoriat foglalni :c\n");
     
@@ -39,10 +39,9 @@ int main(void) {
     SDL_Color* szinek = szinek_letrehozasa();
     Billentyuk bill = (Billentyuk) {false, false, false,false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
     Kivalasztas kiv = (Kivalasztas) { 0, {false, false, false, false} };
-
-    inicializalas(ablakok, &bt, szinek);
     Vezerles vez;
-    vez.megallitva_jatek = true; // uj_menet()-ben benne lesz (jatek altal megallitva -> nem renderel)
+
+    inicializalas(ablakok, &bt, szinek, &vez);    
 
 
 
@@ -50,22 +49,27 @@ int main(void) {
     {
         /* Lekerdezesek a program mukodesehez */
         Uint32 ablakIDk[4] = { SDL_GetWindowID(ablakok[MENU].ablak), SDL_GetWindowID(ablakok[JATEK].ablak), SDL_GetWindowID(ablakok[SUGO].ablak), SDL_GetWindowID(ablakok[DICS_LISTA].ablak) };
-        
+
         /* Billentyuk erzekelese */
         SDL_Event event;
         SDL_WaitEvent(&event);
         billentyuk_erzekelese(&event, &bill, ablakIDk);
 
+        /* Sugo es Dicsoseglista ablakok */
         sugo_es_dics_lista_ablakok_kezelese(&bill, ablakok, &bt, szinek);
         menu_kivalasztas(&kiv, &bill, ablakok+MENU, &bt, szinek);
 
-        jatek_ablak_kezelese(&bill, ablakok+JATEK, &vez, kiv.aktiv_jatekosok);
+        /*** JATEK ***/
+        jatek_ablak_kezelese(&bill, ablakok+JATEK, &vez, &jatekosok, kiv.kiv_jt_mod, kiv.aktiv_jatekosok);
         if (ablakok[JATEK].nyitva) jatek_hatteret_kirajzol(ablakok+JATEK);
         
+       //printf("jatekosok: %p\n", (void*) jatekosok);
 
-        
-        billentyuk_tiltasa(&bill);
-        
+        /* Jatek kirajzolasa */
+        if (ablakok[JATEK].nyitva)
+            jatek_kirajzolasa(ablakok+JATEK, &vez, jatekosok, szinek, &bt);
+        /* Billentyuk egyszeri lenyomasahoz */
+        billentyuk_tiltasa(&bill);        
     }
     
     
@@ -73,13 +77,17 @@ int main(void) {
     /* KILEPES */
     //texturak_torlese(ablakok);
     betutipusok_bezarasa(&bt);
+    if (!ablakok[JATEK].megjelenito)
+        SDL_DestroyRenderer(ablakok[JATEK].megjelenito);
+    if (!ablakok[JATEK].ablak)
+        SDL_DestroyWindow(ablakok[JATEK].ablak);
     SDL_Quit();
-    felszabadit(ablakok, szinek);
+    felszabadit(ablakok, szinek, &jatekosok);
 
     return 0;
 }
 
-void inicializalas(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek) {
+void inicializalas(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek, Vezerles* vez) {
     /* SDL inicializalasa */
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
         SDL_Log("Nem indithato az SDL: %s", SDL_GetError());
@@ -96,11 +104,22 @@ void inicializalas(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek) {
     bt->bold20 = betutipus_betoltese("OpenSans-Bold.ttf", 20);
 
     fix_menut_kirajzol(ablakok+MENU, bt, szinek);
+
+    /* Jatek: Vezerles */
+    vez->palya_meret = (Pixel) {1400, 900}; vez->frissites_ido = 20;
+    vez->elmozd_jat = 1.0; vez->elmozd_lov = 1.5; vez->fordulas = 1.0;
+    vez->palya_vonal = NULL; vez->lovedekek = NULL;
+    
 }
 
-void felszabadit(Ablak* ablakok, SDL_Color* szinek) {
+void felszabadit(Ablak* ablakok, SDL_Color* szinek, Jatekos** cim_jatekosok) {    
     free(ablakok);
     free(szinek);
+    free(*cim_jatekosok);
+    /*
+    if (!(*cim_jatekosok))
+        free(*cim_jatekosok);
+    */
 }
 
 void betutipusok_bezarasa(Betutipusok* bt) {
@@ -123,13 +142,13 @@ SDL_Color* szinek_letrehozasa() {
     SDL_Color* szinek = (SDL_Color*) malloc(7 * sizeof(SDL_Color));
     if (!szinek) printf("Nem sikerult a szineknek memoriat foglalni :c\n");
 
-    szinek[FEHER] = (SDL_Color) {255, 255, 255};
-    szinek[FEKETE] = (SDL_Color) {0, 0, 0};
     szinek[PIROS] = (SDL_Color) {255, 0, 0};
     szinek[ROZSA] = (SDL_Color) {255, 0, 255};
     szinek[ZOLD] = (SDL_Color) {0, 255, 0};
     szinek[KEK] = (SDL_Color) {0, 0, 255};
     szinek[SZURKE] = (SDL_Color) {30, 30, 30};
+    szinek[FEHER] = (SDL_Color) {255, 255, 255};
+    szinek[FEKETE] = (SDL_Color) {0, 0, 0};
 
     return szinek;
 }

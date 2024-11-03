@@ -29,7 +29,7 @@ typedef struct Betutipusok{
     TTF_Font* bold20;
 } Betutipusok;
 
-typedef enum Szin {FEHER = 0, FEKETE, PIROS, ROZSA, ZOLD, KEK, SZURKE} Szin;
+typedef enum Szin {PIROS = 0, ROZSA, ZOLD, KEK, SZURKE, FEHER, FEKETE} Szin;
 
 
 void ablakot_letrehoz (Ablak* ablak);

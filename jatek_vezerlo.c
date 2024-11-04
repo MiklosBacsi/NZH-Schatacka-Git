@@ -27,7 +27,7 @@ static void szinek_billK_hozzarend_jatHoz(Jatekos* jatekosok, bool* kiv_jat, Bil
     }
     /* Billentyuk hozzarendelese */
     for (int idx_aktiv_jatekos = 0; idx_aktiv_jatekos < vez->jatekosszam; ++idx_aktiv_jatekos) {
-        switch (idx_aktiv_jatekos) {
+        switch (jatekosok[idx_aktiv_jatekos].szin) {
             case PIROS:
                 jatekosok[idx_aktiv_jatekos].bal = &bill->jatek_Q;
                 jatekosok[idx_aktiv_jatekos].lo = &bill->jatek_2;
@@ -161,6 +161,7 @@ void jatek_hatteret_kirajzol(Ablak* jatek_ablak) {
 
 void uj_menet(Vezerles* vez, Jatekos* jatekosok) {
     vez->megallitva_jatek = true;
+    vez->menet_vege = false;
     vez->menetido = 0.0;
 
     /* Megjelenites */
@@ -171,12 +172,16 @@ void uj_menet(Vezerles* vez, Jatekos* jatekosok) {
     // Felveheto elemek torlese (din. tomb)
     // Animaciok torlese (din. tomb)
 
+    
+
     // Jatekosok: random fej, irany
     randFej(jatekosok, vez);
+
     // Jatekosok: eletben_van = true
     for (int i=0; i < vez->jatekosszam; ++i) {
         jatekosok[i].eletben_van = true;
     }
+    // Falak letrehozasa!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
 
 void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, SDL_Color* szinek, Betutipusok* bt) {
@@ -194,18 +199,20 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, SD
     
     /* Jatekosok */
     for (int i=0; i < vez->jatekosszam; ++i) {
+        if (!jatekosok[i].eletben_van) continue;
+
         switch (jatekosok[i].szin) {
         case PIROS:
-            circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 3, 255, 0, 0, 255);
+            circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 2, 255, 0, 0, 255);
             break;
         case ROZSA:
-            circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 3, 255, 0, 255, 255);
+            circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 2, 255, 0, 255, 255);
             break;
         case ZOLD:
-            circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 4, 0, 255, 0, 255);
+            circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 2, 0, 255, 0, 255);
             break;
         case KEK:
-            circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 4, 0, 0, 255, 255);
+            circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 2, 0, 0, 255, 255);
             break;
         default:
             printf("Hiba a jatekosok fejenek kirajzolasaval! Szin: %d\n", jatekosok[i].szin);
@@ -237,5 +244,33 @@ void jatekosok_mozditasa(Jatekos* jatekosok, Vezerles* vez) {
         /* Jatekosok elmozditasa */
         jatekosok[i].fej.x += cos(jatekosok[i].irany) * vez->elmozd_jat;
         jatekosok[i].fej.y += sin(jatekosok[i].irany) * vez->elmozd_jat;
+    }
+}
+
+void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {    
+    int halottak = 0;
+    for (int i=0; i < vez->jatekosszam; ++i) {
+        if (!jatekosok[i].eletben_van) {
+            ++halottak;
+            continue;
+        }
+        /* Jatekos kimegy a palyarol */
+        if (jatekosok[i].fej.x < 0 || jatekosok[i].fej.x > 1400 || jatekosok[i].fej.y < 0 || jatekosok[i].fej.y > 900) {
+            jatekosok[i].eletben_van = false;
+            // halalfej animaciot rajzol !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        }
+
+        /* Jatekos utkozik a fallal */ //jatekmod!
+
+        /* Jatekos utkozik egy vonallal */ //pajzs
+
+        /* Jatekos utkozik lovedekkel */ //pajzs
+
+
+    }
+    if (halottak >= vez->jatekosszam-1) {
+        vez->menet_vege = true;
+        vez->megallitva_jatek = true;
+        // Szóközzel kell jatekot inditani szoveg!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 }

@@ -67,11 +67,15 @@ int main(void) {
         /*** JATEK ***/
         jatek_ablak_kezelese(&bill, ablakok+JATEK, &vez, &jatekosok, kiv.kiv_jt_mod, kiv.aktiv_jatekosok);
         if (ablakok[JATEK].nyitva && bill.van_bemenet) {
-            jatek_hatteret_kirajzol(ablakok+JATEK);
-
             /* Ha nincs megallitva */
             if (!vez.megallitva_felhasznalo && !vez.megallitva_jatek) {
                 jatekosok_mozditasa(jatekosok, &vez);
+
+                //vonal hosszabbitasa
+
+                //lovedekek_mozditasa();
+
+                halal_vizsgalata(jatekosok, &vez);
                 
 
 
@@ -79,7 +83,9 @@ int main(void) {
             }
 
 
-            
+            /* Menet vege -> Uj menet*/
+            if (vez.menet_vege && bill.jatek_Szokoz)
+                uj_menet(&vez, jatekosok);
             
             
             /* Jatek kirajzolasa */
@@ -126,9 +132,9 @@ void inicializalas(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek, Vezerles*
     fix_menut_kirajzol(ablakok+MENU, bt, szinek);
 
     /* Jatek: Vezerles */
-    vez->palya_meret = (Pixel) {1400, 900};
+    vez->palya_meret = (Pixel) {1400, 900}; vez->menet_vege = false;
     vez->elmozd_jat = 1.1; vez->elmozd_lov = 1.5; vez->fordulas = 0.04;
-    vez->palya_vonal = NULL; vez->lovedekek = NULL;
+    vez->fal_vonal = NULL; vez->lovedekek = NULL;
     
 }
 

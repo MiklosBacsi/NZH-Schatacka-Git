@@ -57,10 +57,10 @@ typedef struct Jatekos {
 typedef struct Vezerles
 {
     bool megallitva_jatek; bool megallitva_felhasznalo;
-    double menetido;
+    double menetido; bool menet_vege;
     int jatekosszam; int max_pontszam; Jatekmod jt_mod;
     double elmozd_jat; double elmozd_lov; double fordulas;
-    Pixel* palya_vonal;
+    Pixel* fal_vonal;
     Pixel palya_meret;
     Lovedek* lovedekek;
     //FelvehetoElemek felv_e_K;
@@ -82,5 +82,7 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, SD
 Uint32 idozit(Uint32 ms, void *param);
 
 void jatekosok_mozditasa(Jatekos* jatekosok, Vezerles* vez);
+
+void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez);
 
 #endif

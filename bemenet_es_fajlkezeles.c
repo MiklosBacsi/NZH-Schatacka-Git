@@ -2,6 +2,7 @@
 #include "SDL2/SDL.h"
 #include "debugmalloc.h"
 #include <stdbool.h>
+//#include "SDL2/SDL_keyboard.h"
 
 #define MENU_ID 0
 #define JATEK_ID 1
@@ -29,7 +30,7 @@ void billentyuk_erzekelese(SDL_Event* event, Billentyuk* bill, Uint32* ablakIDk)
                             bill->jatek_Esc = false;
                             bill->tilt_Esc = false;
                         }
-                        break;                    
+                        break;             
                     // F1 - MENU
                     case SDLK_F1: if (event->key.windowID == ablakIDk[MENU_ID]) bill->menu_F1 = false; break;
                     // F2 - MENU

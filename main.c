@@ -37,16 +37,21 @@ int main(void) {
 
     Betutipusok bt = {NULL, NULL, NULL, NULL};
     SDL_Color* szinek = szinek_letrehozasa();
-    Billentyuk bill = (Billentyuk) {false, false, false,false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
+    Billentyuk bill = (Billentyuk) {false, false, false, false,false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
     Kivalasztas kiv = (Kivalasztas) { 0, {false, false, false, false} };
     Vezerles vez;
 
-    inicializalas(ablakok, &bt, szinek, &vez);    
+    inicializalas(ablakok, &bt, szinek, &vez);
+    SDL_TimerID idozito = SDL_AddTimer(20, idozit, NULL);  
 
 
-
+    
+    /****** CIKLUS ELEJE ******/
    while (!bill.menu_Esc)
     {
+        // Megfelelo bemenethez
+        bill.van_bemenet = true;
+
         /* Lekerdezesek a program mukodesehez */
         Uint32 ablakIDk[4] = { SDL_GetWindowID(ablakok[MENU].ablak), SDL_GetWindowID(ablakok[JATEK].ablak), SDL_GetWindowID(ablakok[SUGO].ablak), SDL_GetWindowID(ablakok[DICS_LISTA].ablak) };
 
@@ -61,21 +66,29 @@ int main(void) {
 
         /*** JATEK ***/
         jatek_ablak_kezelese(&bill, ablakok+JATEK, &vez, &jatekosok, kiv.kiv_jt_mod, kiv.aktiv_jatekosok);
-        if (ablakok[JATEK].nyitva) jatek_hatteret_kirajzol(ablakok+JATEK);
-        
-       //printf("jatekosok: %p\n", (void*) jatekosok);
+        if (ablakok[JATEK].nyitva && bill.van_bemenet) {
+            jatek_hatteret_kirajzol(ablakok+JATEK);
 
-        /* Jatek kirajzolasa */
-        if (ablakok[JATEK].nyitva)
+            jatekosok[0].fej.x += 0.5;
+
+
+            
+            
+            
+            /* Jatek kirajzolasa */
             jatek_kirajzolasa(ablakok+JATEK, &vez, jatekosok, szinek, &bt);
+        }
+            
         /* Billentyuk egyszeri lenyomasahoz */
         billentyuk_tiltasa(&bill);        
     }
+    /****** CIKLUS VEGE ******/
     
     
     
     /* KILEPES */
     //texturak_torlese(ablakok);
+    SDL_RemoveTimer(idozito);
     betutipusok_bezarasa(&bt);
     if (!ablakok[JATEK].megjelenito)
         SDL_DestroyRenderer(ablakok[JATEK].megjelenito);
@@ -106,7 +119,7 @@ void inicializalas(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek, Vezerles*
     fix_menut_kirajzol(ablakok+MENU, bt, szinek);
 
     /* Jatek: Vezerles */
-    vez->palya_meret = (Pixel) {1400, 900}; vez->frissites_ido = 20;
+    vez->palya_meret = (Pixel) {1400, 900};
     vez->elmozd_jat = 1.0; vez->elmozd_lov = 1.5; vez->fordulas = 1.0;
     vez->palya_vonal = NULL; vez->lovedekek = NULL;
     

@@ -17,6 +17,8 @@ typedef struct Billentyuk {
     bool tilt_2; bool tilt_Csillag; bool tilt_K; bool tilt_Fel; bool tilt_Esc;
     bool menu_Q; bool menu_Per; bool menu_M; bool menu_Bal;
     bool menu_tilt_Q; bool menu_tilt_Per; bool menu_tilt_M; bool menu_tilt_Bal;
+    // Megfelelo kepfrissiteshez
+    bool van_bemenet;
 } Billentyuk;
 
 void billentyuk_erzekelese(SDL_Event* event, Billentyuk* bill, Uint32* ablakIDk);

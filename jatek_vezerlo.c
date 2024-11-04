@@ -105,15 +105,15 @@ static void randFej(Jatekos* jatekosok, Vezerles* vez) {
 static void jatekosokat_fogalal(Vezerles* vez, Jatekos** cim_jat_abl) {
     Jatekos* mutato = (Jatekos*) malloc(vez->jatekosszam *  sizeof(Jatekos));
     if (!mutato) printf("Nem sikerult jatekosokat foglalni");
-    printf("mutato: %p\n", (void*)mutato);
+
     *cim_jat_abl = mutato;
 }
 
 void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, Jatekos** cim_jatekosok, int jt_mod, bool* kiv_jat) {
     /* Ablak megnyitasa */
     if (bill->menu_Szokoz && !jatek_ablak->nyitva && aktiv_jatekosok_szama(kiv_jat) >= 2) {
-        ablakot_letrehoz(jatek_ablak);   
-        vez->megallitva_felhasznalo = false;     
+        ablakot_letrehoz(jatek_ablak);
+        vez->megallitva_felhasznalo = false;
         
         // Vezerles - adatok
         vez->jt_mod = jt_mod;
@@ -127,7 +127,7 @@ void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, J
         uj_menet(vez, *cim_jatekosok);
     }
     /* Ablak bezarasa */
-    else if (bill->jatek_Esc && vez->megallitva_felhasznalo && jatek_ablak->nyitva) {
+    else if (bill->jatek_Esc && !bill->tilt_Esc && vez->megallitva_felhasznalo && jatek_ablak->nyitva) {
         SDL_DestroyRenderer(jatek_ablak->megjelenito);
         SDL_DestroyWindow(jatek_ablak->ablak);
         jatek_ablak->ablak = NULL;
@@ -156,10 +156,6 @@ void jatek_hatteret_kirajzol(Ablak* jatek_ablak) {
     boxRGBA(jatek_ablak->megjelenito, 1401, 0, 1402, 900, 255, 255, 255, 255);
 
     logot_rajzol(jatek_ablak, 1425, 10);
-
-    
-    /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
-    //SDL_RenderPresent(jatek_ablak->megjelenito);
 }
 
 void uj_menet(Vezerles* vez, Jatekos* jatekosok) {
@@ -167,7 +163,6 @@ void uj_menet(Vezerles* vez, Jatekos* jatekosok) {
     vez->menetido = 0.0;
 
     /* Megjelenites */
-    //jatek_hatteret_kirajzol(jatek_ablak);     // <-- SDL_RenderPresent()-et torold ki!!!
     // Kiir: A menet inditasahoz nyomja meg a Szokozt
     
     // Jatekosok vonalanak torlese (din. tomb)
@@ -198,22 +193,17 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, SD
     
     /* Jatekosok */
     for (int i=0; i < vez->jatekosszam; ++i) {
-        //printf("Szin: %d, X: %f, Y: %f\n", jatekosok[i].szin, jatekosok[i].fej.x, jatekosok[i].fej.y);
         switch (jatekosok[i].szin) {
-        case 0: // Piros
-            printf("Piros\n");
+        case PIROS:
             circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 5, 255, 0, 0, 255);
             break;
-        case 1: // Rozsa
-            printf("Rozsa\n");
+        case ROZSA:
             circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 5, 255, 0, 255, 255);
             break;
-        case 2: // Zold
-            printf("Zold\n");
+        case ZOLD:
             circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 5, 0, 255, 0, 255);
             break;
-        case 3: // Kek
-            printf("Kek\n");
+        case KEK:
             circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 5, 0, 0, 255, 255);
             break;
         default:
@@ -222,4 +212,11 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, SD
         }
     }
     SDL_RenderPresent(jatek_ablak->megjelenito);
+}
+
+Uint32 idozit(Uint32 ms, void *param) {
+    SDL_Event ev;
+    ev.type = SDL_USEREVENT;
+    SDL_PushEvent(&ev);
+    return ms;   /* ujabb varakozas */
 }

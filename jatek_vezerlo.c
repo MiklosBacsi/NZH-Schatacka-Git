@@ -32,7 +32,7 @@ static void szinek_billK_hozzarend_jatHoz(Jatekos* jatekosok, bool* kiv_jat, Bil
                 jatekosok[idx_aktiv_jatekos].bal = &bill->jatek_Q;
                 jatekosok[idx_aktiv_jatekos].lo = &bill->jatek_2;
                 jatekosok[idx_aktiv_jatekos].tilt_lo = &bill->tilt_2;
-                jatekosok[idx_aktiv_jatekos].jobb = &bill->jatek_Jobb;                
+                jatekosok[idx_aktiv_jatekos].jobb = &bill->jatek_W;                
                 break;
             case ROZSA:
                 jatekosok[idx_aktiv_jatekos].bal = &bill->jatek_Per;
@@ -146,8 +146,9 @@ void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, J
         vez->megallitva_felhasznalo = true;
     }
     /* Folytatas - Felhasznalo */
-    else if (bill->jatek_Szokoz && vez->megallitva_felhasznalo && jatek_ablak->nyitva) {
+    else if (bill->jatek_Szokoz && (vez->megallitva_felhasznalo || vez->megallitva_jatek) && jatek_ablak->nyitva) {
         vez->megallitva_felhasznalo = false;
+        vez->megallitva_jatek = false;
     }
 }
 
@@ -195,16 +196,16 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, SD
     for (int i=0; i < vez->jatekosszam; ++i) {
         switch (jatekosok[i].szin) {
         case PIROS:
-            circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 5, 255, 0, 0, 255);
+            circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 3, 255, 0, 0, 255);
             break;
         case ROZSA:
-            circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 5, 255, 0, 255, 255);
+            circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 3, 255, 0, 255, 255);
             break;
         case ZOLD:
-            circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 5, 0, 255, 0, 255);
+            circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 4, 0, 255, 0, 255);
             break;
         case KEK:
-            circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 5, 0, 0, 255, 255);
+            circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 4, 0, 0, 255, 255);
             break;
         default:
             printf("Hiba a jatekosok fejenek kirajzolasaval! Szin: %d\n", jatekosok[i].szin);
@@ -219,4 +220,22 @@ Uint32 idozit(Uint32 ms, void *param) {
     ev.type = SDL_USEREVENT;
     SDL_PushEvent(&ev);
     return ms;   /* ujabb varakozas */
+}
+
+void jatekosok_mozditasa(Jatekos* jatekosok, Vezerles* vez) {
+    for (int i=0; i < vez->jatekosszam; ++i) {
+        if (!jatekosok[i].eletben_van) continue;
+
+        /* Fok allitasa */
+        // Balra
+        if (*jatekosok[i].bal && !(*jatekosok->jobb))
+            jatekosok[i].irany -= vez->fordulas;
+        // Jobbra
+        if (*jatekosok[i].jobb && !(*jatekosok->bal))
+            jatekosok[i].irany += vez->fordulas;
+        
+        /* Jatekosok elmozditasa */
+        jatekosok[i].fej.x += cos(jatekosok[i].irany) * vez->elmozd_jat;
+        jatekosok[i].fej.y += sin(jatekosok[i].irany) * vez->elmozd_jat;
+    }
 }

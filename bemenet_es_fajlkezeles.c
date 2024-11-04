@@ -11,6 +11,10 @@
 void billentyuk_erzekelese(SDL_Event* event, Billentyuk* bill, Uint32* ablakIDk) {
     /* AlbakIDk: MENU=0, JATEK=1, SUGO=2, DICS_LISTA=3 */    
     switch (event->type) {
+            /* Ahhoz kell, hogy allando kepfrissites legyen */
+            case SDL_USEREVENT:
+                bill->van_bemenet = true;
+            
             /* Felengedett billentyuk */
             case SDL_KEYUP:
                 switch (event->key.keysym.sym) {
@@ -315,12 +319,6 @@ void billentyuk_erzekelese(SDL_Event* event, Billentyuk* bill, Uint32* ablakIDk)
                  * window, button, key, user stb. <- nem mukodnek :c*/
                 bill->menu_Esc = true;
                 break;
-            
-            /* Ahhoz kell, hogy allando kepfrissites legyen */
-            case SDL_USEREVENT:
-                break;
-            default:
-                bill->van_bemenet = false;
         }
 }
 

@@ -50,7 +50,7 @@ int main(void) {
    while (!bill.menu_Esc)
     {
         // Megfelelo bemenethez
-        bill.van_bemenet = true;
+        bill.van_bemenet = false;
 
         /* Lekerdezesek a program mukodesehez */
         Uint32 ablakIDk[4] = { SDL_GetWindowID(ablakok[MENU].ablak), SDL_GetWindowID(ablakok[JATEK].ablak), SDL_GetWindowID(ablakok[SUGO].ablak), SDL_GetWindowID(ablakok[DICS_LISTA].ablak) };
@@ -69,7 +69,14 @@ int main(void) {
         if (ablakok[JATEK].nyitva && bill.van_bemenet) {
             jatek_hatteret_kirajzol(ablakok+JATEK);
 
-            jatekosok[0].fej.x += 0.5;
+            /* Ha nincs megallitva */
+            if (!vez.megallitva_felhasznalo && !vez.megallitva_jatek) {
+                jatekosok_mozditasa(jatekosok, &vez);
+                
+
+
+
+            }
 
 
             
@@ -120,7 +127,7 @@ void inicializalas(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek, Vezerles*
 
     /* Jatek: Vezerles */
     vez->palya_meret = (Pixel) {1400, 900};
-    vez->elmozd_jat = 1.0; vez->elmozd_lov = 1.5; vez->fordulas = 1.0;
+    vez->elmozd_jat = 1.1; vez->elmozd_lov = 1.5; vez->fordulas = 0.04;
     vez->palya_vonal = NULL; vez->lovedekek = NULL;
     
 }

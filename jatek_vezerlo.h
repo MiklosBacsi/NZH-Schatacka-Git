@@ -37,7 +37,7 @@ typedef struct Lovedek {
 typedef struct Animacio {
     SDL_Texture* kep;
     Koordinata kp;
-    double elet_hossz;
+    double elet_tartam; //      = 3.0; koronkent: -= 0.02;
 } Animacio;
 */
 
@@ -47,7 +47,8 @@ typedef struct Jatekos {
     double irany;
     //SpecialisElem spec_elem;
     bool* bal; bool* lo; bool* tilt_lo; bool* jobb;
-    Pixel* vonal;
+    //Vonal* vonal;
+    //Lemarado pointer a lyukakhoz
     bool eletben_van;
     int pontszam;
 } Jatekos;
@@ -79,5 +80,7 @@ double tav(Koordinata k1, Koordinata k2);
 void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, SDL_Color* szinek, Betutipusok* bt);
 
 Uint32 idozit(Uint32 ms, void *param);
+
+void jatekosok_mozditasa(Jatekos* jatekosok, Vezerles* vez);
 
 #endif

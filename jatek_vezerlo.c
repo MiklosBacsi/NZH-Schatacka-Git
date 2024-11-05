@@ -10,6 +10,8 @@
 #include <math.h>
 #include "debugmalloc.h"
 
+#define FALVASTAGSAG 1 //Ne noveld!!!
+
 static int aktiv_jatekosok_szama(bool* kiv_jatekosok) {
     int db = 0;
     for (int i=0; i<4; ++i) {
@@ -109,6 +111,19 @@ static void jatekosokat_fogalal(Vezerles* vez, Jatekos** cim_jat_abl) {
     *cim_jat_abl = mutato;
 }
 
+static void fal_pixel_db(Vezerles* vez) {
+    // Ne legyen tulcsordulas
+    vez->fal_db = 2 * FALVASTAGSAG * (vez->palya_meret.x + vez->palya_meret.y - 2 * FALVASTAGSAG * FALVASTAGSAG);
+}
+
+static void falak_letrehozasa(Vezerles* vez) {
+    fal_pixel_db(vez);
+    /* Memoria foglalas */
+    vez->fal_vonal = (Fal*) malloc(vez->fal_db * sizeof(Fal));
+
+    if (vez->fal_vonal == NULL) printf("Nem sikerult falvonal memoriat foglalni :c\n");
+}
+
 void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, Jatekos** cim_jatekosok, int jt_mod, bool* kiv_jat) {
     /* Ablak megnyitasa */
     if (bill->menu_Szokoz && !jatek_ablak->nyitva && aktiv_jatekosok_szama(kiv_jat) >= 2) {
@@ -124,6 +139,33 @@ void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, J
         jatekosokat_fogalal(vez, cim_jatekosok);
         szinek_billK_hozzarend_jatHoz(*cim_jatekosok, kiv_jat, bill, vez);
 
+
+        /* Fal letrehozasa es memori lefoglalasa */
+        if (vez->jt_mod != FAL_NELKULI && vez->fal_vonal == NULL) {
+            falak_letrehozasa(vez);
+        }
+        
+        if (vez->jt_mod == FAL_NELKULI && vez->fal_vonal != NULL) {
+            for (int i=0; i < vez->fal_db; ++i)
+                vez->fal_vonal[i].torolve = true;
+        }
+            
+
+        /* Pixel koordinatak kiszamolasa */
+        int index = 0; short x;
+        for (short y=0; y < vez->palya_meret.y; ++y) {
+            x = 0;
+            while (x < vez->palya_meret.x) {
+                // Kozepe -> ugras szelre
+                if (FALVASTAGSAG <= y && y < vez->palya_meret.y-FALVASTAGSAG && FALVASTAGSAG <= x && x < vez->palya_meret.x-FALVASTAGSAG)
+                    x = vez->palya_meret.x - FALVASTAGSAG;
+                
+                
+                vez->fal_vonal[index++].pixel = (Pixel) {x, y};
+
+                ++x;
+            }
+        }
         uj_menet(vez, *cim_jatekosok);
     }
     /* Ablak bezarasa */
@@ -152,9 +194,11 @@ void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, J
     }
 }
 
-void jatek_hatteret_kirajzol(Ablak* jatek_ablak) {
+static void jatek_hatteret_kirajzol(Ablak* jatek_ablak, Vezerles* vez) {
     boxRGBA(jatek_ablak->megjelenito, 0, 0, 1600, 900, 30, 30, 30, 255);
-    boxRGBA(jatek_ablak->megjelenito, 1401, 0, 1402, 900, 255, 255, 255, 255);
+    // Hogy a vonalak jol nezzenek ki a kulonbozo jatekmodokban
+    if (vez->jt_mod == FAL_NELKULI)
+        boxRGBA(jatek_ablak->megjelenito, 1400, 0, 1401, 900, 255, 255, 255, 255);
 
     logot_rajzol(jatek_ablak, 1425, 10);
 }
@@ -163,6 +207,12 @@ void uj_menet(Vezerles* vez, Jatekos* jatekosok) {
     vez->megallitva_jatek = true;
     vez->menet_vege = false;
     vez->menetido = 0.0;
+
+    // Fal
+    if (vez->jt_mod != FAL_NELKULI && vez->fal_vonal != NULL) {
+        for (int i=0; i < vez->fal_db; ++i)
+            vez->fal_vonal[i].torolve = false;
+    }
 
     /* Megjelenites */
     // Kiir: A menet inditasahoz nyomja meg a Szokozt
@@ -181,23 +231,28 @@ void uj_menet(Vezerles* vez, Jatekos* jatekosok) {
     for (int i=0; i < vez->jatekosszam; ++i) {
         jatekosok[i].eletben_van = true;
     }
-    // Falak letrehozasa!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
 
 void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Betutipusok* bt) {
     /* Fix elemek */
-    jatek_hatteret_kirajzol(jatek_ablak);
+    jatek_hatteret_kirajzol(jatek_ablak, vez);
     /* Pontszamok */
 
-    /* Palya vonalak */
-    
+    /* Fal */
+    for (int i=0; i < vez->fal_db; ++i) {
+        if (vez->jt_mod != FAL_NELKULI && vez->fal_vonal[i].torolve == false) {
+            pixelRGBA(jatek_ablak->megjelenito, vez->fal_vonal[i].pixel.x, vez->fal_vonal[i].pixel.y, 255, 255, 255, 255);
+        }
+    }
+
+
     /* Jatekosvonalak */
     
     /* Felveheto elemek */
 
     /* Lovedekek */
     
-    /* Jatekosok */
+    /* Jatekosok fejei */
     for (int i=0; i < vez->jatekosszam; ++i) {
         if (!jatekosok[i].eletben_van) continue;
 
@@ -255,12 +310,14 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
             continue;
         }
         /* Jatekos kimegy a palyarol */
-        if (jatekosok[i].fej.x < 0 || jatekosok[i].fej.x > 1400 || jatekosok[i].fej.y < 0 || jatekosok[i].fej.y > 900) {
+        if (jatekosok[i].fej.x < 0 || jatekosok[i].fej.x >= 1400 || jatekosok[i].fej.y < 0 || jatekosok[i].fej.y >= 900) {
             jatekosok[i].eletben_van = false;
             // halalfej animaciot rajzol !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         }
 
         /* Jatekos utkozik a fallal */ //jatekmod!
+        if (vez->jt_mod != FAL_NELKULI && (jatekosok[i].fej.x < 2.0 || jatekosok[i].fej.x > 1398.0 || jatekosok[i].fej.y < 2.0 || jatekosok[i].fej.y > 898))
+            jatekosok[i].eletben_van = false;
 
         /* Jatekos utkozik egy vonallal */ //pajzs
 

@@ -23,6 +23,12 @@ typedef struct Pixel {
     short x; short y;
 } Pixel;
 
+typedef struct Fal {
+    Pixel pixel;
+    bool torolve;
+} Fal;
+
+
 typedef struct Lovedek {
     Koordinata kp;
     double irany;
@@ -60,7 +66,7 @@ typedef struct Vezerles
     double menetido; bool menet_vege;
     int jatekosszam; int max_pontszam; Jatekmod jt_mod;
     double elmozd_jat; double elmozd_lov; double fordulas;
-    Pixel* fal_vonal;
+    Fal* fal_vonal; int fal_db;
     Pixel palya_meret;
     Lovedek* lovedekek;
     //FelvehetoElemek felv_e_K;
@@ -70,8 +76,6 @@ typedef struct Vezerles
 
 
 void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, Jatekos** cim_jatekosok, int jt_mod, bool* kiv_jat);
-
-void jatek_hatteret_kirajzol(Ablak* jatek_ablak);
 
 void uj_menet(Vezerles* vez, Jatekos* jatekosok);
 

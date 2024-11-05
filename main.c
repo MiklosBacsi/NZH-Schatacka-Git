@@ -24,7 +24,7 @@ typedef struct Kivalasztas {
 } Kivalasztas;
 
 void inicializalas(Ablak* ablakok, Betutipusok* bt, Vezerles* vez);
-void felszabadit(Ablak* ablakok, Jatekos** cim_jatekosok);
+void felszabadit(Ablak* ablakok, Jatekos** cim_jatekosok, Vezerles* vez);
 TTF_Font* betutipus_betoltese(char* nev, int meret);
 void betutipusok_bezarasa(Betutipusok* bt);
 void menu_kivalasztas(Kivalasztas* kiv, Billentyuk* bill, Ablak* menu, Betutipusok* bt);
@@ -83,7 +83,9 @@ int main(void) {
                 //lovedekek_mozditasa();
 
                 halal_vizsgalata(jatekosok, &vez);
-                
+
+
+
 
 
 
@@ -115,7 +117,7 @@ int main(void) {
     if (!ablakok[JATEK].ablak)
         SDL_DestroyWindow(ablakok[JATEK].ablak);
     SDL_Quit();
-    felszabadit(ablakok, &jatekosok);
+    felszabadit(ablakok, &jatekosok, &vez);
 
     return 0;
 }
@@ -141,17 +143,17 @@ void inicializalas(Ablak* ablakok, Betutipusok* bt, Vezerles* vez) {
     /* Jatek: Vezerles */
     vez->palya_meret = (Pixel) {1400, 900}; vez->menet_vege = false;
     vez->elmozd_jat = 1.1; vez->elmozd_lov = 1.5; vez->fordulas = 0.04;
-    vez->fal_vonal = NULL; vez->lovedekek = NULL;
-    
+    vez->lovedekek = NULL; vez->fal_vonal = NULL; vez->fal_db = 0;
 }
 
-void felszabadit(Ablak* ablakok, Jatekos** cim_jatekosok) {    
+void felszabadit(Ablak* ablakok, Jatekos** cim_jatekosok, Vezerles* vez) {    
     free(ablakok);
     free(*cim_jatekosok);
     /*
     if (!(*cim_jatekosok))
         free(*cim_jatekosok);
     */
+    free(vez->fal_vonal);
 }
 
 void betutipusok_bezarasa(Betutipusok* bt) {

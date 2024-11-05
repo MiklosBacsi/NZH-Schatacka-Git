@@ -9,17 +9,25 @@
 #include "bemenet_es_fajlkezeles.h"
 #include "debugmalloc.h"
 
+#define PIROS_SDL (SDL_Color) {255, 0, 0}
+#define ROZSA_SDL (SDL_Color) {255, 0, 255}
+#define ZOLD_SDL (SDL_Color) {0, 255, 0}
+#define KEK_SDL (SDL_Color) {0, 0, 255}
+#define SZURKE_SDL (SDL_Color) {30, 30, 30}
+#define FEHER_SDL (SDL_Color) {255, 255, 255}
+#define FEKETE_SDL (SDL_Color) {0, 0, 0}
+
+
 typedef struct Kivalasztas {
     int kiv_jt_mod;
     bool aktiv_jatekosok[4];
 } Kivalasztas;
 
-void inicializalas(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek, Vezerles* vez);
-void felszabadit(Ablak* ablakok, SDL_Color* szinek, Jatekos** cim_jatekosok);
+void inicializalas(Ablak* ablakok, Betutipusok* bt, Vezerles* vez);
+void felszabadit(Ablak* ablakok, Jatekos** cim_jatekosok);
 TTF_Font* betutipus_betoltese(char* nev, int meret);
 void betutipusok_bezarasa(Betutipusok* bt);
-SDL_Color* szinek_letrehozasa();
-void menu_kivalasztas(Kivalasztas* kiv, Billentyuk* bill, Ablak* menu, Betutipusok* bt, SDL_Color* szinek);
+void menu_kivalasztas(Kivalasztas* kiv, Billentyuk* bill, Ablak* menu, Betutipusok* bt);
 
 int main(void) {
     Ablak* ablakok = NULL; Jatekos* jatekosok = NULL;
@@ -36,12 +44,11 @@ int main(void) {
     ablakok[DICS_LISTA] = (Ablak) { dics_lista_ablak, dics_lista_megj, 1000, 500, "Schatacka - Dicsőség Lista", DICS_LISTA, dics_lista_logo, false};
 
     Betutipusok bt = {NULL, NULL, NULL, NULL};
-    SDL_Color* szinek = szinek_letrehozasa();
     Billentyuk bill = (Billentyuk) {false, false, false, false,false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
     Kivalasztas kiv = (Kivalasztas) { 0, {false, false, false, false} };
     Vezerles vez;
 
-    inicializalas(ablakok, &bt, szinek, &vez);
+    inicializalas(ablakok, &bt, &vez);
     SDL_TimerID idozito = SDL_AddTimer(20, idozit, NULL);  
 
 
@@ -61,8 +68,8 @@ int main(void) {
         billentyuk_erzekelese(&event, &bill, ablakIDk);
 
         /* Sugo es Dicsoseglista ablakok */
-        sugo_es_dics_lista_ablakok_kezelese(&bill, ablakok, &bt, szinek);
-        menu_kivalasztas(&kiv, &bill, ablakok+MENU, &bt, szinek);
+        sugo_es_dics_lista_ablakok_kezelese(&bill, ablakok, &bt);
+        menu_kivalasztas(&kiv, &bill, ablakok+MENU, &bt);
 
         /*** JATEK ***/
         jatek_ablak_kezelese(&bill, ablakok+JATEK, &vez, &jatekosok, kiv.kiv_jt_mod, kiv.aktiv_jatekosok);
@@ -89,7 +96,7 @@ int main(void) {
             
             
             /* Jatek kirajzolasa */
-            jatek_kirajzolasa(ablakok+JATEK, &vez, jatekosok, szinek, &bt);
+            jatek_kirajzolasa(ablakok+JATEK, &vez, jatekosok, &bt);
         }
             
         /* Billentyuk egyszeri lenyomasahoz */
@@ -108,12 +115,12 @@ int main(void) {
     if (!ablakok[JATEK].ablak)
         SDL_DestroyWindow(ablakok[JATEK].ablak);
     SDL_Quit();
-    felszabadit(ablakok, szinek, &jatekosok);
+    felszabadit(ablakok, &jatekosok);
 
     return 0;
 }
 
-void inicializalas(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek, Vezerles* vez) {
+void inicializalas(Ablak* ablakok, Betutipusok* bt, Vezerles* vez) {
     /* SDL inicializalasa */
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
         SDL_Log("Nem indithato az SDL: %s", SDL_GetError());
@@ -129,7 +136,7 @@ void inicializalas(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek, Vezerles*
     bt->reg20 = betutipus_betoltese("OpenSans-Regular.ttf", 20);
     bt->bold20 = betutipus_betoltese("OpenSans-Bold.ttf", 20);
 
-    fix_menut_kirajzol(ablakok+MENU, bt, szinek);
+    fix_menut_kirajzol(ablakok+MENU, bt);
 
     /* Jatek: Vezerles */
     vez->palya_meret = (Pixel) {1400, 900}; vez->menet_vege = false;
@@ -138,9 +145,8 @@ void inicializalas(Ablak* ablakok, Betutipusok* bt, SDL_Color* szinek, Vezerles*
     
 }
 
-void felszabadit(Ablak* ablakok, SDL_Color* szinek, Jatekos** cim_jatekosok) {    
+void felszabadit(Ablak* ablakok, Jatekos** cim_jatekosok) {    
     free(ablakok);
-    free(szinek);
     free(*cim_jatekosok);
     /*
     if (!(*cim_jatekosok))
@@ -164,24 +170,9 @@ TTF_Font* betutipus_betoltese(char* nev, int meret) {
     return betutipus;
 }
 
-SDL_Color* szinek_letrehozasa() {
-    SDL_Color* szinek = (SDL_Color*) malloc(7 * sizeof(SDL_Color));
-    if (!szinek) printf("Nem sikerult a szineknek memoriat foglalni :c\n");
-
-    szinek[PIROS] = (SDL_Color) {255, 0, 0};
-    szinek[ROZSA] = (SDL_Color) {255, 0, 255};
-    szinek[ZOLD] = (SDL_Color) {0, 255, 0};
-    szinek[KEK] = (SDL_Color) {0, 0, 255};
-    szinek[SZURKE] = (SDL_Color) {30, 30, 30};
-    szinek[FEHER] = (SDL_Color) {255, 255, 255};
-    szinek[FEKETE] = (SDL_Color) {0, 0, 0};
-
-    return szinek;
-}
-
-void menu_kivalasztas(Kivalasztas* kiv, Billentyuk* bill, Ablak* menu, Betutipusok* bt, SDL_Color* szinek) {   
+void menu_kivalasztas(Kivalasztas* kiv, Billentyuk* bill, Ablak* menu, Betutipusok* bt) {   
     SDL_RenderClear(menu->megjelenito);
-    fix_menut_kirajzol(menu, bt, szinek);
+    fix_menut_kirajzol(menu, bt);
     
     /* Jatekmodok kivalasztasa */
     if (bill->menu_F1) kiv->kiv_jt_mod = 0;
@@ -190,36 +181,36 @@ void menu_kivalasztas(Kivalasztas* kiv, Billentyuk* bill, Ablak* menu, Betutipus
 
     // Normal
     if (kiv->kiv_jt_mod == 0) {        
-        szoveget_kiir("Normál mód (F1)", 70, 130, szinek[FEHER], szinek[SZURKE], bt->bold20, menu->megjelenito, true);
-        szoveget_kiir("Fal nélküli (F2)", 70, 190, szinek[FEHER], szinek[SZURKE], bt->reg20, menu->megjelenito, true);
-        szoveget_kiir("Felvehető elemek tiltása (F3)", 70, 250, szinek[FEHER], szinek[SZURKE], bt->reg20, menu->megjelenito, true);
+        szoveget_kiir("Normál mód (F1)", 70, 130, FEHER_SDL, SZURKE_SDL, bt->bold20, menu->megjelenito, true);
+        szoveget_kiir("Fal nélküli (F2)", 70, 190, FEHER_SDL, SZURKE_SDL, bt->reg20, menu->megjelenito, true);
+        szoveget_kiir("Felvehető elemek tiltása (F3)", 70, 250, FEHER_SDL, SZURKE_SDL, bt->reg20, menu->megjelenito, true);
     }    
     // Fal nelkuli
     else if (kiv->kiv_jt_mod == 1) {        
-        szoveget_kiir("Normál mód (F1)", 70, 130, szinek[FEHER], szinek[SZURKE], bt->reg20, menu->megjelenito, true);
-        szoveget_kiir("Fal nélküli (F2)", 70, 190, szinek[FEHER], szinek[SZURKE], bt->bold20, menu->megjelenito, true);
-        szoveget_kiir("Felvehető elemek tiltása (F3)", 70, 250, szinek[FEHER], szinek[SZURKE], bt->reg20, menu->megjelenito, true);
+        szoveget_kiir("Normál mód (F1)", 70, 130, FEHER_SDL, SZURKE_SDL, bt->reg20, menu->megjelenito, true);
+        szoveget_kiir("Fal nélküli (F2)", 70, 190, FEHER_SDL, SZURKE_SDL, bt->bold20, menu->megjelenito, true);
+        szoveget_kiir("Felvehető elemek tiltása (F3)", 70, 250, FEHER_SDL, SZURKE_SDL, bt->reg20, menu->megjelenito, true);
     }    
     // Felveheto elemek tiltasa
     else if (kiv->kiv_jt_mod) {        
-        szoveget_kiir("Normál mód (F1)", 70, 130, szinek[FEHER], szinek[SZURKE], bt->reg20, menu->megjelenito, true);
-        szoveget_kiir("Fal nélküli (F2)", 70, 190, szinek[FEHER], szinek[SZURKE], bt->reg20, menu->megjelenito, true);
-        szoveget_kiir("Felvehető elemek tiltása (F3)", 70, 250, szinek[FEHER], szinek[SZURKE], bt->bold20, menu->megjelenito, true);
+        szoveget_kiir("Normál mód (F1)", 70, 130, FEHER_SDL, SZURKE_SDL, bt->reg20, menu->megjelenito, true);
+        szoveget_kiir("Fal nélküli (F2)", 70, 190, FEHER_SDL, SZURKE_SDL, bt->reg20, menu->megjelenito, true);
+        szoveget_kiir("Felvehető elemek tiltása (F3)", 70, 250, FEHER_SDL, SZURKE_SDL, bt->bold20, menu->megjelenito, true);
     }
 
     /* Jatekosok kivalasztasa */
     // Piros
     if (bill->menu_Q && !bill->menu_tilt_Q) kiv->aktiv_jatekosok[0] = !kiv->aktiv_jatekosok[0];
-    if (kiv->aktiv_jatekosok[0] == true) szoveget_kiir("Kiválasztva", 670, 115, szinek[PIROS], szinek[SZURKE], bt->bold20, menu->megjelenito, true);
+    if (kiv->aktiv_jatekosok[0] == true) szoveget_kiir("Kiválasztva", 670, 115, PIROS_SDL, SZURKE_SDL, bt->bold20, menu->megjelenito, true);
     // Rozsa
     if (bill->menu_Per && !bill->menu_tilt_Per) kiv->aktiv_jatekosok[1] = !kiv->aktiv_jatekosok[1];
-    if (kiv->aktiv_jatekosok[1] == true) szoveget_kiir("Kiválasztva", 670, 165, szinek[ROZSA], szinek[SZURKE], bt->bold20, menu->megjelenito, true);
+    if (kiv->aktiv_jatekosok[1] == true) szoveget_kiir("Kiválasztva", 670, 165, ROZSA_SDL, SZURKE_SDL, bt->bold20, menu->megjelenito, true);
     // Zold
     if (bill->menu_M && !bill->menu_tilt_M) kiv->aktiv_jatekosok[2] = !kiv->aktiv_jatekosok[2];
-    if (kiv->aktiv_jatekosok[2] == true) szoveget_kiir("Kiválasztva", 670, 215, szinek[ZOLD], szinek[SZURKE], bt->bold20, menu->megjelenito, true);
+    if (kiv->aktiv_jatekosok[2] == true) szoveget_kiir("Kiválasztva", 670, 215, ZOLD_SDL, SZURKE_SDL, bt->bold20, menu->megjelenito, true);
     // Kek
     if (bill->menu_Bal && !bill->menu_tilt_Bal) kiv->aktiv_jatekosok[3] = !kiv->aktiv_jatekosok[3];
-    if (kiv->aktiv_jatekosok[3] == true) szoveget_kiir("Kiválasztva", 670, 265, szinek[KEK], szinek[SZURKE], bt->bold20, menu->megjelenito, true);
+    if (kiv->aktiv_jatekosok[3] == true) szoveget_kiir("Kiválasztva", 670, 265, KEK_SDL, SZURKE_SDL, bt->bold20, menu->megjelenito, true);
     
     SDL_RenderPresent(menu->megjelenito);
 }

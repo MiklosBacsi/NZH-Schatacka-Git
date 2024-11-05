@@ -184,7 +184,7 @@ void uj_menet(Vezerles* vez, Jatekos* jatekosok) {
     // Falak letrehozasa!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
 
-void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, SDL_Color* szinek, Betutipusok* bt) {
+void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Betutipusok* bt) {
     /* Fix elemek */
     jatek_hatteret_kirajzol(jatek_ablak);
     /* Pontszamok */

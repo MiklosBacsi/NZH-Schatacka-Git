@@ -77,7 +77,7 @@ void uj_menet(Vezerles* vez, Jatekos* jatekosok);
 
 double tav(Koordinata k1, Koordinata k2);
 
-void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, SDL_Color* szinek, Betutipusok* bt);
+void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Betutipusok* bt);
 
 Uint32 idozit(Uint32 ms, void *param);
 

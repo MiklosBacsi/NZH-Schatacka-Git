@@ -235,10 +235,10 @@ void jatekosok_mozditasa(Jatekos* jatekosok, Vezerles* vez) {
 
         /* Fok allitasa */
         // Balra
-        if (*jatekosok[i].bal && !(*jatekosok->jobb))
+        if (*(jatekosok[i].bal) && !(*(jatekosok[i].jobb)))
             jatekosok[i].irany -= vez->fordulas;
         // Jobbra
-        if (*jatekosok[i].jobb && !(*jatekosok->bal))
+        if (*(jatekosok[i].jobb) && !(*(jatekosok[i].bal)))
             jatekosok[i].irany += vez->fordulas;
         
         /* Jatekosok elmozditasa */

@@ -9,318 +9,302 @@
 #define SUGO_ID 2
 #define DICS_ID 3
 
-void billentyuk_erzekelese(SDL_Event* event, Billentyuk* bill, Uint32* ablakIDk) {
-    /* AlbakIDk: MENU=0, JATEK=1, SUGO=2, DICS_LISTA=3 */    
-    switch (event->type) {
-            /* Ahhoz kell, hogy allando kepfrissites legyen */
-            case SDL_USEREVENT:
-                bill->van_bemenet = true;
-            
-            /* Felengedett billentyuk */
-            case SDL_KEYUP:
-                switch (event->key.keysym.sym) {
-                    // Esc
-                    case SDLK_ESCAPE:
-                        // Mert nem mindig erzekeli jol az ablakot (ablak pointer mar nem letezik), es funkcionalitasban nem valtoztat
-                        bill->menu_Esc = false;
-                        bill->sugo_Esc = false;
-                        bill->dics_Esc = false;
-                        // JATEK + TILTAS
-                        if (event->key.windowID == ablakIDk[JATEK_ID]) {
-                            bill->jatek_Esc = false;
-                            bill->tilt_Esc = false;
-                        }
-                        break;             
-                    // F1 - MENU
-                    case SDLK_F1: if (event->key.windowID == ablakIDk[MENU_ID]) bill->menu_F1 = false; break;
-                    // F2 - MENU
-                    case SDLK_F2: if (event->key.windowID == ablakIDk[MENU_ID]) bill->menu_F2 = false; break;
-                    // F3 - MENU
-                    case SDLK_F3: if (event->key.windowID == ablakIDk[MENU_ID]) bill->menu_F3 = false; break;
-                    // F10 - MENU
-                    case SDLK_F10: if (event->key.windowID == ablakIDk[MENU_ID]) bill->menu_F10 = false; break;
-                    // F11 - MENU
-                    case SDLK_F11: if (event->key.windowID == ablakIDk[MENU_ID]) bill->menu_F11 = false; break;
-
-                    /* Szokoz */
-                    case SDLK_SPACE:
-                    // MENU
-                        if (event->key.windowID == ablakIDk[MENU_ID]) {
-                            bill->menu_Szokoz = false;
-                            break;
-                        }
-                    // JATEK
-                        if (event->key.windowID == ablakIDk[JATEK_ID]) {
-                            bill->jatek_Szokoz = false;
-                            break;
-                        }
-                    
-
-                    /* Piros */                    
-                    case SDLK_q:            // 'Q'
-                        // MENU + TILTAS
-                        if (event->key.windowID == ablakIDk[MENU_ID]) {
-                            bill->menu_Q = false;
-                            bill->menu_tilt_Q = false;
-                            break;
-                        }
-                        // JATEK
-                        if (event->key.windowID == ablakIDk[JATEK_ID]) {
-                            bill->jatek_Q = false;
-                            break;
-                        }
-                    
-                    case SDLK_2:            // '2'
-                        // JATEK + TILTAS
-                        if (event->key.windowID == ablakIDk[JATEK_ID]) {
-                            bill->jatek_2 = false;
-                            bill->tilt_2 = false;
-                            break;
-                        }
-                    
-                    case SDLK_w:            // 'W'
-                        // JATEK
-                        if (event->key.windowID == ablakIDk[JATEK_ID]) {
-                            bill->jatek_W = false;
-                            break;
-                        }
-
-                    /* Rozsa */                    
-                    case SDLK_KP_DIVIDE:    // '/'
-                        // MENU + TILTAS
-                        if (event->key.windowID == ablakIDk[MENU_ID]) {
-                            bill->menu_Per = false;
-                            bill->menu_tilt_Per = false;
-                            break;
-                        }
-                        // JATEK
-                        if (event->key.windowID == ablakIDk[JATEK_ID]) {
-                            bill->jatek_Per = false;
-                            break;
-                        }
-                    
-                    case SDLK_KP_MULTIPLY:  // '*'
-                        // JATEK + TILTAS
-                        if (event->key.windowID == ablakIDk[JATEK_ID]) {
-                            bill->jatek_Csillag = false;
-                            bill->tilt_Csillag = false;
-                            break;
-                        }
-                    
-                    case SDLK_KP_MINUS:     // '-'
-                        // JATEK
-                        if (event->key.windowID == ablakIDk[JATEK_ID]) {
-                            bill->jatek_Kotojel = false;
-                            break;
-                        }
-
-                    /* Zold */
-                    case SDLK_m:            // 'M'
-                        // MENU + TILTAS
-                        if (event->key.windowID == ablakIDk[MENU_ID]) {
-                            bill->menu_M = false;
-                            bill->menu_tilt_M = false;
-                            break;
-                        }
-                        // JATEK
-                        if (event->key.windowID == ablakIDk[JATEK_ID]) {
-                            bill->jatek_M = false;
-                            break;                               
-                        }
-                    
-                    case SDLK_k:            // 'K'
-                        // JATEK + TILTAS
-                        if (event->key.windowID == ablakIDk[JATEK_ID]) {
-                            bill->jatek_K = false;
-                            bill->tilt_K = false;
-                            break;
-                        }
-                    
-                    case SDLK_COMMA:        // ','
-                        // JATEK
-                        if (event->key.windowID == ablakIDk[JATEK_ID]) {
-                            bill->jatek_Vesszo = false;
-                            break;
-                        }
-
-                    /* Kek */
-                    case SDLK_LEFT:         // <-
-                        // MENU + TILTAS
-                        if (event->key.windowID == ablakIDk[MENU_ID]) {
-                            bill->menu_Bal = false;
-                            bill->menu_tilt_Bal = false;
-                            break;
-                        }
-                        // JATEK
-                        if (event->key.windowID == ablakIDk[JATEK_ID]) {
-                            bill->jatek_Bal = false;
-                            break;
-                        }
-                    
-                    case SDLK_UP:           // Fel
-                        // JATEK + TILTAS
-                        if (event->key.windowID == ablakIDk[JATEK_ID]) {
-                            bill->jatek_Fel = false;
-                            bill->tilt_Fel = false;
-                            break;
-                        }
-                    
-                    case SDLK_RIGHT:        // ->
-                        // JATEK
-                        if (event->key.windowID == ablakIDk[JATEK_ID]) {
-                            bill->jatek_Jobb = false;
-                            break;
-                        }
-                }
-                break;
-
-            /* Lenyomott billentyuk */                
-            case SDL_KEYDOWN:
-                switch (event->key.keysym.sym) {
-                    // Esc
-                    case SDLK_ESCAPE:
-                        if (event->key.windowID == ablakIDk[MENU_ID])         //MENU
-                            bill->menu_Esc = true;
-                        else if (event->key.windowID == ablakIDk[JATEK_ID])    //JATEK
-                            bill->jatek_Esc = true;
-                        else if (event->key.windowID == ablakIDk[SUGO_ID])    //SUGO
-                            bill->sugo_Esc = true;
-                        else if (event->key.windowID == ablakIDk[DICS_ID])    //DICS_LISTA
-                            bill->dics_Esc = true;
-                        break;
-                    // F1 - MENU
-                    case SDLK_F1: if (event->key.windowID == ablakIDk[MENU_ID]) bill->menu_F1 = true; break;
-                    // F2 - MENU
-                    case SDLK_F2: if (event->key.windowID == ablakIDk[MENU_ID]) bill->menu_F2 = true; break;
-                    // F3 - MENU
-                    case SDLK_F3: if (event->key.windowID == ablakIDk[MENU_ID]) bill->menu_F3 = true; break;
-                    // F10 - MENU
-                    case SDLK_F10: if (event->key.windowID == ablakIDk[MENU_ID]) bill->menu_F10 = true; break;
-                    // F11 - MENU
-                    case SDLK_F11: if (event->key.windowID == ablakIDk[MENU_ID]) bill->menu_F11 = true; break;
-
-                    /* Szokoz */
-                    case SDLK_SPACE:
-                    // MENU
-                        if (event->key.windowID == ablakIDk[MENU_ID]) {
-                            bill->menu_Szokoz = true;
-                            break;
-                        }
-                    // JATEK
-                        if (event->key.windowID == ablakIDk[JATEK_ID]) {
-                            bill->jatek_Szokoz = true;
-                            break;
-                        }
-
-                    
-                    /* Piros */
-                    case SDLK_q:            // 'Q'
-                        // MENU
-                        if (event->key.windowID == ablakIDk[MENU_ID]) {
-                            bill->menu_Q = true;
-                            break;
-                        }
-                        // JATEK
-                        if (event->key.windowID == ablakIDk[JATEK_ID]) {
-                            bill->jatek_Q = true;
-                            break;
-                        }
-                    case SDLK_2:            // '2'
-                        // JATEK
-                        if (event->key.windowID == ablakIDk[JATEK_ID]) {
-                            bill->jatek_2 = true;
-                            break;
-                        }
-                    case SDLK_w:            // 'W'
-                        // JATEK
-                        if (event->key.windowID == ablakIDk[JATEK_ID]) {
-                            bill->jatek_W = true;
-                            break;
-                        }
-
-                    /* Rozsa */
-                    case SDLK_KP_DIVIDE:    // '/'
-                        // MENU
-                        if (event->key.windowID == ablakIDk[MENU_ID]) {
-                            bill->menu_Per = true;
-                            break;
-                        }
-                        // JATEK
-                        if (event->key.windowID == ablakIDk[JATEK_ID]) {
-                            bill->jatek_Per = true;
-                            break;
-                        }
-                    case SDLK_KP_MULTIPLY:  // '*'
-                        // JATEK
-                        if (event->key.windowID == ablakIDk[JATEK_ID]) {
-                            bill->jatek_Csillag = true;
-                            break;
-                        }
-                    case SDLK_KP_MINUS:     // '-'
-                        // JATEK
-                        if (event->key.windowID == ablakIDk[JATEK_ID]) {
-                            bill->jatek_Kotojel = true;
-                            break;
-                        }
-
-                    /* Zold */
-                    case SDLK_m:            // 'M'
-                        // MENU
-                        if (event->key.windowID == ablakIDk[MENU_ID]) {
-                            bill->menu_M = true;
-                            break;
-                        }
-                        // JATEK
-                        if (event->key.windowID == ablakIDk[JATEK_ID]) {
-                            bill->jatek_M = true;
-                            break;
-                        }
-                    case SDLK_k:            // 'K'
-                        // JATEK
-                        if (event->key.windowID == ablakIDk[JATEK_ID]) {
-                            bill->jatek_K = true;
-                            break;
-                        }
-                    case SDLK_COMMA:        // ','
-                        // JATEK
-                        if (event->key.windowID == ablakIDk[JATEK_ID]) {
-                            bill->jatek_Vesszo = true;
-                            break;
-                        }
-
-                    /* Kek */
-                    case SDLK_LEFT:         // <-
-                        // MENU
-                        if (event->key.windowID == ablakIDk[MENU_ID]) {
-                            bill->menu_Bal = true;
-                            break;
-                        }
-                        // JATEK
-                        if (event->key.windowID == ablakIDk[JATEK_ID]) {
-                            bill->jatek_Bal = true;
-                            break;
-                        }
-                    case SDLK_UP:           // Fel
-                        // JATEK
-                        if (event->key.windowID == ablakIDk[JATEK_ID]) {
-                            bill->jatek_Fel = true;
-                            break;
-                        }
-                    case SDLK_RIGHT:        // ->
-                        // JATEK
-                        if (event->key.windowID == ablakIDk[JATEK_ID]) {
-                            bill->jatek_Jobb = true;
-                            break;
-                        }
-                }
-                break;
-            
-            case SDL_QUIT:
-                /* Nem lehet bezarni az ablakot kiikszelessel (csak ha egy van nyitva)
-                 * window, button, key, user stb. <- nem mukodnek :c*/
-                bill->menu_Esc = true;
-                break;
+void billentyuk_erzekelese(SDL_Event* event, Billentyuk* bill, Uint32* ablakIDk) {  
+    /* Ahhoz kell, hogy allando kepfrissites legyen */
+    if (event->type == SDL_USEREVENT)
+        bill->van_bemenet = true;
+    
+    /* Felengedett billentyuk */
+    // Esc
+    if (event->key.keysym.sym == SDLK_ESCAPE) {
+        // Felenged
+        if (event->type == SDL_KEYUP) {
+            bill->menu_Esc = false;
+            bill->sugo_Esc = false;
+            bill->dics_Esc = false;
+        
+            // JATEK + TILTAS
+            if (event->key.windowID == ablakIDk[JATEK_ID]) {
+                bill->jatek_Esc = false;
+                bill->tilt_Esc = false;
+            }
         }
+
+        // Lenyomas
+        if (event->type == SDL_KEYDOWN) {
+            if (event->key.windowID == ablakIDk[MENU_ID])
+                bill->menu_Esc = true;
+            else if (event->key.windowID == ablakIDk[JATEK_ID])
+                bill->jatek_Esc = true;
+            else if (event->key.windowID == ablakIDk[SUGO_ID])
+                bill->sugo_Esc = true;
+            else if (event->key.windowID == ablakIDk[DICS_ID])
+                bill->dics_Esc = true;
+        }
+    }
+
+    // F1 - MENU
+    if (event->key.keysym.sym == SDLK_F1 && event->key.windowID == ablakIDk[MENU_ID]) {
+        if (event->type == SDL_KEYUP)
+            bill->menu_F1 = false;
+        else if (event->type == SDL_KEYDOWN)
+            bill->menu_F1 = true;
+    }
+
+    // F2 - MENU
+    if (event->key.keysym.sym == SDLK_F2 && event->key.windowID == ablakIDk[MENU_ID]) {
+        if (event->type == SDL_KEYUP)
+            bill->menu_F2 = false;
+        else if (event->type == SDL_KEYDOWN)
+            bill->menu_F2 = true;
+    }
+
+    // F3 - MENU
+    if (event->key.keysym.sym == SDLK_F3 && event->key.windowID == ablakIDk[MENU_ID]) {
+        if (event->type == SDL_KEYUP)
+            bill->menu_F3 = false;
+        else if (event->type == SDL_KEYDOWN)
+            bill->menu_F3 = true;
+    }
+
+    // F10 - MENU
+    if (event->key.keysym.sym == SDLK_F10 && event->key.windowID == ablakIDk[MENU_ID]) {
+        if (event->type == SDL_KEYUP)
+            bill->menu_F10 = false;
+        else if (event->type == SDL_KEYDOWN)
+            bill->menu_F10 = true;
+    }
+
+    // F11 - MENU
+    if (event->key.keysym.sym == SDLK_F11 && event->key.windowID == ablakIDk[MENU_ID]) {
+        if (event->type == SDL_KEYUP)
+            bill->menu_F11 = false;
+        else if (event->type == SDL_KEYDOWN)
+            bill->menu_F11 = true;
+    }
+
+    /* Szokoz */
+    if (event->key.keysym.sym == SDLK_SPACE) {
+        // Felenged
+        if (event->type == SDL_KEYUP) {
+            // MENU
+            if (event->key.windowID == ablakIDk[MENU_ID])
+                bill->menu_Szokoz = false;
+            // JATEK
+            if (event->key.windowID == ablakIDk[JATEK_ID])
+                bill->jatek_Szokoz = false;
+        }
+        // Lenyom
+        else if (event->type == SDL_KEYDOWN) {
+            // MENU
+            if (event->key.windowID == ablakIDk[MENU_ID])
+                bill->menu_Szokoz = true;
+            // JATEK
+            if (event->key.windowID == ablakIDk[JATEK_ID])
+                bill->jatek_Szokoz = true;
+        }
+    }
+
+
+    /* Piros */
+    // 'Q'
+    if (event->key.keysym.sym == SDLK_q) {
+        // Felenged
+        if (event->type == SDL_KEYUP) {
+            // MENU + TILTAS
+            if (event->key.windowID == ablakIDk[MENU_ID]) {
+                bill->menu_Q = false;
+                bill->menu_tilt_Q = false;
+            }
+            // JATEK
+            if (event->key.windowID == ablakIDk[JATEK_ID])
+                bill->jatek_Q = false;
+        }
+        // Lenyom
+        else if (event->type == SDL_KEYDOWN) {
+            // MENU
+            if (event->key.windowID == ablakIDk[MENU_ID])
+                bill->menu_Q = true;
+            // JATEK
+            if (event->key.windowID == ablakIDk[JATEK_ID])
+                bill->jatek_Q = true;
+        }
+    }
+
+    // '2'
+    if (event->key.keysym.sym == SDLK_2 && event->key.windowID == ablakIDk[JATEK_ID]) {
+        // Felenged - TILTAS
+        if (event->type == SDL_KEYUP) {
+            bill->jatek_2 = false;
+            bill->tilt_2 = false;
+        }
+        // Lenyom
+        else if (event->type == SDL_KEYDOWN)
+            bill->jatek_2 = true;
+    }
+
+    // 'W'
+    if (event->key.keysym.sym == SDLK_w && event->key.windowID == ablakIDk[JATEK_ID]) {
+        // Felenged
+        if (event->type == SDL_KEYUP)
+            bill->jatek_W = false;
+        // Lenyom
+        else if (event->type == SDL_KEYDOWN)
+            bill->jatek_W = true;
+    }
+
+
+    /* Rozsa */ 
+    // '/'
+    if (event->key.keysym.sym == SDLK_KP_DIVIDE) {
+        // Felenged
+        if (event->type == SDL_KEYUP) {
+            // MENU + TILTAS
+            if (event->key.windowID == ablakIDk[MENU_ID]) {
+                bill->menu_Per = false;
+                bill->menu_tilt_Per = false;
+            }
+            // JATEK
+            if (event->key.windowID == ablakIDk[JATEK_ID])
+                bill->jatek_Per = false;
+        }
+        // Lenyom
+        else if (event->type == SDL_KEYDOWN) {
+            // MENU
+            if (event->key.windowID == ablakIDk[MENU_ID])
+                bill->menu_Per = true;
+            // JATEK
+            if (event->key.windowID == ablakIDk[JATEK_ID])
+                bill->jatek_Per = true;
+        }
+    }
+
+    // '*'
+    if (event->key.keysym.sym == SDLK_KP_MULTIPLY && event->key.windowID == ablakIDk[JATEK_ID]) {
+        // Felenged - TILTAS
+        if (event->type == SDL_KEYUP) {
+            bill->jatek_Csillag = false;
+            bill->tilt_Csillag = false;
+        }
+        // Lenyom
+        else if (event->type == SDL_KEYDOWN)
+            bill->jatek_Csillag = true;
+    }
+
+    // '-'
+    if (event->key.keysym.sym == SDLK_KP_MINUS && event->key.windowID == ablakIDk[JATEK_ID]) {
+        // Felenged
+        if (event->type == SDL_KEYUP)
+            bill->jatek_Kotojel = false;
+        // Lenyom
+        else if (event->type == SDL_KEYDOWN)
+            bill->jatek_Kotojel = true;
+    }
+
+
+    /* Zold */
+    // 'M'
+    if (event->key.keysym.sym == SDLK_m) {
+        // Felenged
+        if (event->type == SDL_KEYUP) {
+            // MENU + TILTAS
+            if (event->key.windowID == ablakIDk[MENU_ID]) {
+                bill->menu_M = false;
+                bill->menu_tilt_M = false;
+            }
+            // JATEK
+            if (event->key.windowID == ablakIDk[JATEK_ID])
+                bill->jatek_M = false;
+        }
+        // Lenyom
+        else if (event->type == SDL_KEYDOWN) {
+            // MENU
+            if (event->key.windowID == ablakIDk[MENU_ID])
+                bill->menu_M = true;
+            // JATEK
+            if (event->key.windowID == ablakIDk[JATEK_ID])
+                bill->jatek_M = true;
+        }
+    }
+
+    // 'K'
+    if (event->key.keysym.sym == SDLK_k && event->key.windowID == ablakIDk[JATEK_ID]) {
+        // Felenged - TILTAS
+        if (event->type == SDL_KEYUP) {
+            bill->jatek_K = false;
+            bill->tilt_K = false;
+        }
+        // Lenyom
+        else if (event->type == SDL_KEYDOWN)
+            bill->jatek_K = true;
+    }
+
+    // ','
+    if (event->key.keysym.sym == SDLK_COMMA && event->key.windowID == ablakIDk[JATEK_ID]) {
+        // Felenged
+        if (event->type == SDL_KEYUP)
+            bill->jatek_Vesszo = false;
+        // Lenyom
+        else if (event->type == SDL_KEYDOWN)
+            bill->jatek_Vesszo = true;
+    }
+
+
+    /* Kek */
+    // <-
+    if (event->key.keysym.sym == SDLK_LEFT) {
+        // Felenged
+        if (event->type == SDL_KEYUP) {
+            // MENU + TILTAS
+            if (event->key.windowID == ablakIDk[MENU_ID]) {
+                bill->menu_Bal = false;
+                bill->menu_tilt_Bal = false;
+            }
+            // JATEK
+            if (event->key.windowID == ablakIDk[JATEK_ID])
+                bill->jatek_Bal = false;
+        }
+        // Lenyom
+        else if (event->type == SDL_KEYDOWN) {
+            // MENU
+            if (event->key.windowID == ablakIDk[MENU_ID])
+                bill->menu_Bal = true;
+            // JATEK
+            if (event->key.windowID == ablakIDk[JATEK_ID])
+                bill->jatek_Bal = true;
+        }
+    }
+
+    // Fel
+    if (event->key.keysym.sym == SDLK_UP && event->key.windowID == ablakIDk[JATEK_ID]) {
+        // Felenged - TILTAS
+        if (event->type == SDL_KEYUP) {
+            bill->jatek_Fel = false;
+            bill->tilt_Fel = false;
+        }
+        // Lenyom
+        else if (event->type == SDL_KEYDOWN)
+            bill->jatek_Fel = true;
+    }
+
+    // ->
+    if (event->key.keysym.sym == SDLK_RIGHT && event->key.windowID == ablakIDk[JATEK_ID]) {
+        // Felenged
+        if (event->type == SDL_KEYUP)
+            bill->jatek_Jobb = false;
+        // Lenyom
+        else if (event->type == SDL_KEYDOWN)
+            bill->jatek_Jobb = true;
+    }
+
+
+    /* Kilepes */
+    if (event->key.keysym.sym == SDL_QUIT)
+    /* Nem lehet bezarni az ablakot kiikszelessel (csak ha egy van nyitva)
+    * window, button, key, user stb. <- nem mukodnek :c*/
+        bill->menu_Esc = true;
+    // WINDOW_EVENT???????????????        
+    
 }
 
 void billentyuk_tiltasa(Billentyuk* bill) {

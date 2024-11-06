@@ -18,7 +18,7 @@
 #define FEHER_SDL (SDL_Color) {255, 255, 255}
 #define FEKETE_SDL (SDL_Color) {0, 0, 0}
 
-#define FALVASTAGSAG 1 //Ne noveld!!!
+#define FALVASTAGSAG 1 //Ne noveld!!!!
 
 SDL_Color SDL_Szin[6] = {PIROS_SDL, ROZSA_SDL, ZOLD_SDL, KEK_SDL, FEHER_SDL, FEKETE_SDL};
 

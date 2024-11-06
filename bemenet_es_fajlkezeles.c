@@ -313,11 +313,7 @@ void billentyuk_tiltasa(Billentyuk* bill) {
     if (bill->menu_Per) bill->menu_tilt_Per = true;
     if (bill->menu_M) bill->menu_tilt_M = true;
     if (bill->menu_Bal) bill->menu_tilt_Bal = true;
-    /* Jatek - loves */
-    if (bill->jatek_2) bill->tilt_2 = true;
-    if (bill->jatek_Csillag) bill->tilt_Csillag = true;
-    if (bill->jatek_K) bill->tilt_K = true;
-    if (bill->jatek_Fel) bill->tilt_Fel = true;
+    
     /* Jatek - Esc */
     if (bill->jatek_Esc) bill->tilt_Esc = true;
 }

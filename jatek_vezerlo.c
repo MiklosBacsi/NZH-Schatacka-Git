@@ -10,7 +10,17 @@
 #include <math.h>
 #include "debugmalloc.h"
 
+#define PIROS_SDL (SDL_Color) {255, 0, 0}
+#define ROZSA_SDL (SDL_Color) {255, 0, 255}
+#define ZOLD_SDL (SDL_Color) {0, 255, 0}
+#define KEK_SDL (SDL_Color) {0, 100, 255}
+#define SZURKE_SDL (SDL_Color) {30, 30, 30}
+#define FEHER_SDL (SDL_Color) {255, 255, 255}
+#define FEKETE_SDL (SDL_Color) {0, 0, 0}
+
 #define FALVASTAGSAG 1 //Ne noveld!!!
+
+SDL_Color SDL_Szin[6] = {PIROS_SDL, ROZSA_SDL, ZOLD_SDL, KEK_SDL, FEHER_SDL, FEKETE_SDL};
 
 static int aktiv_jatekosok_szama(bool* kiv_jatekosok) {
     int db = 0;
@@ -207,6 +217,16 @@ void uj_menet(Vezerles* vez, Jatekos* jatekosok) {
     vez->megallitva_jatek = true;
     vez->menet_vege = false;
     vez->menetido = 0.0;
+    lovedekeket_torol(vez);
+    for (int i=0; i < vez->jatekosszam; ++i) {
+        *(jatekosok[i].tilt_lo) = false;
+    }
+    
+
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    for (int i=0; i < vez->jatekosszam; ++i) {
+        jatekosok[i].pontszam = 100;
+    }
 
     // Fal
     if (vez->jt_mod != FAL_NELKULI && vez->fal_vonal != NULL) {
@@ -237,6 +257,11 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Be
     /* Fix elemek */
     jatek_hatteret_kirajzol(jatek_ablak, vez);
     /* Pontszamok */
+    for (int i=0; i < vez->jatekosszam; ++i) {
+        char pontszam[3+1];
+        snprintf(pontszam, 3+1, "%d", jatekosok[i].pontszam);
+        szoveget_kiir(pontszam, 1500, 100 + i*50, SDL_Szin[jatekosok[i].szin], SZURKE_SDL, bt->bold20, jatek_ablak->megjelenito, false);
+    }
 
     /* Fal */
     for (int i=0; i < vez->fal_db; ++i) {
@@ -251,6 +276,26 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Be
     /* Felveheto elemek */
 
     /* Lovedekek */
+    Lovedek* mozgo;
+    for (mozgo = vez->lovedekek; mozgo != NULL; mozgo = mozgo->kov) {
+        switch (mozgo->szin) {
+        case PIROS:
+            circleRGBA(jatek_ablak->megjelenito, (Sint16)mozgo->kp.x, (Sint16)mozgo->kp.y, mozgo->sugar, 255, 0, 0, 255);
+            break;
+        case ROZSA:
+            circleRGBA(jatek_ablak->megjelenito, (Sint16)mozgo->kp.x, (Sint16)mozgo->kp.y, mozgo->sugar, 255, 0, 255, 255);
+            break;
+        case ZOLD:
+            circleRGBA(jatek_ablak->megjelenito, (Sint16)mozgo->kp.x, (Sint16)mozgo->kp.y, mozgo->sugar, 0, 255, 0, 255);
+            break;
+        case KEK:
+            circleRGBA(jatek_ablak->megjelenito, (Sint16)mozgo->kp.x, (Sint16)mozgo->kp.y, mozgo->sugar, 0, 100, 255, 255);
+            break;        
+        default:
+            printf("Kirajzolasnal hibas lovedek szin!\n");
+            break;
+        }
+    }
     
     /* Jatekosok fejei */
     for (int i=0; i < vez->jatekosszam; ++i) {
@@ -267,7 +312,7 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Be
             circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 2, 0, 255, 0, 255);
             break;
         case KEK:
-            circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 2, 0, 0, 255, 255);
+            circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 2, 0, 100, 255, 255);
             break;
         default:
             printf("Hiba a jatekosok fejenek kirajzolasaval! Szin: %d\n", jatekosok[i].szin);
@@ -302,6 +347,14 @@ void jatekosok_mozditasa(Jatekos* jatekosok, Vezerles* vez) {
     }
 }
 
+void lovedekek_mozditasa(Lovedek** lov, double elmozd) {
+    Lovedek* mozgo;
+    for (mozgo = *lov; mozgo != NULL; mozgo = mozgo->kov) {
+        mozgo->kp.x += cos(mozgo->irany) * elmozd;
+        mozgo->kp.y += sin(mozgo->irany) * elmozd;
+    }
+}
+
 void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {    
     int halottak = 0;
     for (int i=0; i < vez->jatekosszam; ++i) {
@@ -331,3 +384,57 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
         // Szóközzel kell jatekot inditani szoveg!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 }
+
+static void loves_hozzaadasa(double sugar, Lovedek** lov, Jatekos* jat) {
+    Lovedek* uj_lov = (Lovedek*) malloc(sizeof(Lovedek));
+    if (!uj_lov) printf("Nem sikerult memoriat fogalalni a lovedeknek! :c\n");
+
+    Koordinata kp = (Koordinata) {jat->fej.x + 1.5 * sugar * cos(jat->irany), jat->fej.y + 1.5 * sugar * sin(jat->irany)};
+    uj_lov->kp = kp;
+    uj_lov->irany = jat->irany;
+    uj_lov->sugar = sugar;
+    uj_lov->szin = jat->szin;
+    uj_lov->kov = *lov;
+    *lov = uj_lov;
+}
+
+void loves_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
+    for (int i=0; i < vez->jatekosszam; ++i) {
+        if (jatekosok[i].eletben_van == false)
+            continue;
+
+        if (*(jatekosok[i].lo) && !(*(jatekosok[i].tilt_lo)) && jatekosok[i].pontszam >= 5){ // VAGY VAN SPECIALIS ELEME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            *(jatekosok[i].tilt_lo) = true;
+            jatekosok[i].pontszam -= 5;
+
+            // Loves tipusa???
+
+
+            // Normal loves
+            loves_hozzaadasa(20.0, &vez->lovedekek, &jatekosok[i]);            
+            // Y-tengely meg van invertalva !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            
+
+            // Nagyloves
+
+            // Sokloves
+        }
+    }
+}
+
+void lovedekeket_torol(Vezerles* vez) {
+    Lovedek* iter = vez->lovedekek;
+    while (iter != NULL) {
+        Lovedek* kov = iter->kov;
+        free(iter);
+        iter = kov;
+    }
+    vez->lovedekek = NULL;
+}
+
+/*
+Lovedek* mozgo;
+for (mozgo = *lov; mozgo != NULL; mozgo = mozgo->kov) {
+
+}
+*/

@@ -80,13 +80,15 @@ int main(void) {
 
                 //vonal hosszabbitasa
 
-                //lovedekek_mozditasa();
+                loves_vizsgalata(jatekosok, &vez);
+                
+                lovedekek_mozditasa(&vez.lovedekek, vez.elmozd_lov);
 
                 halal_vizsgalata(jatekosok, &vez);
 
 
 
-
+                //falak_es_lovekek_torlesenek_vizsgalata(vez);
 
 
             }
@@ -142,7 +144,7 @@ void inicializalas(Ablak* ablakok, Betutipusok* bt, Vezerles* vez) {
 
     /* Jatek: Vezerles */
     vez->palya_meret = (Pixel) {1400, 900}; vez->menet_vege = false;
-    vez->elmozd_jat = 1.1; vez->elmozd_lov = 1.5; vez->fordulas = 0.04;
+    vez->elmozd_jat = 1.1; vez->elmozd_lov = 2.0; vez->fordulas = 0.04;
     vez->lovedekek = NULL; vez->fal_vonal = NULL; vez->fal_db = 0;
 }
 
@@ -154,6 +156,7 @@ void felszabadit(Ablak* ablakok, Jatekos** cim_jatekosok, Vezerles* vez) {
         free(*cim_jatekosok);
     */
     free(vez->fal_vonal);
+    lovedekeket_torol(vez);
 }
 
 void betutipusok_bezarasa(Betutipusok* bt) {

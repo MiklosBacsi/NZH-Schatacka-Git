@@ -7,7 +7,9 @@
     "stdbool.h": "c",
     "sdl_image.h": "c",
     "bemenet_es_fajlkezeles.h": "c",
-    "math.h": "c"
+    "math.h": "c",
+    "sdl_ttf.h": "c",
+    "initializer_list": "c"
   },
   "C_Cpp_Runner.msvcBatchPath": "",
   "C_Cpp_Runner.cCompilerPath": "gcc",

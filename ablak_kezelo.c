@@ -11,7 +11,7 @@
 #define PIROS_SDL (SDL_Color) {255, 0, 0}
 #define ROZSA_SDL (SDL_Color) {255, 0, 255}
 #define ZOLD_SDL (SDL_Color) {0, 255, 0}
-#define KEK_SDL (SDL_Color) {0, 0, 255}
+#define KEK_SDL (SDL_Color) {0, 100, 255}
 #define SZURKE_SDL (SDL_Color) {30, 30, 30}
 #define FEHER_SDL (SDL_Color) {255, 255, 255}
 #define FEKETE_SDL (SDL_Color) {0, 0, 0}
@@ -89,7 +89,7 @@ void fix_menut_kirajzol(Ablak* ablak, Betutipusok* bt) {
     boxRGBA(ablak->megjelenito, 450, 120, 470, 140, 255, 0, 0, 255);
     boxRGBA(ablak->megjelenito, 450, 170, 470, 190, 255, 0, 255, 255);
     boxRGBA(ablak->megjelenito, 450, 220, 470, 240, 0, 255, 0, 255);
-    boxRGBA(ablak->megjelenito, 450, 270, 470, 290, 0, 0, 255, 255);
+    boxRGBA(ablak->megjelenito, 450, 270, 470, 290, 0, 100, 255, 255);
 
     /* Betuk kiirasa */
     szoveget_kiir("Q", 500, 115, PIROS_SDL, SZURKE_SDL, bt->med20, ablak->megjelenito, true);

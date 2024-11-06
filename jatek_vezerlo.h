@@ -33,6 +33,8 @@ typedef struct Lovedek {
     Koordinata kp;
     double irany;
     double sugar;
+    Szin szin;
+    struct Lovedek* kov;
 } Lovedek;
 
 //typedef enum SpecialisElem {NINCS = 0, NAGY_L, SOK_L, PAJZS} SpecialisElem;
@@ -87,6 +89,12 @@ Uint32 idozit(Uint32 ms, void *param);
 
 void jatekosok_mozditasa(Jatekos* jatekosok, Vezerles* vez);
 
+void lovedekek_mozditasa(Lovedek** lov, double elmozd);
+
 void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez);
+
+void loves_vizsgalata(Jatekos* jatekosok, Vezerles* vez);
+
+void lovedekeket_torol(Vezerles* vez);
 
 #endif

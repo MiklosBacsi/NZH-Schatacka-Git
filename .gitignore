@@ -1,4 +1,5 @@
 .vscode
-Schatacka.exe
+Schatacka
 build
 Build
+.gitignore

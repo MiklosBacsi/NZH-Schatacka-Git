@@ -455,24 +455,24 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
             else
                 jatekosok[i].fej.y = 0.5;
         }
-
-        
-        //if (jatekosok[i].fej.x < 0 || jatekosok[i].fej.x >= 1400 || jatekosok[i].fej.y < 0 || jatekosok[i].fej.y >= 900) {
             
         //jatekosok[i].eletben_van = false;
         // halalfej animaciot rajzol !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-        /* Jatekos utkozik a fallal */ //jatekmod!
-        /*
-        JÓ:
-        if (vez->jt_mod != FAL_NELKULI && (jatekosok[i].fej.x < 2.0 || jatekosok[i].fej.x > 1398.0 || jatekosok[i].fej.y < 2.0 || jatekosok[i].fej.y > 898))
-            jatekosok[i].eletben_van = false;
-        */
-
         /* Jatekos utkozik egy vonallal */ //pajzs
 
         /* Jatekos utkozik lovedekkel */ //pajzs
-
+        for (int i=0; i < vez->jatekosszam; ++i) {
+            // if van pajzs --> continue;
+            Lovedek* mozgo = vez->lovedekek;
+            while (mozgo != NULL) {
+                if (tav(jatekosok[i].fej, mozgo->kp) <= mozgo->sugar) {
+                    jatekosok[i].eletben_van = false;
+                    break;
+                }
+                mozgo = mozgo->kov;
+            }
+        }
 
     }
     if (halottak >= vez->jatekosszam-1) {
@@ -530,7 +530,6 @@ void lovedekeket_torol(Vezerles* vez) {
     }
     vez->lovedekek = NULL;
 }
-
 
 static bool kint_van(Koordinata kord, double sugar, Vezerles* vez) {
     return 0 > kord.x+sugar || kord.x-sugar >=vez->palya_meret.x || 0 > kord.y+sugar || kord.y-sugar >=vez->palya_meret.y;

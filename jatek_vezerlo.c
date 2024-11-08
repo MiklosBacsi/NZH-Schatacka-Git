@@ -392,6 +392,28 @@ void lovedekek_mozditasa(Lovedek** lov, double elmozd) {
     }
 }
 
+static bool van_fal_atmenetkor_X(short fejY, Vezerles* vez) {
+    if (fejY < 1) fejY = 1;
+    else if (fejY > vez->palya_meret.y-2) fejY = vez->palya_meret.y - 2;
+
+    if (!vez->falak.bal[fejY-1].torolve || !vez->falak.bal[fejY].torolve || !vez->falak.bal[fejY+1].torolve)
+        return true;
+    if (!vez->falak.jobb[fejY-1].torolve || !vez->falak.jobb[fejY].torolve || !vez->falak.jobb[fejY+1].torolve)
+        return true;
+    return false;    
+}
+
+static bool van_fal_atmenetkor_Y(short fejX, Vezerles* vez) {
+    if (fejX < 1) fejX = 1;
+    else if (fejX > vez->palya_meret.x-2) fejX = vez->palya_meret.x - 2;
+
+    if (!vez->falak.bal[fejX-1].torolve || !vez->falak.bal[fejX].torolve || !vez->falak.bal[fejX+1].torolve)
+        return true;
+    if (!vez->falak.jobb[fejX-1].torolve || !vez->falak.jobb[fejX].torolve || !vez->falak.jobb[fejX+1].torolve)
+        return true;
+    return false;    
+}
+
 void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {    
     int halottak = 0;
     for (int i=0; i < vez->jatekosszam; ++i) {
@@ -407,19 +429,31 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
         
         // Jobb --> Bal
         if (tulcs_x_max > 0 && tulcs_x_max >= tulcs_y_min && tulcs_x_max >= tulcs_y_max) {
-            jatekosok[i].fej.x = 0.5;
+            if (van_fal_atmenetkor_X((short)jatekosok[i].fej.y, vez) && vez->jt_mod != FAL_NELKULI)
+                jatekosok[i].eletben_van = false;
+            else
+                jatekosok[i].fej.x = 0.5;
         }
         // Bal --> Jobb
         else if (tulcs_x_min > 0 && tulcs_x_min >= tulcs_y_min && tulcs_x_min >= tulcs_y_max) {
-            jatekosok[i].fej.x =  vez->palya_meret.x - 1.5;
+            if (van_fal_atmenetkor_X((short)jatekosok[i].fej.y, vez) && vez->jt_mod != FAL_NELKULI)
+                jatekosok[i].eletben_van = false;
+            else
+                jatekosok[i].fej.x =  vez->palya_meret.x - 1.5;
         }
         // Fent --> Lent
         else if (tulcs_y_min > 0 && tulcs_y_min >= tulcs_x_min && tulcs_y_min >= tulcs_x_max) {
-            jatekosok[i].fej.y = vez->palya_meret.y - 1.5;
+            if (van_fal_atmenetkor_Y((short)jatekosok[i].fej.x, vez) && vez->jt_mod != FAL_NELKULI)
+                jatekosok[i].eletben_van = false;
+            else
+                jatekosok[i].fej.y = vez->palya_meret.y - 1.5;
         }
         // Lent--> Fent
         else if (tulcs_y_max > 0 && tulcs_y_max >= tulcs_x_min && tulcs_y_max >= tulcs_x_max) {
-            jatekosok[i].fej.y = 0.5;
+            if (van_fal_atmenetkor_Y((short)jatekosok[i].fej.x, vez) && vez->jt_mod != FAL_NELKULI)
+                jatekosok[i].eletben_van = false;
+            else
+                jatekosok[i].fej.y = 0.5;
         }
 
         

@@ -28,6 +28,11 @@ typedef struct Fal {
     bool torolve;
 } Fal;
 
+typedef struct Falak {
+    Fal *felso, *also, *bal, *jobb;
+    short x_db, y_db;
+} Falak;
+
 
 typedef struct Lovedek {
     Koordinata kp;
@@ -36,6 +41,11 @@ typedef struct Lovedek {
     Szin szin;
     struct Lovedek* kov;
 } Lovedek;
+
+typedef struct Kivalasztas {
+    int kiv_jt_mod;
+    bool aktiv_jatekosok[4];
+} Kivalasztas;
 
 //typedef enum SpecialisElem {NINCS = 0, NAGY_L, SOK_L, PAJZS} SpecialisElem;
 
@@ -68,7 +78,7 @@ typedef struct Vezerles
     double menetido; bool menet_vege;
     int jatekosszam; int max_pontszam; Jatekmod jt_mod;
     double elmozd_jat; double elmozd_lov; double fordulas;
-    Fal* fal_vonal; int fal_db;
+    Falak falak;
     Pixel palya_meret;
     Lovedek* lovedekek;
     //FelvehetoElemek felv_e_K;
@@ -96,5 +106,7 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez);
 void loves_vizsgalata(Jatekos* jatekosok, Vezerles* vez);
 
 void lovedekeket_torol(Vezerles* vez);
+
+void falak_es_lovekek_torlesenek_vizsgalata(Vezerles* vez);
 
 #endif

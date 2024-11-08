@@ -18,8 +18,6 @@
 #define FEHER_SDL (SDL_Color) {255, 255, 255}
 #define FEKETE_SDL (SDL_Color) {0, 0, 0}
 
-#define FALVASTAGSAG 1 //Ne noveld!!!!
-
 SDL_Color SDL_Szin[6] = {PIROS_SDL, ROZSA_SDL, ZOLD_SDL, KEK_SDL, FEHER_SDL, FEKETE_SDL};
 
 static int aktiv_jatekosok_szama(bool* kiv_jatekosok) {
@@ -121,17 +119,37 @@ static void jatekosokat_fogalal(Vezerles* vez, Jatekos** cim_jat_abl) {
     *cim_jat_abl = mutato;
 }
 
-static void fal_pixel_db(Vezerles* vez) {
-    // Ne legyen tulcsordulas
-    vez->fal_db = 2 * FALVASTAGSAG * (vez->palya_meret.x + vez->palya_meret.y - 2 * FALVASTAGSAG * FALVASTAGSAG);
-}
-
 static void falak_letrehozasa(Vezerles* vez) {
-    fal_pixel_db(vez);
     /* Memoria foglalas */
-    vez->fal_vonal = (Fal*) malloc(vez->fal_db * sizeof(Fal));
+    Fal* felso = (Fal*) malloc(vez->falak.x_db * sizeof(Fal));
+    Fal* also = (Fal*) malloc(vez->falak.x_db * sizeof(Fal));
+    Fal* bal = (Fal*) malloc(vez->falak.y_db * sizeof(Fal));
+    Fal* jobb = (Fal*) malloc(vez->falak.y_db * sizeof(Fal));   
 
-    if (vez->fal_vonal == NULL) printf("Nem sikerult falvonal memoriat foglalni :c\n");
+    vez->falak.felso = felso;
+    vez->falak.also = also;
+    vez->falak.bal = bal;
+    vez->falak.jobb = jobb;
+    if (!felso || !also || !bal || !jobb)
+        printf("Nem sikerult falvonal memoriat foglalni :c\n");
+
+    /* Pixel koordinatak kiszamolasa */
+    for (int i=0; i < vez->falak.x_db; ++i) {
+        // Felso
+        vez->falak.felso[i].pixel.x = i;
+        vez->falak.felso[i].pixel.y = 0;
+        // Also
+        vez->falak.also[i].pixel.x = i;
+        vez->falak.also[i].pixel.y = vez->palya_meret.y - 1;
+    }
+    for (int i=0; i < vez->falak.y_db; ++i) {
+        // Bal
+        vez->falak.bal[i].pixel.x = 0;
+        vez->falak.bal[i].pixel.y = i;
+        // Jobb
+        vez->falak.jobb[i].pixel.x = vez->palya_meret.x - 1;
+        vez->falak.jobb[i].pixel.y = i;
+    }
 }
 
 void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, Jatekos** cim_jatekosok, int jt_mod, bool* kiv_jat) {
@@ -151,31 +169,21 @@ void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, J
 
 
         /* Fal letrehozasa es memori lefoglalasa */
-        if (vez->jt_mod != FAL_NELKULI && vez->fal_vonal == NULL) {
+        if (vez->jt_mod != FAL_NELKULI && vez->falak.felso == NULL) {
             falak_letrehozasa(vez);
         }
         
-        if (vez->jt_mod == FAL_NELKULI && vez->fal_vonal != NULL) {
-            for (int i=0; i < vez->fal_db; ++i)
-                vez->fal_vonal[i].torolve = true;
-        }
-            
-
-        /* Pixel koordinatak kiszamolasa */
-        int index = 0; short x;
-        for (short y=0; y < vez->palya_meret.y; ++y) {
-            x = 0;
-            while (x < vez->palya_meret.x) {
-                // Kozepe -> ugras szelre
-                if (FALVASTAGSAG <= y && y < vez->palya_meret.y-FALVASTAGSAG && FALVASTAGSAG <= x && x < vez->palya_meret.x-FALVASTAGSAG)
-                    x = vez->palya_meret.x - FALVASTAGSAG;
-                
-                
-                vez->fal_vonal[index++].pixel = (Pixel) {x, y};
-
-                ++x;
+        if (vez->jt_mod == FAL_NELKULI && vez->falak.felso != NULL) {
+            for (int i=0; i < vez->falak.x_db; ++i) {
+                vez->falak.felso[i].torolve = true;
+                vez->falak.also[i].torolve = true;
+            }
+            for (int i=0; i < vez->falak.y_db; ++i) {
+                vez->falak.bal[i].torolve = true;
+                vez->falak.jobb[i].torolve = true;
             }
         }
+            
         uj_menet(vez, *cim_jatekosok);
     }
     /* Ablak bezarasa */
@@ -206,11 +214,6 @@ void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, J
 
 static void jatek_hatteret_kirajzol(Ablak* jatek_ablak, Vezerles* vez) {
     boxRGBA(jatek_ablak->megjelenito, 0, 0, 1600, 900, 30, 30, 30, 255);
-    // Hogy a vonalak jol nezzenek ki a kulonbozo jatekmodokban
-    if (vez->jt_mod == FAL_NELKULI)
-        boxRGBA(jatek_ablak->megjelenito, 1400, 0, 1401, 900, 255, 255, 255, 255);
-
-    logot_rajzol(jatek_ablak, 1425, 10);
 }
 
 void uj_menet(Vezerles* vez, Jatekos* jatekosok) {
@@ -229,9 +232,15 @@ void uj_menet(Vezerles* vez, Jatekos* jatekosok) {
     }
 
     // Fal
-    if (vez->jt_mod != FAL_NELKULI && vez->fal_vonal != NULL) {
-        for (int i=0; i < vez->fal_db; ++i)
-            vez->fal_vonal[i].torolve = false;
+    if (vez->jt_mod != FAL_NELKULI) {
+        for (int i=0; i < vez->falak.x_db; ++i) {
+            vez->falak.felso[i].torolve = false;
+            vez->falak.also[i].torolve = false;
+        }
+        for (int i=0; i < vez->falak.y_db; ++i) {
+            vez->falak.bal[i].torolve = false;
+            vez->falak.jobb[i].torolve = false;
+        }
     }
 
     /* Megjelenites */
@@ -256,19 +265,28 @@ void uj_menet(Vezerles* vez, Jatekos* jatekosok) {
 void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Betutipusok* bt) {
     /* Fix elemek */
     jatek_hatteret_kirajzol(jatek_ablak, vez);
-    /* Pontszamok */
-    for (int i=0; i < vez->jatekosszam; ++i) {
-        char pontszam[3+1];
-        snprintf(pontszam, 3+1, "%d", jatekosok[i].pontszam);
-        szoveget_kiir(pontszam, 1500, 100 + i*50, SDL_Szin[jatekosok[i].szin], SZURKE_SDL, bt->bold20, jatek_ablak->megjelenito, false);
-    }
-
+    
     /* Fal */
-    for (int i=0; i < vez->fal_db; ++i) {
-        if (vez->jt_mod != FAL_NELKULI && vez->fal_vonal[i].torolve == false) {
-            pixelRGBA(jatek_ablak->megjelenito, vez->fal_vonal[i].pixel.x, vez->fal_vonal[i].pixel.y, 255, 255, 255, 255);
+    if (vez->jt_mod != FAL_NELKULI) {
+        for (int i=0; i < vez->falak.x_db; ++i) {
+            // Felso
+            if (vez->falak.felso[i].torolve == false)
+                pixelRGBA(jatek_ablak->megjelenito, vez->falak.felso[i].pixel.x, vez->falak.felso[i].pixel.y, 255, 255, 255, 255);
+            // Also
+            if (vez->falak.also[i].torolve == false)
+                pixelRGBA(jatek_ablak->megjelenito, vez->falak.also[i].pixel.x, vez->falak.also[i].pixel.y, 255, 255, 255, 255);
+        }
+        for (int i=0; i < vez->falak.y_db; ++i) {
+            // Bal
+            if (vez->falak.bal[i].torolve == false)
+                pixelRGBA(jatek_ablak->megjelenito, vez->falak.bal[i].pixel.x, vez->falak.bal[i].pixel.y, 255, 255, 255, 255);
+            // Jobb
+            if (vez->falak.jobb[i].torolve == false)
+                pixelRGBA(jatek_ablak->megjelenito, vez->falak.jobb[i].pixel.x, vez->falak.jobb[i].pixel.y, 255, 255, 255, 255);
         }
     }
+
+    
 
 
     /* Jatekosvonalak */
@@ -319,6 +337,25 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Be
             break;
         }
     }
+
+    // Jobb savot ujrarajzolom, hogy a lovedekek ne latszodjanak rajta
+    boxRGBA(jatek_ablak->megjelenito, 1400, 0, 1600, 900, 30, 30, 30, 255);
+
+    // Hogy fal nelkuli jatekmodban latszodjon a palya szele
+    if (vez->jt_mod == FAL_NELKULI) {
+        boxRGBA(jatek_ablak->megjelenito, 1400, 0, 1401, 900, 255, 255, 255, 255);
+    }
+
+    /* Pontszamok */
+    for (int i=0; i < vez->jatekosszam; ++i) {
+        char pontszam[3+1];
+        snprintf(pontszam, 3+1, "%d", jatekosok[i].pontszam);
+        szoveget_kiir(pontszam, 1500, 100 + i*50, SDL_Szin[jatekosok[i].szin], SZURKE_SDL, bt->bold20, jatek_ablak->megjelenito, false);
+    }
+
+    // Logo
+    logot_rajzol(jatek_ablak, 1425, 10);
+
     SDL_RenderPresent(jatek_ablak->megjelenito);
 }
 
@@ -385,17 +422,19 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
     }
 }
 
-static void loves_hozzaadasa(double sugar, Lovedek** lov, Jatekos* jat) {
-    Lovedek* uj_lov = (Lovedek*) malloc(sizeof(Lovedek));
-    if (!uj_lov) printf("Nem sikerult memoriat fogalalni a lovedeknek! :c\n");
+static Lovedek* loves_hozzaadasa(double sugar, Lovedek* lov_eleje, Jatekos* jat) {
+    Lovedek* uj_eleje = (Lovedek*) malloc(sizeof(Lovedek));
+    if (!uj_eleje) printf("Nem sikerult memoriat fogalalni a lovedeknek! :c\n");
 
     Koordinata kp = (Koordinata) {jat->fej.x + 1.5 * sugar * cos(jat->irany), jat->fej.y + 1.5 * sugar * sin(jat->irany)};
-    uj_lov->kp = kp;
-    uj_lov->irany = jat->irany;
-    uj_lov->sugar = sugar;
-    uj_lov->szin = jat->szin;
-    uj_lov->kov = *lov;
-    *lov = uj_lov;
+    uj_eleje->kp = kp;
+    uj_eleje->irany = jat->irany;
+    uj_eleje->sugar = sugar;
+    uj_eleje->szin = jat->szin;
+
+    uj_eleje->kov = lov_eleje;
+
+    return uj_eleje;
 }
 
 void loves_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
@@ -411,7 +450,7 @@ void loves_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
 
 
             // Normal loves
-            loves_hozzaadasa(20.0, &vez->lovedekek, &jatekosok[i]);            
+            vez->lovedekek = loves_hozzaadasa(20.0, vez->lovedekek, &jatekosok[i]);
             // Y-tengely meg van invertalva !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             
 
@@ -432,9 +471,91 @@ void lovedekeket_torol(Vezerles* vez) {
     vez->lovedekek = NULL;
 }
 
-/*
-Lovedek* mozgo;
-for (mozgo = *lov; mozgo != NULL; mozgo = mozgo->kov) {
 
+static bool kint_van(Koordinata kord, double sugar, Vezerles* vez) {
+    return 0 > kord.x+sugar || kord.x-sugar >=vez->palya_meret.x || 0 > kord.y+sugar || kord.y-sugar >=vez->palya_meret.y;
 }
-*/
+
+void falak_es_lovekek_torlesenek_vizsgalata(Vezerles* vez) {
+    Lovedek* lemarado = NULL;
+    Lovedek* mozgo = vez->lovedekek;
+    // Megall a torlendo elemnel
+    while (mozgo != NULL && !kint_van(mozgo->kp, mozgo->sugar, vez)) {
+        lemarado = mozgo;
+        mozgo = mozgo->kov;
+    }    
+        
+    if (mozgo == NULL) {
+        // Nem torlok, mert nincs torlendo lovedek
+    } else if (lemarado == NULL) {
+        // Elso elemet torlom
+        Lovedek* ujeleje = mozgo->kov;
+        free(mozgo);
+        vez->lovedekek = ujeleje;
+    } else {
+        // Kozeperol vagy vegerol torlok
+        lemarado->kov = mozgo->kov;
+        free(mozgo);
+    }
+    
+    /* Fal pixeinek tolese lovedekkel valo utkozeskor */
+    if (vez->jt_mod == FAL_NELKULI) 
+        return;
+    for (mozgo = vez->lovedekek; mozgo != NULL; mozgo = mozgo->kov) {
+        // Felso
+        if (mozgo->kp.y - mozgo->sugar < 2.0) {
+            short min = (short) (mozgo->kp.x - mozgo->sugar);
+            short max = (short) (mozgo->kp.x + mozgo->sugar);
+            if (min < 0) min = 0;
+            if (max >= vez->palya_meret.x) max = vez->palya_meret.x - 1;
+
+            for (short i=min; i<max ; ++i) {
+                if (tav(mozgo->kp, (Koordinata) {(double)vez->falak.felso[i].pixel.x, (double)vez->falak.felso[i].pixel.y}) <= mozgo->sugar) {
+                    vez->falak.felso[i].torolve = true;
+                }
+            }
+        }
+
+        // Also
+        if (mozgo->kp.y + mozgo->sugar > vez->palya_meret.y - 2.0) {
+            short min = (short) (mozgo->kp.x - mozgo->sugar);
+            short max = (short) (mozgo->kp.x + mozgo->sugar);
+            if (min < 0) min = 0;
+            if (max >= vez->palya_meret.x) max = vez->palya_meret.x - 1;
+
+            for (short i=min; i<max ; ++i) {
+                if (tav(mozgo->kp, (Koordinata) {(double)vez->falak.also[i].pixel.x, (double)vez->falak.also[i].pixel.y}) <= mozgo->sugar) {
+                    vez->falak.also[i].torolve = true;
+                }
+            }
+        }
+
+        // Bal
+        if (mozgo->kp.x - mozgo->sugar < 2.0) {
+            short min = (short) (mozgo->kp.y - mozgo->sugar);
+            short max = (short) (mozgo->kp.y + mozgo->sugar);
+            if (min < 0) min = 0;
+            if (max >= vez->palya_meret.y) max = vez->palya_meret.y - 1;
+
+            for (short i=min; i<max ; ++i) {
+                if (tav(mozgo->kp, (Koordinata) {(double)vez->falak.bal[i].pixel.x, (double)vez->falak.bal[i].pixel.y}) <= mozgo->sugar) {
+                    vez->falak.bal[i].torolve = true;
+                }
+            }
+        }
+
+        // Jobb
+        if (mozgo->kp.x + mozgo->sugar > vez->palya_meret.x - 2.0) {
+            short min = (short) (mozgo->kp.y - mozgo->sugar);
+            short max = (short) (mozgo->kp.y + mozgo->sugar);
+            if (min < 0) min = 0;
+            if (max >= vez->palya_meret.y) max = vez->palya_meret.y - 1;
+
+            for (short i=min; i<max ; ++i) {
+                if (tav(mozgo->kp, (Koordinata) {(double)vez->falak.jobb[i].pixel.x, (double)vez->falak.jobb[i].pixel.y}) <= mozgo->sugar) {
+                    vez->falak.jobb[i].torolve = true;
+                }
+            }
+        }
+    }
+}

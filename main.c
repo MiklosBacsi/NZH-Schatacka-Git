@@ -17,12 +17,6 @@
 #define FEHER_SDL (SDL_Color) {255, 255, 255}
 #define FEKETE_SDL (SDL_Color) {0, 0, 0}
 
-
-typedef struct Kivalasztas {
-    int kiv_jt_mod;
-    bool aktiv_jatekosok[4];
-} Kivalasztas;
-
 void inicializalas(Ablak* ablakok, Betutipusok* bt, Vezerles* vez);
 void felszabadit(Ablak* ablakok, Jatekos** cim_jatekosok, Vezerles* vez);
 TTF_Font* betutipus_betoltese(char* nev, int meret);
@@ -88,7 +82,9 @@ int main(void) {
 
 
 
-                //falak_es_lovekek_torlesenek_vizsgalata(vez);
+
+
+                falak_es_lovekek_torlesenek_vizsgalata(&vez);
 
 
             }
@@ -104,7 +100,7 @@ int main(void) {
         }
             
         /* Billentyuk egyszeri lenyomasahoz */
-        billentyuk_tiltasa(&bill);        
+        billentyuk_tiltasa(&bill);
     }
     /****** CIKLUS VEGE ******/
     
@@ -145,17 +141,21 @@ void inicializalas(Ablak* ablakok, Betutipusok* bt, Vezerles* vez) {
     /* Jatek: Vezerles */
     vez->palya_meret = (Pixel) {1400, 900}; vez->menet_vege = false;
     vez->elmozd_jat = 1.1; vez->elmozd_lov = 2.0; vez->fordulas = 0.04;
-    vez->lovedekek = NULL; vez->fal_vonal = NULL; vez->fal_db = 0;
+    vez->lovedekek = NULL;
+    vez->falak.felso=NULL; vez->falak.also=NULL; vez->falak.bal=NULL; vez->falak.jobb=NULL;
+    vez->falak.x_db = vez->palya_meret.x;
+    vez->falak.y_db = vez->palya_meret.y;
 }
 
 void felszabadit(Ablak* ablakok, Jatekos** cim_jatekosok, Vezerles* vez) {    
     free(ablakok);
     free(*cim_jatekosok);
-    /*
-    if (!(*cim_jatekosok))
-        free(*cim_jatekosok);
-    */
-    free(vez->fal_vonal);
+
+    free(vez->falak.felso);
+    free(vez->falak.also);
+    free(vez->falak.bal);
+    free(vez->falak.jobb);
+    
     lovedekeket_torol(vez);
 }
 

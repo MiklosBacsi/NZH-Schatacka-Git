@@ -399,15 +399,41 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
             ++halottak;
             continue;
         }
-        /* Jatekos kimegy a palyarol */
-        if (jatekosok[i].fej.x < 0 || jatekosok[i].fej.x >= 1400 || jatekosok[i].fej.y < 0 || jatekosok[i].fej.y >= 900) {
-            jatekosok[i].eletben_van = false;
-            // halalfej animaciot rajzol !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        /* Jatekos kimegy a palyarol - kijon a masik oldalon */
+        short tulcs_x_min = 0 - (short) jatekosok[i].fej.x;
+        short tulcs_x_max = (short) jatekosok[i].fej.x - vez->palya_meret.x;
+        short tulcs_y_min = 0 - (short) jatekosok[i].fej.y;
+        short tulcs_y_max = (short) jatekosok[i].fej.y - vez->palya_meret.y;
+        
+        // Jobb --> Bal
+        if (tulcs_x_max > 0 && tulcs_x_max >= tulcs_y_min && tulcs_x_max >= tulcs_y_max) {
+            jatekosok[i].fej.x = 0.5;
+        }
+        // Bal --> Jobb
+        else if (tulcs_x_min > 0 && tulcs_x_min >= tulcs_y_min && tulcs_x_min >= tulcs_y_max) {
+            jatekosok[i].fej.x =  vez->palya_meret.x - 1.5;
+        }
+        // Fent --> Lent
+        else if (tulcs_y_min > 0 && tulcs_y_min >= tulcs_x_min && tulcs_y_min >= tulcs_x_max) {
+            jatekosok[i].fej.y = vez->palya_meret.y - 1.5;
+        }
+        // Lent--> Fent
+        else if (tulcs_y_max > 0 && tulcs_y_max >= tulcs_x_min && tulcs_y_max >= tulcs_x_max) {
+            jatekosok[i].fej.y = 0.5;
         }
 
+        
+        //if (jatekosok[i].fej.x < 0 || jatekosok[i].fej.x >= 1400 || jatekosok[i].fej.y < 0 || jatekosok[i].fej.y >= 900) {
+            
+        //jatekosok[i].eletben_van = false;
+        // halalfej animaciot rajzol !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
         /* Jatekos utkozik a fallal */ //jatekmod!
+        /*
+        JÓ:
         if (vez->jt_mod != FAL_NELKULI && (jatekosok[i].fej.x < 2.0 || jatekosok[i].fej.x > 1398.0 || jatekosok[i].fej.y < 2.0 || jatekosok[i].fej.y > 898))
             jatekosok[i].eletben_van = false;
+        */
 
         /* Jatekos utkozik egy vonallal */ //pajzs
 

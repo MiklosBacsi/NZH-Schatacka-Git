@@ -82,7 +82,7 @@ typedef struct Jatekos {
 typedef struct Vezerles
 {
     bool megallitva_jatek; bool megallitva_felhasznalo;
-    double menetido; bool menet_vege;
+    Uint16 menetido; bool menet_vege;
     int jatekosszam; int max_pontszam; Jatekmod jt_mod;
     double elmozd_jat; double elmozd_lov; double fordulas;
     Falak falak;

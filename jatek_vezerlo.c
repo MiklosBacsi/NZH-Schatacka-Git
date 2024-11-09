@@ -17,6 +17,8 @@
 #define SZURKE_SDL (SDL_Color) {30, 30, 30}
 #define FEHER_SDL (SDL_Color) {255, 255, 255}
 #define FEKETE_SDL (SDL_Color) {0, 0, 0}
+// Uj vonal lerakasank idokoze (*20ms)
+#define GYAK 10
 
 SDL_Color SDL_Szin[6] = {PIROS_SDL, ROZSA_SDL, ZOLD_SDL, KEK_SDL, FEHER_SDL, FEKETE_SDL};
 
@@ -203,7 +205,7 @@ void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, J
         vez->megallitva_jatek = true;
         
         vonalakat_torol(*cim_jatekosok, vez);
-        
+
         free(*cim_jatekosok);
         *cim_jatekosok = NULL;
     }
@@ -225,10 +227,10 @@ static void jatek_hatteret_kirajzol(Ablak* jatek_ablak, Vezerles* vez) {
 void uj_menet(Vezerles* vez, Jatekos* jatekosok) {
     vez->megallitva_jatek = true;
     vez->menet_vege = false;
-    vez->menetido = 0.0;
+    vez->menetido = 0;
     lovedekeket_torol(vez);
-
     vonalakat_torol(jatekosok, vez);
+
     for (int i=0; i < vez->jatekosszam; ++i) {
         *(jatekosok[i].tilt_lo) = false;
     }
@@ -399,7 +401,8 @@ Uint32 idozit(Uint32 ms, void *param) {
 
 void jatekosok_mozditasa(Jatekos* jatekosok, Vezerles* vez) {
     for (int i=0; i < vez->jatekosszam; ++i) {
-        if (!jatekosok[i].eletben_van) continue;
+        if (jatekosok[i].eletben_van == false)
+            continue;
 
         // Elozo pozicio elmentese (vonalhuzasnal kelleni fog)
         jatekosok[i].elozo = jatekosok[i].fej;
@@ -463,28 +466,28 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
         
         // Jobb --> Bal
         if (tulcs_x_max > 0 && tulcs_x_max >= tulcs_y_min && tulcs_x_max >= tulcs_y_max) {
-            if (van_fal_atmenetkor_X((short)jatekosok[i].fej.y, vez) && vez->jt_mod != FAL_NELKULI)
+            if (vez->jt_mod != FAL_NELKULI && van_fal_atmenetkor_X((short)jatekosok[i].fej.y, vez))
                 jatekosok[i].eletben_van = false;
             else
                 jatekosok[i].fej.x = 0.5;
         }
         // Bal --> Jobb
         else if (tulcs_x_min > 0 && tulcs_x_min >= tulcs_y_min && tulcs_x_min >= tulcs_y_max) {
-            if (van_fal_atmenetkor_X((short)jatekosok[i].fej.y, vez) && vez->jt_mod != FAL_NELKULI)
+            if (vez->jt_mod != FAL_NELKULI && van_fal_atmenetkor_X((short)jatekosok[i].fej.y, vez))
                 jatekosok[i].eletben_van = false;
             else
                 jatekosok[i].fej.x =  vez->palya_meret.x - 1.5;
         }
         // Fent --> Lent
         else if (tulcs_y_min > 0 && tulcs_y_min >= tulcs_x_min && tulcs_y_min >= tulcs_x_max) {
-            if (van_fal_atmenetkor_Y((short)jatekosok[i].fej.x, vez) && vez->jt_mod != FAL_NELKULI)
+            if (vez->jt_mod != FAL_NELKULI && van_fal_atmenetkor_Y((short)jatekosok[i].fej.x, vez))
                 jatekosok[i].eletben_van = false;
             else
                 jatekosok[i].fej.y = vez->palya_meret.y - 1.5;
         }
         // Lent--> Fent
         else if (tulcs_y_max > 0 && tulcs_y_max >= tulcs_x_min && tulcs_y_max >= tulcs_x_max) {
-            if (van_fal_atmenetkor_Y((short)jatekosok[i].fej.x, vez) && vez->jt_mod != FAL_NELKULI)
+            if (vez->jt_mod != FAL_NELKULI && van_fal_atmenetkor_Y((short)jatekosok[i].fej.x, vez))
                 jatekosok[i].eletben_van = false;
             else
                 jatekosok[i].fej.y = 0.5;
@@ -557,7 +560,7 @@ void loves_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
 
 void vonalat_hozzaad(Jatekos* jatekosok, Vezerles* vez) {
     // feltetel, hogy mikor adjon vonalat
-    if (true) {
+    if (vez->menetido % GYAK == 0) {
         for (int i=0; i < vez->jatekosszam; ++i) {
             if (jatekosok[i].eletben_van == false)
                 continue;

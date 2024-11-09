@@ -97,6 +97,8 @@ int main(void) {
             
             /* Jatek kirajzolasa */
             jatek_kirajzolasa(ablakok+JATEK, &vez, jatekosok, &bt);
+
+            ++vez.menetido;
         }
             
         /* Billentyuk egyszeri lenyomasahoz */

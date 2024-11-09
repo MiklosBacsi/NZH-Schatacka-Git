@@ -18,7 +18,7 @@
 #define FEKETE_SDL (SDL_Color) {0, 0, 0}
 
 void inicializalas(Ablak* ablakok, Betutipusok* bt, Vezerles* vez);
-void felszabadit(Ablak* ablakok, Jatekos** cim_jatekosok, Vezerles* vez);
+void felszabadit(Ablak* ablakok, Jatekos* jatekosok, Vezerles* vez);
 TTF_Font* betutipus_betoltese(char* nev, int meret);
 void betutipusok_bezarasa(Betutipusok* bt);
 void menu_kivalasztas(Kivalasztas* kiv, Billentyuk* bill, Ablak* menu, Betutipusok* bt);
@@ -48,7 +48,7 @@ int main(void) {
 
     
     /****** CIKLUS ELEJE ******/
-   while (!bill.menu_Esc)
+    while (!bill.menu_Esc)
     {
         // Megfelelo bemenethez
         bill.van_bemenet = false;
@@ -72,7 +72,7 @@ int main(void) {
             if (!vez.megallitva_felhasznalo && !vez.megallitva_jatek) {
                 jatekosok_mozditasa(jatekosok, &vez);
 
-                //vonal hosszabbitasa
+                vonalat_hozzaad(jatekosok, &vez); //Ezt engedélyezve hibás :c
 
                 loves_vizsgalata(jatekosok, &vez);
                 
@@ -115,7 +115,7 @@ int main(void) {
     if (!ablakok[JATEK].ablak)
         SDL_DestroyWindow(ablakok[JATEK].ablak);
     SDL_Quit();
-    felszabadit(ablakok, &jatekosok, &vez);
+    felszabadit(ablakok, jatekosok, &vez);
 
     return 0;
 }
@@ -147,16 +147,17 @@ void inicializalas(Ablak* ablakok, Betutipusok* bt, Vezerles* vez) {
     vez->falak.y_db = vez->palya_meret.y;
 }
 
-void felszabadit(Ablak* ablakok, Jatekos** cim_jatekosok, Vezerles* vez) {    
+void felszabadit(Ablak* ablakok, Jatekos* jatekosok, Vezerles* vez) {    
+    lovedekeket_torol(vez);
+    vonalakat_torol(jatekosok, vez);
+    
     free(ablakok);
-    free(*cim_jatekosok);
+    free(jatekosok);
 
     free(vez->falak.felso);
     free(vez->falak.also);
     free(vez->falak.bal);
     free(vez->falak.jobb);
-    
-    lovedekeket_torol(vez);
 }
 
 void betutipusok_bezarasa(Betutipusok* bt) {

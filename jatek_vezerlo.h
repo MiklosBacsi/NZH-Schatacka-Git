@@ -42,6 +42,12 @@ typedef struct Lovedek {
     struct Lovedek* kov;
 } Lovedek;
 
+typedef struct Vonal {
+    Koordinata kord;
+    Szin szin;
+    struct Vonal* kov;
+} Vonal;
+
 typedef struct Kivalasztas {
     int kiv_jt_mod;
     bool aktiv_jatekosok[4];
@@ -62,10 +68,11 @@ typedef struct Animacio {
 typedef struct Jatekos {
     Szin szin;
     Koordinata fej;
+    Koordinata elozo;
     double irany;
     //SpecialisElem spec_elem;
     bool* bal; bool* lo; bool* tilt_lo; bool* jobb;
-    //Vonal* vonal;
+    Vonal* vonal;
     //Lemarado pointer a lyukakhoz
     bool eletben_van;
     int pontszam;
@@ -108,5 +115,9 @@ void loves_vizsgalata(Jatekos* jatekosok, Vezerles* vez);
 void lovedekeket_torol(Vezerles* vez);
 
 void falak_es_lovekek_torlesenek_vizsgalata(Vezerles* vez);
+
+void vonalat_hozzaad(Jatekos* jatekosok, Vezerles* vez);
+
+void vonalakat_torol(Jatekos* jatekosok, Vezerles* vez);
 
 #endif

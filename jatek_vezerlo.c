@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <math.h>
+#include <time.h>
 #include "debugmalloc.h"
 
 #define PIROS_SDL (SDL_Color) {255, 0, 0}
@@ -92,6 +93,9 @@ double tav(Koordinata k1, Koordinata k2) {
 }
 
 static void randFej(Jatekos* jatekosok, Vezerles* vez) {
+    // Random seed
+    srand(time(NULL));
+
     for (int i=0; i < vez->jatekosszam; ++i) {
         bool jo_koordinata;
         do

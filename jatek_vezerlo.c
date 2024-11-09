@@ -496,11 +496,54 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
             else
                 jatekosok[i].fej.y = 0.5;
         }
-            
-        //jatekosok[i].eletben_van = false;
-        // halalfej animaciot rajzol !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-        /* Jatekos utkozik egy vonallal */ //pajzs
+
+        /* Jatekos utkozik egy vonallal + vonal torlese */ //pajzs!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        for (int i=0; i < vez->jatekosszam; ++i) {
+            if (jatekosok[i].vonal == NULL)
+                break;
+
+            Vonal* lemaradoV = NULL;
+            Vonal* mozgoV = jatekosok[i].vonal; //jatek eleje???????????????
+            while (mozgoV != NULL) {
+                /*** Jatekos halalanak vizsgalata ***/
+                for (int i=0; i < vez->jatekosszam; ++i) {
+                    if (mozgoV == jatekosok[i].vonal)
+                        break;
+
+                    if (tav(jatekosok[i].fej, mozgoV->kord) < 6.0) {
+                        jatekosok[i].eletben_van = false;
+                    }
+                }
+
+                /*** Vonal torlesenek vizsgalata ***/
+                Lovedek* mozgoLov = vez->lovedekek;
+                // Megall ha van torlendo vonal vagy ha a lovedekek vegere ert
+                while (mozgoLov != NULL && tav(mozgoLov->kp, mozgoV->kord) > mozgoLov->sugar) {
+                    mozgoLov = mozgoLov->kov;
+                }    
+                    
+                // Nem torlok, mert nincs torlendo lovedek
+                if (mozgoLov == NULL) {                    
+                    // Vonal leptetese        
+                    lemaradoV = mozgoV;
+                    mozgoV = mozgoV->kov;                
+                }
+                // Elso vonalat torlom
+                else if (lemaradoV == NULL) {
+                    jatekosok[i].vonal = mozgoV->kov;
+                    free(mozgoV);
+                    mozgoV = jatekosok[i].vonal;
+                }
+                // Kozeperol vagy vegerol torlok vonalat
+                else {                    
+                    lemaradoV->kov = mozgoV->kov;
+                    free(mozgoV);
+                    mozgoV = lemaradoV->kov;
+                }
+            }
+        }
+
 
         /* Jatekos utkozik lovedekkel */ //pajzs
         for (int i=0; i < vez->jatekosszam; ++i) {
@@ -514,6 +557,9 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
                 mozgo = mozgo->kov;
             }
         }
+
+        // HA jatekosok[i].eletben_van == false
+        // halalfej animaciot rajzol !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     }
     if (halottak >= vez->jatekosszam-1) {

@@ -72,13 +72,13 @@ int main(void) {
             if (!vez.megallitva_felhasznalo && !vez.megallitva_jatek) {
                 jatekosok_mozditasa(jatekosok, &vez);
 
-                vonalat_hozzaad(jatekosok, &vez); //Ezt engedélyezve hibás :c
+                vonalat_hozzaad(jatekosok, &vez);
 
                 loves_vizsgalata(jatekosok, &vez);
                 
                 lovedekek_mozditasa(&vez.lovedekek, vez.elmozd_lov);
 
-                halal_vizsgalata(jatekosok, &vez);
+                halal_vizsgalata(jatekosok, &vez); // + vonal torlese
 
 
 

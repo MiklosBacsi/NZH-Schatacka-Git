@@ -76,7 +76,7 @@ int main(void) {
 
                 loves_vizsgalata(jatekosok, &vez);
                 
-                lovedekek_mozditasa(&vez.lovedekek, vez.elmozd_lov);
+                lovedekek_mozditasa(vez.lovedekek, vez.elmozd_lov);
 
                 halal_vizsgalata(jatekosok, &vez); // + vonal torlese
 

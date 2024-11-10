@@ -88,7 +88,7 @@ static Koordinata randKoord() {
     return (Koordinata) {x,y};
 }
 
-double tav(Koordinata k1, Koordinata k2) {
+static double tav(Koordinata k1, Koordinata k2) {
     return sqrt( pow(k1.x-k2.x, 2) + pow(k1.y-k2.y, 2));
 }
 
@@ -425,9 +425,9 @@ void jatekosok_mozditasa(Jatekos* jatekosok, Vezerles* vez) {
     }
 }
 
-void lovedekek_mozditasa(Lovedek** lov, double elmozd) {
+void lovedekek_mozditasa(Lovedek* lovedekek, double elmozd) {
     Lovedek* mozgo;
-    for (mozgo = *lov; mozgo != NULL; mozgo = mozgo->kov) {
+    for (mozgo = lovedekek; mozgo != NULL; mozgo = mozgo->kov) {
         mozgo->kp.x += cos(mozgo->irany) * elmozd;
         mozgo->kp.y += sin(mozgo->irany) * elmozd;
     }
@@ -589,9 +589,9 @@ void loves_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
         if (jatekosok[i].eletben_van == false)
             continue;
 
-        if (*(jatekosok[i].lo) && !(*(jatekosok[i].tilt_lo)) && jatekosok[i].pontszam >= 5){ // VAGY VAN SPECIALIS ELEME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        if (*(jatekosok[i].lo) && !(*(jatekosok[i].tilt_lo)) && jatekosok[i].pontszam >= 6){ // VAGY VAN SPECIALIS ELEME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             *(jatekosok[i].tilt_lo) = true;
-            jatekosok[i].pontszam -= 5;
+            jatekosok[i].pontszam -= 6;
 
             // Loves tipusa???
 

@@ -70,7 +70,7 @@ typedef struct Billentyuk {
     bool menu_tilt_Bal; ///< bal nyíl tiltása a menüben (egyszeri megnyomáshoz) (bool)
 
     // Megfelelo kepfrissiteshez
-    bool van_bemenet;   ///< jelzi, ha van bemenet (időzítő) (bool) @see SDL_USEREVENT
+    bool van_bemenet;   ///< jelzi, ha van bemenet (időzítő) (bool)
 } Billentyuk;
 
 /**
@@ -87,12 +87,11 @@ typedef struct Billentyuk {
  * A menüből való kilépés esetén a bill struktúra menu_Esc változóját igazra állítja,
  * ami a főprogram (main.c) while ciklusát terminálja.
  *  
- * @param event interaktálás a programmal és időzítő (SDL_Event*) @see SDL_Event
+ * @param[in] event interaktálás a programmal és időzítő (SDL_Event*)
  * @param[out] bill billentyűk lenyomásának állapotai (Billentyuk*) @see Billentyuk
- * @param ablakIDk ablakok azonosítói (Uint32*) @see Uint32
- * @return nincs (void)
+ * @param[in] ablakIDk ablakok azonosítói (Uint32*)
  */
-void billentyuk_erzekelese(SDL_Event* event, Billentyuk* bill, Uint32* ablakIDk);
+void billentyuk_erzekelese(const SDL_Event* event, Billentyuk* bill, const Uint32* ablakIDk);
 
 /**
  * @brief Billentyűk tiltása egyszeri lenyomáshoz
@@ -102,7 +101,6 @@ void billentyuk_erzekelese(SDL_Event* event, Billentyuk* bill, Uint32* ablakIDk)
  * Az összes változó a bill struktúrában van tárolva.
  *  
  * @param[out] bill billentyuk lenyomásának állapotai (Billentyuk*) @see Billentyuk
- * @return nincs (void)
  */
 void billentyuk_tiltasa(Billentyuk* bill);
 

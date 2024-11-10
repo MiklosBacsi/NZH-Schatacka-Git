@@ -1,3 +1,17 @@
+/** @file main.c
+  * @brief Schatacka nevű helyi többjátékos, kígyós, lövöldözős játék
+  *  
+  * Ez a fájlt a játék főprogramja, amiben létre vannak hozva a fő változók, amik a
+  * játék működéséhez szükségesek.
+  * 
+  * Ezen kívül tartalmazza függvényeket, melyek az SDL könyvtár elemek betöltését,
+  * menüben történő kiválasztást és memória felszabadítást intézik.
+  *
+  * @author Bácsi Miklós
+  * @date 2024-11-10
+*/
+
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <SDL2/SDL_image.h>

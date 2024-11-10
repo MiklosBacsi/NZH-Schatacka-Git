@@ -39,13 +39,13 @@ typedef enum Ablak_tipus {
  * egy, a játék logójának kirajzolásához szükséges mutatót.
  */
 typedef struct Ablak {
-    SDL_Window* ablak;          ///< Ablak struktúra ablaka (ami megnyílik) (SDL_Window*) @see SDL_Window
-    SDL_Renderer* megjelenito;  ///< Albak struktúra megjelenítője (amire rajzolunk) (SDL_Renderer*) @see SDL_Renderer
+    SDL_Window* ablak;          ///< Ablak struktúra ablaka (ami megnyílik) (SDL_Window*)
+    SDL_Renderer* megjelenito;  ///< Albak struktúra megjelenítője (amire rajzolunk) (SDL_Renderer*)
     int szelesseg;              ///< az ablak szélességét tárolja (int)
     int magassag;               ///< az ablak magasságát tárolja (int)
     char* cim;                  ///< az ablak címét tarolja (char*)
     Ablak_tipus abl_tip;        ///< az ablak típusa (Ablak_tipus) @see Ablak_tipus
-    SDL_Texture* logo;          ///< logók az egyes ablakokra való kirajzolásához (SDL_Texture*) @see SDL_Texture
+    SDL_Texture* logo;          ///< logók az egyes ablakokra való kirajzolásához (SDL_Texture*)
     bool nyitva;                ///< ablak státuszát jelzi nyitva/bezárva (bool)
 } Ablak;
 
@@ -88,7 +88,6 @@ typedef enum Szin {
  * állítja.
  *  
  * @param[out] ablak  (Ablak*) @see Ablak
- * @return nincs (void)
  */
 void ablakot_letrehoz (Ablak* ablak);
 
@@ -102,7 +101,6 @@ void ablakot_letrehoz (Ablak* ablak);
  * @param[out] ablak ennek az ablaknak a megjelenítőjere rajzol logót (*Ablak) @see Ablak
  * @param x kirajzolandó logó bal felső sarkának X koordinátája (int)
  * @param y kirajzolandó logó bal felső sarkának Y koordinátája (int)
- * @return nincs (void)
  */
 void logot_rajzol(Ablak* ablak, int x, int y);
 
@@ -113,27 +111,25 @@ void logot_rajzol(Ablak* ablak, int x, int y);
  * Ez a függvény lehetővé teszi, hogy szöveget írjunk ki megjelenítőre a megadott
  * paraméterek segítségével.
  *  
- * @param szoveg kiírandó szöveg (char*)
+ * @param[in] szoveg kiírandó szöveg (char*)
  * @param x a kíírandó szöveg szövegdobozának bal felső sarkának X koordinátája (int)
  * @param y a kíírandó szöveg szövegdobozának bal felső sarkának Y koordinátája (int)
- * @param betu_szin kíírandó szöveg színe (SDL_Color) @see SDL_Color
- * @param hatter_szin szöveg hátterszíne, engedélyezhető az utolsó paraméterrel (SDL_Color) @see SDL_Color
- * @param font kiírandó szöveg betűtípusára mutató pointer (TTF_Font*) @see TTF_Font
- * @param[out] megjelenito erre rajzoljuk rá a szöveget (SDL_Renderer*) @see SDL_Renderer
+ * @param betu_szin kíírandó szöveg színe (SDL_Color)
+ * @param hatter_szin szöveg hátterszíne, engedélyezhető az utolsó paraméterrel (SDL_Color)
+ * @param[in] font kiírandó szöveg betűtípusára mutató pointer (TTF_Font*)
+ * @param[out] megjelenito erre rajzoljuk rá a szöveget (SDL_Renderer*)
  * @param hatterrel ezzel lehet engedélyezni, hogy legyen háttér a szöveghez (bool)
- * @return nincs (void)
  */
-void szoveget_kiir(char* szoveg, int x, int y, SDL_Color betu_szin, SDL_Color hatter_szin, TTF_Font* font, SDL_Renderer* megjelenito, bool hatterrel);
+void szoveget_kiir(const char* szoveg, int x, int y, SDL_Color betu_szin, SDL_Color hatter_szin, const TTF_Font* font, SDL_Renderer* megjelenito, bool hatterrel);
 
 
 /**
  * @brief Kirajzolja a menü ablak fix (nem változó) elemeit
  *  
  * @param[out] ablak ennek a megjelenítőjére rajzoljuk ki menüt (Ablak*) @see Ablak
- * @param bt betűtípus, szükséges a szöveg kiírásához (Betutipusok*) @see Betutipusok
- * @return nincs (void)
+ * @param[in] bt betűtípus, szükséges a szöveg kiírásához (Betutipusok*) @see Betutipusok
  */
-void fix_menut_kirajzol(Ablak* ablak, Betutipusok* bt);
+void fix_menut_kirajzol(Ablak* ablak, const Betutipusok* bt);
 
 
 /**
@@ -146,12 +142,11 @@ void fix_menut_kirajzol(Ablak* ablak, Betutipusok* bt);
  * A súgó kirajzolás a "sugot_kirajzol", míg a dicsőséglista kirajzolása a
  * "dics_listat_kirajzol" függvénnyel történik.
  * 
- * @param bill billentyűk lenyomásának állapotai (Billentyuk*) @see Billentyuk
+ * @param[in] bill billentyűk lenyomásának állapotai (Billentyuk*) @see Billentyuk
  * @param[out] ablakok ablakokat tartalmazó dinamikus tömb (Ablak*) @see Ablak
- * @param bt betűtípus, szükséges a szöveg kiírásához (Betutipusok*) @see Betutipusok
- * @return nincs (void)
+ * @param[in] bt betűtípus, szükséges a szöveg kiírásához (Betutipusok*) @see Betutipusok
  */
-void sugo_es_dics_lista_ablakok_kezelese(Billentyuk* bill, Ablak* ablakok, Betutipusok* bt);
+void sugo_es_dics_lista_ablakok_kezelese(const Billentyuk* bill, Ablak* ablakok, const Betutipusok* bt);
 
 
 /**
@@ -161,10 +156,9 @@ void sugo_es_dics_lista_ablakok_kezelese(Billentyuk* bill, Ablak* ablakok, Betut
  * számára.
  *  
  * @param[out] ablakok ablakokat tartalmazó dinamikus tömb (Ablak*) @see Ablak
- * @param bt betűtípus, szükséges a szöveg kiírásához (Betutipusok*) @see Betutipusok
- * @return nincs (void)
+ * @param[in] bt betűtípus, szükséges a szöveg kiírásához (Betutipusok*) @see Betutipusok
  */
-void sugot_kirajzol(Ablak* ablakok, Betutipusok* bt);
+void sugot_kirajzol(Ablak* ablakok, const Betutipusok* bt);
 
 
 /**
@@ -173,10 +167,9 @@ void sugot_kirajzol(Ablak* ablakok, Betutipusok* bt);
  * Ez a függvény kirajzolja a dicsőséglistát, amiben a 2, 3, illetve 4 játkosokhoz
  * tartalmazó legjobb három pontszámok találhatók.
  *  
- * @param[out] ablakok ablakokat tartalmazó dinamikus tömb (Ablak*) @see Ablak
- * @param bt betűtípus, szükséges a szöveg kiírásához (Betutipusok*) @see Betutipusok
- * @return nincs (void)
+ * @param[out] ablak egy Ablak struktúrára mutató pointer, ami tárolja a megjelenítőt, amire a kirajzolás történik (Ablak*) @see Ablak
+ * @param[in] bt betűtípus, szükséges a szöveg kiírásához (Betutipusok*) @see Betutipusok
  */
-void dics_listat_kirajzol(Ablak* ablak, Betutipusok* bt);
+void dics_listat_kirajzol(Ablak* ablak, const Betutipusok* bt);
 
 #endif

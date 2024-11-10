@@ -173,7 +173,7 @@ typedef struct Jatekos {
 typedef struct Vezerles {
     bool megallitva_jatek;      ///< jelzi a játék meg van-e állítva a játékvezérlés által (bool)
     bool megallitva_felhasznalo;///< jelzi a játék meg van-e állítva a felhasználó által (bool)
-    Uint16 menetido;            ///< számolja a menetidőt (több mint 20 perc után csordulna túl, de lehetetlen addig játszani egy menetet) (Uint16) @see Uint16
+    Uint16 menetido;            ///< számolja a menetidőt (több mint 20 perc után csordulna túl, de lehetetlen addig játszani egy menetet) (Uint16)
     bool menet_vege;            ///< jelzi a menet végetért-e (bool)
     int jatekosszam;            ///< tartalmazza az aktív játékosok számát
     int max_pontszam;           ///< tartalmazza az adott játékosszámhoz tartozó elégséges pont, mely elérése esetén a játék véget ér (int)
@@ -210,7 +210,6 @@ typedef struct Vezerles {
  * @param[out] cim_jatekosok játékosok címét tartalmazza (Jatekos**) @see Jatekos
  * @param jt_mod játékmódot tartalmazza (int)
  * @param kiv_jat 4 elemű bool-okat tartalmazó lista, játkosok foglalásához szükséges (bool*)
- * @return nincs (void)
  */
 void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, Jatekos** cim_jatekosok, int jt_mod, bool* kiv_jat);
 
@@ -223,7 +222,6 @@ void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, J
  * 
  * @param[out] vez játékvezérléshez szükséges adatokat tartalmazó struktúra (Vezerles*) @see Vezerles
  * @param[out] jatekosok játékosokat tartalmazó dinamikus tömböt tartalmazza (Jatekos*) @see Jatekos
- * @return nincs (void)
  */
 void uj_menet(Vezerles* vez, Jatekos* jatekosok);
 
@@ -235,7 +233,6 @@ void uj_menet(Vezerles* vez, Jatekos* jatekosok);
  * @param vez játékvezérléshez szükséges adatokat tartalmazó struktúra (Vezerles*) @see Vezerles
  * @param jatekosok játékosokat tartalmazó dinamikus tömböt tartalmazza (Jatekos*) @see Jatekos
  * @param bt betűtípus, szükséges a szöveg kiírásához (Betutipusok*) @see Betutipusok
- * @return nincs (void)
  */
 void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Betutipusok* bt);
 
@@ -250,9 +247,9 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Be
  * A függvény argumentumként használjuk egy másik függvényben (SDL_AddTimer), ami egy
  * időzítő létrehozásához szükséges (SDL_TimerID).
  * 
- * @param időköz ms-ban amikor az SDL időzítője jelet generál (Uint32) @see SDL_AddTimer
- * @param param általában NULL értéket adunk neki (void*) @see SDL_TimerID
- * @return időköz ms-ban amikor az SDL időzítője jelet generál (Uint32) @see SDL_PushEvent
+ * @param időköz ms-ban amikor az SDL időzítője jelet generál (Uint32)
+ * @param param általában NULL értéket adunk neki (void*)
+ * @return időköz ms-ban amikor az SDL időzítője jelet generál (Uint32)
  */
 Uint32 idozit(Uint32 ms, void *param);
 
@@ -266,7 +263,6 @@ Uint32 idozit(Uint32 ms, void *param);
  * 
  * @param[out] jatekosok játékosokat tartalmazó dinamikus tömböt tartalmazza (Jatekos*) @see Jatekos
  * @param vez játékvezérléshez szükséges adatokat tartalmazó struktúra (Vezerles*) @see Vezerles
- * @return nincs (void)
  */
 void jatekosok_mozditasa(Jatekos* jatekosok, Vezerles* vez);
 
@@ -276,7 +272,6 @@ void jatekosok_mozditasa(Jatekos* jatekosok, Vezerles* vez);
  * 
  * @param[out] lovedekek lövedékek láncolt lista (Lovedek*) @see Lovedek
  * @param elmozd ekkora lesz a lövedék elmozdulása (double)
- * @return nincs (void)
  */
 void lovedekek_mozditasa(Lovedek* lovedekek, double elmozd);
 
@@ -290,7 +285,6 @@ void lovedekek_mozditasa(Lovedek* lovedekek, double elmozd);
  * 
  * @param[out] jatekosok játékosokat tartalmazó dinamikus tömböt tartalmazza (Jatekos*) @see Jatekos
  * @param[out] vez játékvezérléshez szükséges adatokat tartalmazó struktúra (Vezerles*) @see Vezerles
- * @return nincs (void)
  */
 void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez);
 
@@ -303,7 +297,6 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez);
  * 
  * @param[out] jatekosok játékosokat tartalmazó dinamikus tömböt tartalmazza (Jatekos*) @see Jatekos
  * @param[out] vez játékvezérléshez szükséges adatokat tartalmazó struktúra (Vezerles*) @see Vezerles
- * @return nincs (void)
  */
 void loves_vizsgalata(Jatekos* jatekosok, Vezerles* vez);
 
@@ -314,7 +307,6 @@ void loves_vizsgalata(Jatekos* jatekosok, Vezerles* vez);
  * A paraméterként fogadott vez Vezerles struktúrára mutató pointer tartalmazza a lövedékeket.
  * 
  * @param[out] vez játékvezérléshez szükséges adatokat tartalmazó struktúra (Vezerles*) @see Vezerles
- * @return nincs (void)
  */
 void lovedekeket_torol(Vezerles* vez);
 
@@ -326,7 +318,6 @@ void lovedekeket_torol(Vezerles* vez);
  * lövedékeket (láncolt lista) és a falakat (dinamikus tömb).
  * 
  * @param[out] vez játékvezérléshez szükséges adatokat tartalmazó struktúra (Vezerles*) @see Vezerles
- * @return nincs (void)
  */
 void falak_es_lovekek_torlesenek_vizsgalata(Vezerles* vez);
 
@@ -342,7 +333,6 @@ void falak_es_lovekek_torlesenek_vizsgalata(Vezerles* vez);
  * 
  * @param[out] jatekosok játékosokat tartalmazó dinamikus tömböt tartalmazza (Jatekos*) @see Jatekos
  * @param vez játékvezérléshez szükséges adatokat tartalmazó struktúra (Vezerles*) @see Vezerles
- * @return nincs (void)
  */
 void vonalat_hozzaad(Jatekos* jatekosok, Vezerles* vez);
 
@@ -354,7 +344,6 @@ void vonalat_hozzaad(Jatekos* jatekosok, Vezerles* vez);
  * 
  * @param[out] jatekosok játékosokat tartalmazó dinamikus tömböt tartalmazza (Jatekos*) @see Jatekos
  * @param vez játékvezérléshez szükséges adatokat tartalmazó struktúra (Vezerles*) @see Vezerles
- * @return nincs (void)
  */
 void vonalakat_torol(Jatekos* jatekosok, Vezerles* vez);
 

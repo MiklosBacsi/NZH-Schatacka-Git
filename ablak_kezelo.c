@@ -48,7 +48,7 @@ void logot_rajzol(Ablak* ablak, int x, int y) {
     SDL_DestroyTexture(ablak->logo);
 }
 
-void szoveget_kiir(char* szoveg, int x, int y, SDL_Color betu_szin, SDL_Color hatter_szin, TTF_Font* betu_tip, SDL_Renderer* megjelenito, bool hatterrel) {
+void szoveget_kiir(const char* szoveg, int x, int y, SDL_Color betu_szin, SDL_Color hatter_szin, const TTF_Font* betu_tip, SDL_Renderer* megjelenito, bool hatterrel) {
     SDL_Surface *felirat;
     SDL_Texture *felirat_t;
     SDL_Rect hova = { 0, 0, 0, 0 };
@@ -68,7 +68,7 @@ void szoveget_kiir(char* szoveg, int x, int y, SDL_Color betu_szin, SDL_Color ha
     SDL_DestroyTexture(felirat_t);
 }
 
-void fix_menut_kirajzol(Ablak* ablak, Betutipusok* bt) {
+void fix_menut_kirajzol(Ablak* ablak, const Betutipusok* bt) {
     /* *****MENU KIRAJZOLASA***** */
     boxRGBA(ablak->megjelenito, 0, 0, 840, 360, 30, 30, 30, 255);
 
@@ -108,7 +108,7 @@ void fix_menut_kirajzol(Ablak* ablak, Betutipusok* bt) {
     szoveget_kiir("Jobb", 600, 265, FEHER_SDL, SZURKE_SDL, bt->reg20, ablak->megjelenito, true);
 }
 
-void sugo_es_dics_lista_ablakok_kezelese(Billentyuk* bill, Ablak* ablakok, Betutipusok* bt) {
+void sugo_es_dics_lista_ablakok_kezelese(const Billentyuk* bill, Ablak* ablakok, const Betutipusok* bt) {
     /* Sugo bezarasa */
     if (bill->sugo_Esc && ablakok[SUGO].nyitva) {
         SDL_DestroyRenderer(ablakok[SUGO].megjelenito);
@@ -139,7 +139,7 @@ void sugo_es_dics_lista_ablakok_kezelese(Billentyuk* bill, Ablak* ablakok, Betut
     }
 }
 
-void sugot_kirajzol(Ablak* ablak, Betutipusok* bt) {
+void sugot_kirajzol(Ablak* ablak, const Betutipusok* bt) {
     /* *****SUGO KIRAJZOLASA***** */
     boxRGBA(ablak->megjelenito, 0, 0, 800, 600, 30, 30, 30, 255);  
     
@@ -177,6 +177,6 @@ void sugot_kirajzol(Ablak* ablak, Betutipusok* bt) {
     SDL_DestroyTexture(billenytu_kep);
 }
 
-void dics_listat_kirajzol(Ablak* ablak, Betutipusok* bt) {
+void dics_listat_kirajzol(Ablak* ablak, const Betutipusok* bt) {
     SDL_RenderPresent(ablak->megjelenito);
 }

@@ -91,7 +91,7 @@ typedef struct Billentyuk {
  * @param[out] bill billentyűk lenyomásának állapotai (Billentyuk*) @see Billentyuk
  * @param[in] ablakIDk ablakok azonosítói (Uint32*)
  */
-void billentyuk_erzekelese(const SDL_Event* event, Billentyuk* bill, const Uint32* ablakIDk);
+void billentyuk_erzekelese(SDL_Event* event, Billentyuk* bill, Uint32* ablakIDk);
 
 /**
  * @brief Billentyűk tiltása egyszeri lenyomáshoz

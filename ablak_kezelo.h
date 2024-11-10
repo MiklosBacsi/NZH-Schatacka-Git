@@ -120,7 +120,7 @@ void logot_rajzol(Ablak* ablak, int x, int y);
  * @param[out] megjelenito erre rajzoljuk rá a szöveget (SDL_Renderer*)
  * @param hatterrel ezzel lehet engedélyezni, hogy legyen háttér a szöveghez (bool)
  */
-void szoveget_kiir(const char* szoveg, int x, int y, SDL_Color betu_szin, SDL_Color hatter_szin, const TTF_Font* font, SDL_Renderer* megjelenito, bool hatterrel);
+void szoveget_kiir(char* szoveg, int x, int y, SDL_Color betu_szin, SDL_Color hatter_szin, TTF_Font* font, SDL_Renderer* megjelenito, bool hatterrel);
 
 
 /**
@@ -129,7 +129,7 @@ void szoveget_kiir(const char* szoveg, int x, int y, SDL_Color betu_szin, SDL_Co
  * @param[out] ablak ennek a megjelenítőjére rajzoljuk ki menüt (Ablak*) @see Ablak
  * @param[in] bt betűtípus, szükséges a szöveg kiírásához (Betutipusok*) @see Betutipusok
  */
-void fix_menut_kirajzol(Ablak* ablak, const Betutipusok* bt);
+void fix_menut_kirajzol(Ablak* ablak, Betutipusok* bt);
 
 
 /**
@@ -146,7 +146,7 @@ void fix_menut_kirajzol(Ablak* ablak, const Betutipusok* bt);
  * @param[out] ablakok ablakokat tartalmazó dinamikus tömb (Ablak*) @see Ablak
  * @param[in] bt betűtípus, szükséges a szöveg kiírásához (Betutipusok*) @see Betutipusok
  */
-void sugo_es_dics_lista_ablakok_kezelese(const Billentyuk* bill, Ablak* ablakok, const Betutipusok* bt);
+void sugo_es_dics_lista_ablakok_kezelese(Billentyuk* bill, Ablak* ablakok, Betutipusok* bt);
 
 
 /**
@@ -158,7 +158,7 @@ void sugo_es_dics_lista_ablakok_kezelese(const Billentyuk* bill, Ablak* ablakok,
  * @param[out] ablakok ablakokat tartalmazó dinamikus tömb (Ablak*) @see Ablak
  * @param[in] bt betűtípus, szükséges a szöveg kiírásához (Betutipusok*) @see Betutipusok
  */
-void sugot_kirajzol(Ablak* ablakok, const Betutipusok* bt);
+void sugot_kirajzol(Ablak* ablakok, Betutipusok* bt);
 
 
 /**
@@ -170,6 +170,6 @@ void sugot_kirajzol(Ablak* ablakok, const Betutipusok* bt);
  * @param[out] ablak egy Ablak struktúrára mutató pointer, ami tárolja a megjelenítőt, amire a kirajzolás történik (Ablak*) @see Ablak
  * @param[in] bt betűtípus, szükséges a szöveg kiírásához (Betutipusok*) @see Betutipusok
  */
-void dics_listat_kirajzol(Ablak* ablak, const Betutipusok* bt);
+void dics_listat_kirajzol(Ablak* ablak, Betutipusok* bt);
 
 #endif

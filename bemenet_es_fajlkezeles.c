@@ -9,7 +9,7 @@
 #define SUGO_ID 2
 #define DICS_ID 3
 
-void billentyuk_erzekelese(const SDL_Event* event, Billentyuk* bill, const Uint32* ablakIDk) {  
+void billentyuk_erzekelese(SDL_Event* event, Billentyuk* bill, Uint32* ablakIDk) {  
     /* Ahhoz kell, hogy allando kepfrissites legyen */
     if (event->type == SDL_USEREVENT)
         bill->van_bemenet = true;

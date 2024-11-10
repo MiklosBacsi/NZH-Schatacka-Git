@@ -473,28 +473,28 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
             if (vez->jt_mod != FAL_NELKULI && van_fal_atmenetkor_X((short)jatekosok[i].fej.y, vez))
                 jatekosok[i].eletben_van = false;
             else
-                jatekosok[i].fej.x = 0.5;
+                jatekosok[i].fej.x = 1.5;
         }
         // Bal --> Jobb
         else if (tulcs_x_min > 0 && tulcs_x_min >= tulcs_y_min && tulcs_x_min >= tulcs_y_max) {
             if (vez->jt_mod != FAL_NELKULI && van_fal_atmenetkor_X((short)jatekosok[i].fej.y, vez))
                 jatekosok[i].eletben_van = false;
             else
-                jatekosok[i].fej.x =  vez->palya_meret.x - 1.5;
+                jatekosok[i].fej.x =  vez->palya_meret.x - 2.5;
         }
         // Fent --> Lent
         else if (tulcs_y_min > 0 && tulcs_y_min >= tulcs_x_min && tulcs_y_min >= tulcs_x_max) {
             if (vez->jt_mod != FAL_NELKULI && van_fal_atmenetkor_Y((short)jatekosok[i].fej.x, vez))
                 jatekosok[i].eletben_van = false;
             else
-                jatekosok[i].fej.y = vez->palya_meret.y - 1.5;
+                jatekosok[i].fej.y = vez->palya_meret.y - 2.5;
         }
         // Lent--> Fent
         else if (tulcs_y_max > 0 && tulcs_y_max >= tulcs_x_min && tulcs_y_max >= tulcs_x_max) {
             if (vez->jt_mod != FAL_NELKULI && van_fal_atmenetkor_Y((short)jatekosok[i].fej.x, vez))
                 jatekosok[i].eletben_van = false;
             else
-                jatekosok[i].fej.y = 0.5;
+                jatekosok[i].fej.y = 1.5;
         }
 
 

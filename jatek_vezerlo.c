@@ -12,16 +12,16 @@
 #include "debugmalloc.h"
 
 #define PIROS_SDL (SDL_Color) {255, 0, 0}
-#define ROZSA_SDL (SDL_Color) {255, 0, 255}
 #define ZOLD_SDL (SDL_Color) {0, 255, 0}
 #define KEK_SDL (SDL_Color) {0, 100, 255}
+#define ROZSA_SDL (SDL_Color) {255, 0, 255}
 #define SZURKE_SDL (SDL_Color) {30, 30, 30}
 #define FEHER_SDL (SDL_Color) {255, 255, 255}
 #define FEKETE_SDL (SDL_Color) {0, 0, 0}
 // Uj vonal lerakasank idokoze (*20ms)
 #define GYAK 10
 
-SDL_Color SDL_Szin[6] = {PIROS_SDL, ROZSA_SDL, ZOLD_SDL, KEK_SDL, FEHER_SDL, FEKETE_SDL};
+SDL_Color SDL_Szin[6] = {PIROS_SDL, ZOLD_SDL, KEK_SDL, ROZSA_SDL, FEHER_SDL, FEKETE_SDL};
 
 static int aktiv_jatekosok_szama(bool* kiv_jatekosok) {
     int db = 0;
@@ -42,23 +42,17 @@ static void szinek_billK_hozzarend_jatHoz(Jatekos* jatekosok, bool* kiv_jat, Bil
     for (int idx_aktiv_jatekos = 0; idx_aktiv_jatekos < vez->jatekosszam; ++idx_aktiv_jatekos) {
         switch (jatekosok[idx_aktiv_jatekos].szin) {
             case PIROS:
-                jatekosok[idx_aktiv_jatekos].bal = &bill->jatek_Q;
-                jatekosok[idx_aktiv_jatekos].lo = &bill->jatek_2;
-                jatekosok[idx_aktiv_jatekos].tilt_lo = &bill->tilt_2;
-                jatekosok[idx_aktiv_jatekos].jobb = &bill->jatek_W;                
-                break;
-            case ROZSA:
-                jatekosok[idx_aktiv_jatekos].bal = &bill->jatek_Per;
-                jatekosok[idx_aktiv_jatekos].lo = &bill->jatek_Csillag;
-                jatekosok[idx_aktiv_jatekos].tilt_lo = &bill->tilt_Csillag;
-                jatekosok[idx_aktiv_jatekos].jobb = &bill->jatek_Kotojel; 
+                jatekosok[idx_aktiv_jatekos].bal = &bill->jatek_A;
+                jatekosok[idx_aktiv_jatekos].lo = &bill->jatek_W;
+                jatekosok[idx_aktiv_jatekos].tilt_lo = &bill->tilt_W;
+                jatekosok[idx_aktiv_jatekos].jobb = &bill->jatek_D;                
                 break;
 
             case ZOLD:
-                jatekosok[idx_aktiv_jatekos].bal = &bill->jatek_M;
-                jatekosok[idx_aktiv_jatekos].lo = &bill->jatek_K;
-                jatekosok[idx_aktiv_jatekos].tilt_lo = &bill->tilt_K;
-                jatekosok[idx_aktiv_jatekos].jobb = &bill->jatek_Vesszo; 
+                jatekosok[idx_aktiv_jatekos].bal = &bill->jatek_J;
+                jatekosok[idx_aktiv_jatekos].lo = &bill->jatek_I;
+                jatekosok[idx_aktiv_jatekos].tilt_lo = &bill->tilt_I;
+                jatekosok[idx_aktiv_jatekos].jobb = &bill->jatek_L; 
                 break;
 
             case KEK:
@@ -66,7 +60,15 @@ static void szinek_billK_hozzarend_jatHoz(Jatekos* jatekosok, bool* kiv_jat, Bil
                 jatekosok[idx_aktiv_jatekos].lo = &bill->jatek_Fel;
                 jatekosok[idx_aktiv_jatekos].tilt_lo = &bill->tilt_Fel;
                 jatekosok[idx_aktiv_jatekos].jobb = &bill->jatek_Jobb; 
-                break;        
+                break;
+
+            case ROZSA:
+                jatekosok[idx_aktiv_jatekos].bal = &bill->jatek_7;
+                jatekosok[idx_aktiv_jatekos].lo = &bill->jatek_Per;
+                jatekosok[idx_aktiv_jatekos].tilt_lo = &bill->tilt_Per;
+                jatekosok[idx_aktiv_jatekos].jobb = &bill->jatek_9; 
+                break;
+
             default:
                 printf("Hiba tortent a billentyuk jatekosokhoz valo hozzarendelesenel!\n");
                 break;
@@ -115,6 +117,14 @@ static void randFej(Jatekos* jatekosok, Vezerles* vez) {
 
         /* Random irany */
         jatekosok[i].irany = (double) (rand() % 360);
+    }
+}
+
+static void eletben_levo_jatekosok_pontjanak_novelese_halalkor(Jatekos* jatekosok, Vezerles* vez, int halottak_szama) {
+    for (int i=0; i < vez->jatekosszam; ++i) {
+        if (jatekosok[i].eletben_van == false)
+            continue;
+        jatekosok[i].pontszam += 3 + halottak_szama;
     }
 }
 
@@ -192,7 +202,11 @@ void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, J
                 vez->falak.bal[i].torolve = true;
                 vez->falak.jobb[i].torolve = true;
             }
-        }        
+        }
+
+        for (int i=0; i < vez->jatekosszam; ++i) {
+            (*cim_jatekosok)[i].pontszam = 0;
+        }
             
         uj_menet(vez, *cim_jatekosok);
     }
@@ -239,11 +253,7 @@ void uj_menet(Vezerles* vez, Jatekos* jatekosok) {
         *(jatekosok[i].tilt_lo) = false;
     }
     
-
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    for (int i=0; i < vez->jatekosszam; ++i) {
-        jatekosok[i].pontszam = 100;
-    }
+    
 
     // Fal
     if (vez->jt_mod != FAL_NELKULI) {
@@ -310,16 +320,16 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Be
             switch (mozgoV->szin) {
             case PIROS:
                 circleRGBA(jatek_ablak->megjelenito, (Sint16)mozgoV->kord.x, (Sint16)mozgoV->kord.y, 2, 255, 0, 0, 255);
-                break;
-            case ROZSA:
-                circleRGBA(jatek_ablak->megjelenito, (Sint16)mozgoV->kord.x, (Sint16)mozgoV->kord.y, 2, 255, 0, 255, 255);
-                break;
+                break;            
             case ZOLD:
                 circleRGBA(jatek_ablak->megjelenito, (Sint16)mozgoV->kord.x, (Sint16)mozgoV->kord.y, 2, 0, 255, 0, 255);
                 break;
             case KEK:
                 circleRGBA(jatek_ablak->megjelenito, (Sint16)mozgoV->kord.x, (Sint16)mozgoV->kord.y, 2, 0, 100, 255, 255);
-                break;        
+                break;
+            case ROZSA:
+                circleRGBA(jatek_ablak->megjelenito, (Sint16)mozgoV->kord.x, (Sint16)mozgoV->kord.y, 2, 255, 0, 255, 255);
+                break;     
             default:
                 printf("Kirajzolasnal hibas lovedek szin!\n");
                 printf("Szin: %d, mozgoV: %p, Köv: %p\n", mozgoV->szin, (void*) mozgoV, (void*) mozgoV->kov);
@@ -337,15 +347,15 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Be
         case PIROS:
             circleRGBA(jatek_ablak->megjelenito, (Sint16)mozgoL->kp.x, (Sint16)mozgoL->kp.y, mozgoL->sugar, 255, 0, 0, 255);
             break;
-        case ROZSA:
-            circleRGBA(jatek_ablak->megjelenito, (Sint16)mozgoL->kp.x, (Sint16)mozgoL->kp.y, mozgoL->sugar, 255, 0, 255, 255);
-            break;
         case ZOLD:
             circleRGBA(jatek_ablak->megjelenito, (Sint16)mozgoL->kp.x, (Sint16)mozgoL->kp.y, mozgoL->sugar, 0, 255, 0, 255);
             break;
         case KEK:
             circleRGBA(jatek_ablak->megjelenito, (Sint16)mozgoL->kp.x, (Sint16)mozgoL->kp.y, mozgoL->sugar, 0, 100, 255, 255);
-            break;        
+            break;
+        case ROZSA:
+            circleRGBA(jatek_ablak->megjelenito, (Sint16)mozgoL->kp.x, (Sint16)mozgoL->kp.y, mozgoL->sugar, 255, 0, 255, 255);
+            break; 
         default:
             printf("Kirajzolasnal hibas lovedek szin!\n");
             break;
@@ -360,14 +370,14 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Be
         case PIROS:
             circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 2, 255, 0, 0, 255);
             break;
-        case ROZSA:
-            circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 2, 255, 0, 255, 255);
-            break;
         case ZOLD:
             circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 2, 0, 255, 0, 255);
             break;
         case KEK:
             circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 2, 0, 100, 255, 255);
+            break;
+        case ROZSA:
+            circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 2, 255, 0, 255, 255);
             break;
         default:
             printf("Hiba a jatekosok fejenek kirajzolasaval! Szin: %d\n", jatekosok[i].szin);
@@ -458,7 +468,7 @@ static bool van_fal_atmenetkor_Y(short fejX, Vezerles* vez) {
 void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {    
     int halottak = 0;
     for (int i=0; i < vez->jatekosszam; ++i) {
-        if (!jatekosok[i].eletben_van) {
+        if (jatekosok[i].eletben_van == false) {
             ++halottak;
             continue;
         }
@@ -470,98 +480,117 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
         
         // Jobb --> Bal
         if (tulcs_x_max > 0 && tulcs_x_max >= tulcs_y_min && tulcs_x_max >= tulcs_y_max) {
-            if (vez->jt_mod != FAL_NELKULI && van_fal_atmenetkor_X((short)jatekosok[i].fej.y, vez))
+            if (vez->jt_mod != FAL_NELKULI && van_fal_atmenetkor_X((short)jatekosok[i].fej.y, vez)) {
                 jatekosok[i].eletben_van = false;
+                ++halottak;
+                eletben_levo_jatekosok_pontjanak_novelese_halalkor(jatekosok, vez, halottak);
+            }
             else
                 jatekosok[i].fej.x = 1.5;
         }
         // Bal --> Jobb
         else if (tulcs_x_min > 0 && tulcs_x_min >= tulcs_y_min && tulcs_x_min >= tulcs_y_max) {
-            if (vez->jt_mod != FAL_NELKULI && van_fal_atmenetkor_X((short)jatekosok[i].fej.y, vez))
+            if (vez->jt_mod != FAL_NELKULI && van_fal_atmenetkor_X((short)jatekosok[i].fej.y, vez)) {
                 jatekosok[i].eletben_van = false;
+                ++halottak;
+                eletben_levo_jatekosok_pontjanak_novelese_halalkor(jatekosok, vez, halottak);
+            }
             else
                 jatekosok[i].fej.x =  vez->palya_meret.x - 2.5;
         }
         // Fent --> Lent
         else if (tulcs_y_min > 0 && tulcs_y_min >= tulcs_x_min && tulcs_y_min >= tulcs_x_max) {
-            if (vez->jt_mod != FAL_NELKULI && van_fal_atmenetkor_Y((short)jatekosok[i].fej.x, vez))
+            if (vez->jt_mod != FAL_NELKULI && van_fal_atmenetkor_Y((short)jatekosok[i].fej.x, vez)) {
                 jatekosok[i].eletben_van = false;
+                ++halottak;
+                eletben_levo_jatekosok_pontjanak_novelese_halalkor(jatekosok, vez, halottak);
+            }
             else
                 jatekosok[i].fej.y = vez->palya_meret.y - 2.5;
         }
         // Lent--> Fent
         else if (tulcs_y_max > 0 && tulcs_y_max >= tulcs_x_min && tulcs_y_max >= tulcs_x_max) {
-            if (vez->jt_mod != FAL_NELKULI && van_fal_atmenetkor_Y((short)jatekosok[i].fej.x, vez))
+            if (vez->jt_mod != FAL_NELKULI && van_fal_atmenetkor_Y((short)jatekosok[i].fej.x, vez)) {
                 jatekosok[i].eletben_van = false;
+                ++halottak;
+                eletben_levo_jatekosok_pontjanak_novelese_halalkor(jatekosok, vez, halottak);
+            }
             else
                 jatekosok[i].fej.y = 1.5;
         }
-
-
-        /* Jatekos utkozik egy vonallal + vonal torlese */ //pajzs!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        for (int i=0; i < vez->jatekosszam; ++i) {
-            if (jatekosok[i].vonal == NULL)
-                break;
-
-            Vonal* lemaradoV = NULL;
-            Vonal* mozgoV = jatekosok[i].vonal; //jatek eleje???????????????
-            while (mozgoV != NULL) {
-                /*** Jatekos halalanak vizsgalata ***/
-                for (int i=0; i < vez->jatekosszam; ++i) {
-                    if (mozgoV == jatekosok[i].vonal)
-                        break;
-
-                    if (tav(jatekosok[i].fej, mozgoV->kord) < 6.0) {
-                        jatekosok[i].eletben_van = false;
-                    }
-                }
-
-                /*** Vonal torlesenek vizsgalata ***/
-                Lovedek* mozgoLov = vez->lovedekek;
-                // Megall ha van torlendo vonal vagy ha a lovedekek vegere ert
-                while (mozgoLov != NULL && tav(mozgoLov->kp, mozgoV->kord) > mozgoLov->sugar) {
-                    mozgoLov = mozgoLov->kov;
-                }    
-                    
-                // Nem torlok, mert nincs torlendo lovedek
-                if (mozgoLov == NULL) {                    
-                    // Vonal leptetese        
-                    lemaradoV = mozgoV;
-                    mozgoV = mozgoV->kov;                
-                }
-                // Elso vonalat torlom
-                else if (lemaradoV == NULL) {
-                    jatekosok[i].vonal = mozgoV->kov;
-                    free(mozgoV);
-                    mozgoV = jatekosok[i].vonal;
-                }
-                // Kozeperol vagy vegerol torlok vonalat
-                else {                    
-                    lemaradoV->kov = mozgoV->kov;
-                    free(mozgoV);
-                    mozgoV = lemaradoV->kov;
-                }
-            }
-        }
-
-
-        /* Jatekos utkozik lovedekkel */ //pajzs
-        for (int i=0; i < vez->jatekosszam; ++i) {
-            // if van pajzs --> continue;
-            Lovedek* mozgo = vez->lovedekek;
-            while (mozgo != NULL) {
-                if (tav(jatekosok[i].fej, mozgo->kp) <= mozgo->sugar) {
-                    jatekosok[i].eletben_van = false;
-                    break;
-                }
-                mozgo = mozgo->kov;
-            }
-        }
-
-        // HA jatekosok[i].eletben_van == false
-        // halalfej animaciot rajzol !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
     }
+
+    /* Jatekos utkozik egy vonallal + vonal torlese */ //pajzs!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    for (int i=0; i < vez->jatekosszam; ++i) {
+        if (jatekosok[i].vonal == NULL)
+            break;
+
+        Vonal* lemaradoV = NULL;
+        Vonal* mozgoV = jatekosok[i].vonal; //jatek eleje???????????????
+        while (mozgoV != NULL) {
+            /*** Jatekos halalanak vizsgalata ***/
+            for (int i=0; i < vez->jatekosszam; ++i) {
+                if (mozgoV == jatekosok[i].vonal)
+                    break;
+
+                if (tav(jatekosok[i].fej, mozgoV->kord) < 6.0 && jatekosok[i].eletben_van) {
+                    jatekosok[i].eletben_van = false;
+                    ++halottak;
+                    eletben_levo_jatekosok_pontjanak_novelese_halalkor(jatekosok, vez, halottak);
+                }
+            }
+
+            /*** Vonal torlesenek vizsgalata ***/
+            Lovedek* mozgoLov = vez->lovedekek;
+            // Megall ha van torlendo vonal vagy ha a lovedekek vegere ert
+            while (mozgoLov != NULL && tav(mozgoLov->kp, mozgoV->kord) > mozgoLov->sugar) {
+                mozgoLov = mozgoLov->kov;
+            }    
+                
+            // Nem torlok, mert nincs torlendo lovedek
+            if (mozgoLov == NULL) {                    
+                // Vonal leptetese        
+                lemaradoV = mozgoV;
+                mozgoV = mozgoV->kov;                
+            }
+            // Elso vonalat torlom
+            else if (lemaradoV == NULL) {
+                jatekosok[i].vonal = mozgoV->kov;
+                free(mozgoV);
+                mozgoV = jatekosok[i].vonal;
+            }
+            // Kozeperol vagy vegerol torlok vonalat
+            else {                    
+                lemaradoV->kov = mozgoV->kov;
+                free(mozgoV);
+                mozgoV = lemaradoV->kov;
+            }
+        }
+    }
+
+
+    /* Jatekos utkozik lovedekkel */ //pajzs
+    for (int i=0; i < vez->jatekosszam; ++i) {
+        if (jatekosok[i].eletben_van == false)
+            continue;
+        // if van pajzs --> continue;
+        Lovedek* mozgo = vez->lovedekek;
+        while (mozgo != NULL) {
+            if (tav(jatekosok[i].fej, mozgo->kp) <= mozgo->sugar) {
+                jatekosok[i].eletben_van = false;
+                ++halottak;
+                jatekosok[mozgo->szin].pontszam += 3;
+                eletben_levo_jatekosok_pontjanak_novelese_halalkor(jatekosok, vez, halottak);
+                break;
+            }
+            mozgo = mozgo->kov;
+        }
+    }
+
+    // HA jatekosok[i].eletben_van == false
+    // halalfej animaciot rajzol !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    
     if (halottak >= vez->jatekosszam-1) {
         vez->menet_vege = true;
         vez->megallitva_jatek = true;

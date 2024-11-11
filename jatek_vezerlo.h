@@ -247,7 +247,7 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Be
  * A függvény argumentumként használjuk egy másik függvényben (SDL_AddTimer), ami egy
  * időzítő létrehozásához szükséges (SDL_TimerID).
  * 
- * @param időköz ms-ban amikor az SDL időzítője jelet generál (Uint32)
+ * @param ms időköz ms-ban amikor az SDL időzítője jelet generál (Uint32)
  * @param param általában NULL értéket adunk neki (void*)
  * @return időköz ms-ban amikor az SDL időzítője jelet generál (Uint32)
  */

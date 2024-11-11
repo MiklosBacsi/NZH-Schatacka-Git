@@ -9,9 +9,9 @@
 #include "debugmalloc.h"
 
 #define PIROS_SDL (SDL_Color) {255, 0, 0}
-#define ROZSA_SDL (SDL_Color) {255, 0, 255}
 #define ZOLD_SDL (SDL_Color) {0, 255, 0}
 #define KEK_SDL (SDL_Color) {0, 100, 255}
+#define ROZSA_SDL (SDL_Color) {255, 0, 255}
 #define SZURKE_SDL (SDL_Color) {30, 30, 30}
 #define FEHER_SDL (SDL_Color) {255, 255, 255}
 #define FEKETE_SDL (SDL_Color) {0, 0, 0}
@@ -87,25 +87,25 @@ void fix_menut_kirajzol(Ablak* ablak, Betutipusok* bt) {
 
     /* Szines negyzetek */
     boxRGBA(ablak->megjelenito, 450, 120, 470, 140, 255, 0, 0, 255);
-    boxRGBA(ablak->megjelenito, 450, 170, 470, 190, 255, 0, 255, 255);
-    boxRGBA(ablak->megjelenito, 450, 220, 470, 240, 0, 255, 0, 255);
-    boxRGBA(ablak->megjelenito, 450, 270, 470, 290, 0, 100, 255, 255);
+    boxRGBA(ablak->megjelenito, 450, 170, 470, 190, 0, 255, 0, 255);
+    boxRGBA(ablak->megjelenito, 450, 220, 470, 240, 0, 100, 255, 255);
+    boxRGBA(ablak->megjelenito, 450, 270, 470, 290, 255, 0, 255, 255);
 
     /* Betuk kiirasa */
-    szoveget_kiir("Q", 500, 115, PIROS_SDL, SZURKE_SDL, bt->med20, ablak->megjelenito, true);
-    szoveget_kiir("/", 500, 165, ROZSA_SDL, SZURKE_SDL, bt->med20, ablak->megjelenito, true);
-    szoveget_kiir("M", 500, 215, ZOLD_SDL, SZURKE_SDL, bt->med20, ablak->megjelenito, true);
-    szoveget_kiir("Bal", 500, 265, KEK_SDL, SZURKE_SDL, bt->med20, ablak->megjelenito, true);
+    szoveget_kiir("A", 500, 115, PIROS_SDL, SZURKE_SDL, bt->med20, ablak->megjelenito, true);
+    szoveget_kiir("J", 500, 165, ZOLD_SDL, SZURKE_SDL, bt->med20, ablak->megjelenito, true);
+    szoveget_kiir("Bal", 500, 215, KEK_SDL, SZURKE_SDL, bt->med20, ablak->megjelenito, true);
+    szoveget_kiir("7", 500, 265, ROZSA_SDL, SZURKE_SDL, bt->med20, ablak->megjelenito, true);
 
-    szoveget_kiir("2", 550, 115, FEHER_SDL, SZURKE_SDL, bt->reg20, ablak->megjelenito, true);
-    szoveget_kiir("*", 550, 165, FEHER_SDL, SZURKE_SDL, bt->reg20, ablak->megjelenito, true);
-    szoveget_kiir("K", 550, 215, FEHER_SDL, SZURKE_SDL, bt->reg20, ablak->megjelenito, true);
-    szoveget_kiir("Fel", 550, 265, FEHER_SDL, SZURKE_SDL, bt->reg20, ablak->megjelenito, true);
+    szoveget_kiir("W", 550, 115, FEHER_SDL, SZURKE_SDL, bt->reg20, ablak->megjelenito, true);
+    szoveget_kiir("I", 550, 165, FEHER_SDL, SZURKE_SDL, bt->reg20, ablak->megjelenito, true);
+    szoveget_kiir("Fel", 550, 215, FEHER_SDL, SZURKE_SDL, bt->reg20, ablak->megjelenito, true);
+    szoveget_kiir("/", 550, 265, FEHER_SDL, SZURKE_SDL, bt->reg20, ablak->megjelenito, true);
 
-    szoveget_kiir("W", 600, 115, FEHER_SDL, SZURKE_SDL, bt->reg20, ablak->megjelenito, true);
-    szoveget_kiir("-", 600, 165, FEHER_SDL, SZURKE_SDL, bt->reg20, ablak->megjelenito, true);
-    szoveget_kiir(",", 600, 215, FEHER_SDL, SZURKE_SDL, bt->reg20, ablak->megjelenito, true);
-    szoveget_kiir("Jobb", 600, 265, FEHER_SDL, SZURKE_SDL, bt->reg20, ablak->megjelenito, true);
+    szoveget_kiir("D", 600, 115, FEHER_SDL, SZURKE_SDL, bt->reg20, ablak->megjelenito, true);
+    szoveget_kiir("L", 600, 165, FEHER_SDL, SZURKE_SDL, bt->reg20, ablak->megjelenito, true);
+    szoveget_kiir("Jobb", 600, 215, FEHER_SDL, SZURKE_SDL, bt->reg20, ablak->megjelenito, true);
+    szoveget_kiir("9", 600, 265, FEHER_SDL, SZURKE_SDL, bt->reg20, ablak->megjelenito, true);
 }
 
 void sugo_es_dics_lista_ablakok_kezelese(Billentyuk* bill, Ablak* ablakok, Betutipusok* bt) {

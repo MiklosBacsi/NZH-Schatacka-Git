@@ -72,9 +72,9 @@ typedef struct Betutipusok{
  */
 typedef enum Szin {
     PIROS = 0,  ///< Piros szín jelölése
-    ROZSA,      ///< Rózsaszín szín jelölése
     ZOLD,       ///< Zöld szín jelölése
     KEK,        ///< Kék szín jelölése
+    ROZSA,      ///< Rózsaszín szín jelölése
     SZURKE,     ///< Szürke szín jelölése
     FEHER,      ///< Fehér szín jelölése
     FEKETE      ///< Fekete szín jelölése

@@ -14,7 +14,7 @@ void billentyuk_erzekelese(SDL_Event* event, Billentyuk* bill, Uint32* ablakIDk)
     if (event->type == SDL_USEREVENT)
         bill->van_bemenet = true;
     
-    /* Felengedett billentyuk */
+    /****** Billentyuk ******/
     // Esc
     if (event->key.keysym.sym == SDLK_ESCAPE) {
         // Felenged
@@ -107,146 +107,98 @@ void billentyuk_erzekelese(SDL_Event* event, Billentyuk* bill, Uint32* ablakIDk)
 
 
     /* Piros */
-    // 'Q'
-    if (event->key.keysym.sym == SDLK_q) {
+    // 'A'
+    if (event->key.keysym.sym == SDLK_a) {
         // Felenged
         if (event->type == SDL_KEYUP) {
             // MENU + TILTAS
             if (event->key.windowID == ablakIDk[MENU_ID]) {
-                bill->menu_Q = false;
-                bill->menu_tilt_Q = false;
+                bill->menu_A = false;
+                bill->menu_tilt_A = false;
             }
             // JATEK
             if (event->key.windowID == ablakIDk[JATEK_ID])
-                bill->jatek_Q = false;
+                bill->jatek_A = false;
         }
         // Lenyom
         else if (event->type == SDL_KEYDOWN) {
             // MENU
             if (event->key.windowID == ablakIDk[MENU_ID])
-                bill->menu_Q = true;
+                bill->menu_A = true;
             // JATEK
             if (event->key.windowID == ablakIDk[JATEK_ID])
-                bill->jatek_Q = true;
+                bill->jatek_A = true;
         }
-    }
-
-    // '2'
-    if (event->key.keysym.sym == SDLK_2 && event->key.windowID == ablakIDk[JATEK_ID]) {
-        // Felenged - TILTAS
-        if (event->type == SDL_KEYUP) {
-            bill->jatek_2 = false;
-            bill->tilt_2 = false;
-        }
-        // Lenyom
-        else if (event->type == SDL_KEYDOWN)
-            bill->jatek_2 = true;
     }
 
     // 'W'
     if (event->key.keysym.sym == SDLK_w && event->key.windowID == ablakIDk[JATEK_ID]) {
-        // Felenged
-        if (event->type == SDL_KEYUP)
+        // Felenged - TILTAS
+        if (event->type == SDL_KEYUP) {
             bill->jatek_W = false;
+            bill->tilt_W = false;
+        }
         // Lenyom
         else if (event->type == SDL_KEYDOWN)
             bill->jatek_W = true;
     }
 
-
-    /* Rozsa */ 
-    // '/'
-    if (event->key.keysym.sym == SDLK_KP_DIVIDE) {
-        // Felenged
-        if (event->type == SDL_KEYUP) {
-            // MENU + TILTAS
-            if (event->key.windowID == ablakIDk[MENU_ID]) {
-                bill->menu_Per = false;
-                bill->menu_tilt_Per = false;
-            }
-            // JATEK
-            if (event->key.windowID == ablakIDk[JATEK_ID])
-                bill->jatek_Per = false;
-        }
-        // Lenyom
-        else if (event->type == SDL_KEYDOWN) {
-            // MENU
-            if (event->key.windowID == ablakIDk[MENU_ID])
-                bill->menu_Per = true;
-            // JATEK
-            if (event->key.windowID == ablakIDk[JATEK_ID])
-                bill->jatek_Per = true;
-        }
-    }
-
-    // '*'
-    if (event->key.keysym.sym == SDLK_KP_MULTIPLY && event->key.windowID == ablakIDk[JATEK_ID]) {
-        // Felenged - TILTAS
-        if (event->type == SDL_KEYUP) {
-            bill->jatek_Csillag = false;
-            bill->tilt_Csillag = false;
-        }
-        // Lenyom
-        else if (event->type == SDL_KEYDOWN)
-            bill->jatek_Csillag = true;
-    }
-
-    // '-'
-    if (event->key.keysym.sym == SDLK_KP_MINUS && event->key.windowID == ablakIDk[JATEK_ID]) {
+    // 'D'
+    if (event->key.keysym.sym == SDLK_d && event->key.windowID == ablakIDk[JATEK_ID]) {
         // Felenged
         if (event->type == SDL_KEYUP)
-            bill->jatek_Kotojel = false;
+            bill->jatek_D = false;
         // Lenyom
         else if (event->type == SDL_KEYDOWN)
-            bill->jatek_Kotojel = true;
+            bill->jatek_D = true;
     }
 
 
     /* Zold */
-    // 'M'
-    if (event->key.keysym.sym == SDLK_m) {
+    // 'J'
+    if (event->key.keysym.sym == SDLK_j) {
         // Felenged
         if (event->type == SDL_KEYUP) {
             // MENU + TILTAS
             if (event->key.windowID == ablakIDk[MENU_ID]) {
-                bill->menu_M = false;
-                bill->menu_tilt_M = false;
+                bill->menu_J = false;
+                bill->menu_tilt_J = false;
             }
             // JATEK
             if (event->key.windowID == ablakIDk[JATEK_ID])
-                bill->jatek_M = false;
+                bill->jatek_J = false;
         }
         // Lenyom
         else if (event->type == SDL_KEYDOWN) {
             // MENU
             if (event->key.windowID == ablakIDk[MENU_ID])
-                bill->menu_M = true;
+                bill->menu_J = true;
             // JATEK
             if (event->key.windowID == ablakIDk[JATEK_ID])
-                bill->jatek_M = true;
+                bill->jatek_J = true;
         }
     }
 
-    // 'K'
-    if (event->key.keysym.sym == SDLK_k && event->key.windowID == ablakIDk[JATEK_ID]) {
+    // 'I'
+    if (event->key.keysym.sym == SDLK_i && event->key.windowID == ablakIDk[JATEK_ID]) {
         // Felenged - TILTAS
         if (event->type == SDL_KEYUP) {
-            bill->jatek_K = false;
-            bill->tilt_K = false;
+            bill->jatek_I = false;
+            bill->tilt_I = false;
         }
         // Lenyom
         else if (event->type == SDL_KEYDOWN)
-            bill->jatek_K = true;
+            bill->jatek_I = true;
     }
 
-    // ','
-    if (event->key.keysym.sym == SDLK_COMMA && event->key.windowID == ablakIDk[JATEK_ID]) {
+    // 'L'
+    if (event->key.keysym.sym == SDLK_l && event->key.windowID == ablakIDk[JATEK_ID]) {
         // Felenged
         if (event->type == SDL_KEYUP)
-            bill->jatek_Vesszo = false;
+            bill->jatek_L = false;
         // Lenyom
         else if (event->type == SDL_KEYDOWN)
-            bill->jatek_Vesszo = true;
+            bill->jatek_L = true;
     }
 
 
@@ -298,21 +250,60 @@ void billentyuk_erzekelese(SDL_Event* event, Billentyuk* bill, Uint32* ablakIDk)
     }
 
 
-    /* Kilepes */
-    if (event->key.keysym.sym == SDL_QUIT)
-    /* Nem lehet bezarni az ablakot kiikszelessel (csak ha egy van nyitva)
-    * window, button, key, user stb. <- nem mukodnek :c*/
-        bill->menu_Esc = true;
-    // WINDOW_EVENT???????????????        
-    
+    /* Rozsa */ 
+    // '7'
+    if (event->key.keysym.sym == SDLK_KP_7) {
+        // Felenged
+        if (event->type == SDL_KEYUP) {
+            // MENU + TILTAS
+            if (event->key.windowID == ablakIDk[MENU_ID]) {
+                bill->menu_7 = false;
+                bill->menu_tilt_7 = false;
+            }
+            // JATEK
+            if (event->key.windowID == ablakIDk[JATEK_ID])
+                bill->jatek_7 = false;
+        }
+        // Lenyom
+        else if (event->type == SDL_KEYDOWN) {
+            // MENU
+            if (event->key.windowID == ablakIDk[MENU_ID])
+                bill->menu_7 = true;
+            // JATEK
+            if (event->key.windowID == ablakIDk[JATEK_ID])
+                bill->jatek_7 = true;
+        }
+    }
+
+    // '/'
+    if (event->key.keysym.sym == SDLK_KP_DIVIDE && event->key.windowID == ablakIDk[JATEK_ID]) {
+        // Felenged - TILTAS
+        if (event->type == SDL_KEYUP) {
+            bill->jatek_Per = false;
+            bill->tilt_Per = false;
+        }
+        // Lenyom
+        else if (event->type == SDL_KEYDOWN)
+            bill->jatek_Per = true;
+    }
+
+    // '9'
+    if (event->key.keysym.sym == SDLK_KP_9 && event->key.windowID == ablakIDk[JATEK_ID]) {
+        // Felenged
+        if (event->type == SDL_KEYUP)
+            bill->jatek_9 = false;
+        // Lenyom
+        else if (event->type == SDL_KEYDOWN)
+            bill->jatek_9 = true;
+    }
 }
 
 void billentyuk_tiltasa(Billentyuk* bill) {
     /* Menu - kivalasztas */
-    if (bill->menu_Q) bill->menu_tilt_Q = true;
-    if (bill->menu_Per) bill->menu_tilt_Per = true;
-    if (bill->menu_M) bill->menu_tilt_M = true;
+    if (bill->menu_A) bill->menu_tilt_A = true;
+    if (bill->menu_J) bill->menu_tilt_J = true;
     if (bill->menu_Bal) bill->menu_tilt_Bal = true;
+    if (bill->menu_7) bill->menu_tilt_7 = true;
     
     /* Jatek - Esc */
     if (bill->jatek_Esc) bill->tilt_Esc = true;

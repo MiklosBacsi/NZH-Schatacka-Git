@@ -24,9 +24,9 @@
 #include "debugmalloc.h"
 
 #define PIROS_SDL (SDL_Color) {255, 0, 0}
-#define ROZSA_SDL (SDL_Color) {255, 0, 255}
 #define ZOLD_SDL (SDL_Color) {0, 255, 0}
 #define KEK_SDL (SDL_Color) {0, 0, 255}
+#define ROZSA_SDL (SDL_Color) {255, 0, 255}
 #define SZURKE_SDL (SDL_Color) {30, 30, 30}
 #define FEHER_SDL (SDL_Color) {255, 255, 255}
 #define FEKETE_SDL (SDL_Color) {0, 0, 0}
@@ -101,6 +101,7 @@ int main(void) {
                 falak_es_lovekek_torlesenek_vizsgalata(&vez);
 
 
+                ++vez.menetido;
             }
 
 
@@ -111,8 +112,6 @@ int main(void) {
             
             /* Jatek kirajzolasa */
             jatek_kirajzolasa(ablakok+JATEK, &vez, jatekosok, &bt);
-
-            ++vez.menetido;
         }
             
         /* Billentyuk egyszeri lenyomasahoz */
@@ -222,17 +221,17 @@ void menu_kivalasztas(Kivalasztas* kiv, Billentyuk* bill, Ablak* menu, Betutipus
 
     /* Jatekosok kivalasztasa */
     // Piros
-    if (bill->menu_Q && !bill->menu_tilt_Q) kiv->aktiv_jatekosok[0] = !kiv->aktiv_jatekosok[0];
+    if (bill->menu_A && !bill->menu_tilt_A) kiv->aktiv_jatekosok[0] = !kiv->aktiv_jatekosok[0];
     if (kiv->aktiv_jatekosok[0] == true) szoveget_kiir("Kiválasztva", 670, 115, PIROS_SDL, SZURKE_SDL, bt->bold20, menu->megjelenito, true);
-    // Rozsa
-    if (bill->menu_Per && !bill->menu_tilt_Per) kiv->aktiv_jatekosok[1] = !kiv->aktiv_jatekosok[1];
-    if (kiv->aktiv_jatekosok[1] == true) szoveget_kiir("Kiválasztva", 670, 165, ROZSA_SDL, SZURKE_SDL, bt->bold20, menu->megjelenito, true);
     // Zold
-    if (bill->menu_M && !bill->menu_tilt_M) kiv->aktiv_jatekosok[2] = !kiv->aktiv_jatekosok[2];
-    if (kiv->aktiv_jatekosok[2] == true) szoveget_kiir("Kiválasztva", 670, 215, ZOLD_SDL, SZURKE_SDL, bt->bold20, menu->megjelenito, true);
+    if (bill->menu_J && !bill->menu_tilt_J) kiv->aktiv_jatekosok[1] = !kiv->aktiv_jatekosok[1];
+    if (kiv->aktiv_jatekosok[1] == true) szoveget_kiir("Kiválasztva", 670, 165, ZOLD_SDL, SZURKE_SDL, bt->bold20, menu->megjelenito, true);
     // Kek
-    if (bill->menu_Bal && !bill->menu_tilt_Bal) kiv->aktiv_jatekosok[3] = !kiv->aktiv_jatekosok[3];
-    if (kiv->aktiv_jatekosok[3] == true) szoveget_kiir("Kiválasztva", 670, 265, KEK_SDL, SZURKE_SDL, bt->bold20, menu->megjelenito, true);
+    if (bill->menu_Bal && !bill->menu_tilt_Bal) kiv->aktiv_jatekosok[2] = !kiv->aktiv_jatekosok[2];
+    if (kiv->aktiv_jatekosok[2] == true) szoveget_kiir("Kiválasztva", 670, 215, KEK_SDL, SZURKE_SDL, bt->bold20, menu->megjelenito, true);
+    // Rozsa
+    if (bill->menu_7 && !bill->menu_tilt_7) kiv->aktiv_jatekosok[3] = !kiv->aktiv_jatekosok[3];
+    if (kiv->aktiv_jatekosok[3] == true) szoveget_kiir("Kiválasztva", 670, 265, ROZSA_SDL, SZURKE_SDL, bt->bold20, menu->megjelenito, true);
     
     SDL_RenderPresent(menu->megjelenito);
 }

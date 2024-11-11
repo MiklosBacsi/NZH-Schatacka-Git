@@ -115,8 +115,14 @@ typedef struct Lovedek {
 typedef struct Vonal {
     Koordinata kord;    ///< vonal középpontja (Koordinata) @see Koordinata
     Szin szin;          ///< vonal színe (Szin) @see Szin
+    int16_t id;         ///< vonalszegmensek azonosítója (pozitív: vonal közepe, negatív: vonal végpontja) (int16_t)
     struct Vonal* kov;  ///< vonal középpontja (Vonal*) @see Vonal
 } Vonal;
+
+typedef struct Lyuk {
+    Koordinata eleje;
+    Koordinata vege;
+} Lyuk;
 
 
 /**
@@ -174,6 +180,7 @@ typedef struct Vezerles {
     bool megallitva_jatek;      ///< jelzi a játék meg van-e állítva a játékvezérlés által (bool)
     bool megallitva_felhasznalo;///< jelzi a játék meg van-e állítva a felhasználó által (bool)
     Uint16 menetido;            ///< számolja a menetidőt (több mint 20 perc után csordulna túl, de lehetetlen addig játszani egy menetet) (Uint16)
+    int16_t vonal_szamlalo;     ///< játékosonkénti lerakott vonal (pontok) száma (Uint16)
     bool menet_vege;            ///< jelzi a menet végetért-e (bool)
     int jatekosszam;            ///< tartalmazza az aktív játékosok számát
     int max_pontszam;           ///< tartalmazza az adott játékosszámhoz tartozó elégséges pont, mely elérése esetén a játék véget ér (int)

@@ -19,7 +19,9 @@
 #define FEHER_SDL (SDL_Color) {255, 255, 255}
 #define FEKETE_SDL (SDL_Color) {0, 0, 0}
 // Uj vonal lerakasank idokoze (*20ms)
-#define GYAK 10
+#define GYAK 6
+#define VON_TAV_HALAL 4.0      // alap: 6.0
+#define KEZDOPONTSZAM 0
 
 SDL_Color SDL_Szin[6] = {PIROS_SDL, ZOLD_SDL, KEK_SDL, ROZSA_SDL, FEHER_SDL, FEKETE_SDL};
 
@@ -205,7 +207,7 @@ void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, J
         }
 
         for (int i=0; i < vez->jatekosszam; ++i) {
-            (*cim_jatekosok)[i].pontszam = 0;
+            (*cim_jatekosok)[i].pontszam = KEZDOPONTSZAM;
         }
             
         uj_menet(vez, *cim_jatekosok);
@@ -246,6 +248,7 @@ void uj_menet(Vezerles* vez, Jatekos* jatekosok) {
     vez->megallitva_jatek = true;
     vez->menet_vege = false;
     vez->menetido = 0;
+    vez->vonal_szamlalo = 0;
     lovedekeket_torol(vez);
     vonalakat_torol(jatekosok, vez);
 
@@ -310,9 +313,6 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Be
         }
     }
 
-    
-
-
     /* Jatekosvonalak */
     Vonal* mozgoV;
     for (int i=0; i < vez->jatekosszam; ++i) {
@@ -336,7 +336,7 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Be
                 break;
             }
         }
-    }    
+    } 
     
     /* Felveheto elemek */
 
@@ -458,9 +458,9 @@ static bool van_fal_atmenetkor_Y(short fejX, Vezerles* vez) {
     if (fejX < 1) fejX = 1;
     else if (fejX > vez->palya_meret.x-2) fejX = vez->palya_meret.x - 2;
 
-    if (!vez->falak.bal[fejX-1].torolve || !vez->falak.bal[fejX].torolve || !vez->falak.bal[fejX+1].torolve)
+    if (!vez->falak.felso[fejX-1].torolve || !vez->falak.felso[fejX].torolve || !vez->falak.felso[fejX+1].torolve)
         return true;
-    if (!vez->falak.jobb[fejX-1].torolve || !vez->falak.jobb[fejX].torolve || !vez->falak.jobb[fejX+1].torolve)
+    if (!vez->falak.also[fejX-1].torolve || !vez->falak.also[fejX].torolve || !vez->falak.also[fejX+1].torolve)
         return true;
     return false;    
 }
@@ -486,7 +486,7 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
                 eletben_levo_jatekosok_pontjanak_novelese_halalkor(jatekosok, vez, halottak);
             }
             else
-                jatekosok[i].fej.x = 1.5;
+                jatekosok[i].fej.x = 2.5;
         }
         // Bal --> Jobb
         else if (tulcs_x_min > 0 && tulcs_x_min >= tulcs_y_min && tulcs_x_min >= tulcs_y_max) {
@@ -496,7 +496,7 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
                 eletben_levo_jatekosok_pontjanak_novelese_halalkor(jatekosok, vez, halottak);
             }
             else
-                jatekosok[i].fej.x =  vez->palya_meret.x - 2.5;
+                jatekosok[i].fej.x =  vez->palya_meret.x - 3.5;
         }
         // Fent --> Lent
         else if (tulcs_y_min > 0 && tulcs_y_min >= tulcs_x_min && tulcs_y_min >= tulcs_x_max) {
@@ -506,7 +506,7 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
                 eletben_levo_jatekosok_pontjanak_novelese_halalkor(jatekosok, vez, halottak);
             }
             else
-                jatekosok[i].fej.y = vez->palya_meret.y - 2.5;
+                jatekosok[i].fej.y = vez->palya_meret.y - 3.5;
         }
         // Lent--> Fent
         else if (tulcs_y_max > 0 && tulcs_y_max >= tulcs_x_min && tulcs_y_max >= tulcs_x_max) {
@@ -516,7 +516,7 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
                 eletben_levo_jatekosok_pontjanak_novelese_halalkor(jatekosok, vez, halottak);
             }
             else
-                jatekosok[i].fej.y = 1.5;
+                jatekosok[i].fej.y = 2.5;
         }
     }
 
@@ -533,7 +533,7 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
                 if (mozgoV == jatekosok[i].vonal)
                     break;
 
-                if (tav(jatekosok[i].fej, mozgoV->kord) < 6.0 && jatekosok[i].eletben_van) {
+                if (tav(jatekosok[i].fej, mozgoV->kord) < VON_TAV_HALAL && jatekosok[i].eletben_van) {
                     jatekosok[i].eletben_van = false;
                     ++halottak;
                     eletben_levo_jatekosok_pontjanak_novelese_halalkor(jatekosok, vez, halottak);
@@ -638,21 +638,48 @@ void loves_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
 }
 
 void vonalat_hozzaad(Jatekos* jatekosok, Vezerles* vez) {
-    // feltetel, hogy mikor adjon vonalat
     if (vez->menetido % GYAK == 0) {
+        int vonal_ido = vez->menetido % (GYAK * 20);
+        bool novelve = false;
+
         for (int i=0; i < vez->jatekosszam; ++i) {
             if (jatekosok[i].eletben_van == false)
                 continue;
 
-            Vonal* uj_eleje = (Vonal*) malloc(sizeof(Vonal));
-            if (!uj_eleje) printf("Nem sikerult memoriat fogalalni a vonalnak! :c\n");
+            // Vonal eleje es vege (vegpontok)
+            if (vonal_ido == 0 || vonal_ido == GYAK * (20 - 3)) {
+                novelve = true;
 
-            uj_eleje->kord = jatekosok[i].elozo;
-            uj_eleje->szin = jatekosok[i].szin;
+                Vonal* uj_eleje = (Vonal*) malloc(sizeof(Vonal));
+                if (!uj_eleje) printf("Nem sikerult memoriat fogalalni a vonalnak! :c\n");
 
-            uj_eleje->kov = jatekosok[i].vonal;
-            jatekosok[i].vonal = uj_eleje;
+                uj_eleje->kord = jatekosok[i].elozo;
+                uj_eleje->szin = jatekosok[i].szin;
+                // Negativ jeloli a vonal vegpontjat
+                uj_eleje->id = (-1) * vez->vonal_szamlalo;
+
+                uj_eleje->kov = jatekosok[i].vonal;
+                jatekosok[i].vonal = uj_eleje;
+            }
+            // Vonal kozepe
+            else if (vonal_ido < GYAK * (20 - 3)) {
+                novelve = true;
+
+                Vonal* uj_eleje = (Vonal*) malloc(sizeof(Vonal));
+                if (!uj_eleje) printf("Nem sikerult memoriat fogalalni a vonalnak! :c\n");
+
+                uj_eleje->kord = jatekosok[i].elozo;
+                uj_eleje->szin = jatekosok[i].szin;
+                // Pozitiv jeloli a vonal kozepet
+                uj_eleje->id = vez->vonal_szamlalo;
+
+                uj_eleje->kov = jatekosok[i].vonal;
+                jatekosok[i].vonal = uj_eleje;
+            }
+            // Ket szuntet hagyunk a lyuknak
         }
+        if (novelve)
+            ++vez->vonal_szamlalo;
     }
 }
 

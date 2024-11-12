@@ -188,8 +188,10 @@ typedef struct Vezerles {
     Uint16 menetido;            ///< számolja a menetidőt (több mint 20 perc után csordulna túl, de lehetetlen addig játszani egy menetet) (Uint16)
     int16_t vonal_szamlalo;     ///< játékosonkénti lerakott vonal (pontok) száma (Uint16)
     bool menet_vege;            ///< jelzi a menet végetért-e (bool)
-    int jatekosszam;            ///< tartalmazza az aktív játékosok számát
-    int max_pontszam;           ///< tartalmazza az adott játékosszámhoz tartozó elégséges pont, mely elérése esetén a játék véget ér (int)
+    bool jatek_vege;            ///< jelzi a játék végét (bool)
+    int jatekosszam;            ///< tartalmazza az aktív játékosok számát (int)
+    int max_elerheto_pontszam;  ///< tartalmazza az adott játékosszámhoz tartozó elégséges pont, mely elérése esetén a játék véget ér (int)
+    int max_pontszam;           ///< játékosok által szerzett maximális pontszám (int)
     Jatekmod jt_mod;            ///< tartalmazza a játékmódot (Jatekmod) @see Jatekmod
     double elmozd_jat;          ///< tartalmazza azt az hosszt, amellyel a játékosok képfrissítésenként elmozgulnak (double)
     double elmozd_lov;          ///< tartalmazza azt az hosszt, amellyel a lövedékek képfrissítésenként elmozgulnak (double)
@@ -296,6 +298,7 @@ void lovedekek_mozditasa(Lovedek* lovedekek, double elmozd);
  * Paraméterként fogadott játékosok dinamikus tömbön iterál és különböző esetekre vizsgál,
  * amikor a játékosok meghalhatnak.
  * Halál esetén egy halálfej animációt játszik le.
+ * Továbbá, vizsgálja a játék végét (maxpontszám elérése).
  * 
  * @param[out] jatekosok játékosokat tartalmazó dinamikus tömböt tartalmazza (Jatekos*) @see Jatekos
  * @param[out] vez játékvezérléshez szükséges adatokat tartalmazó struktúra (Vezerles*) @see Vezerles
@@ -371,6 +374,13 @@ void vonalat_hozzaad(Jatekos* jatekosok, Vezerles* vez);
  */
 void vonalakat_torol(Jatekos* jatekosok, Vezerles* vez);
 
+
+/**
+ * @brief Vizsgálja a játékosok áthaladását a lyukon illetve, hogy azokat törli-e lövedék
+ * 
+ * @param[out] jatekosok játékosokat tartalmazó dinamikus tömböt tartalmazza (Jatekos*) @see Jatekos
+ * @param[out] vez játékvezérléshez szükséges adatokat tartalmazó struktúra (Vezerles*) @see Vezerles
+ */
 void lyuk_vizsgalata(Jatekos* jatekosok, Vezerles* vez);
 
 #endif

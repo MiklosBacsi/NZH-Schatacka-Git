@@ -21,7 +21,7 @@
 // Uj vonal lerakasank idokoze (*20ms)
 #define GYAK 6
 #define VON_TAV_HALAL 4.0
-#define KEZDOPONTSZAM 50
+#define KEZDOPONTSZAM 0
 
 SDL_Color SDL_Szin[6] = {PIROS_SDL, ZOLD_SDL, KEK_SDL, ROZSA_SDL, FEHER_SDL, FEKETE_SDL};
 
@@ -183,7 +183,7 @@ void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, J
         // Vezerles - adatok
         vez->jt_mod = jt_mod;
         vez->jatekosszam = aktiv_jatekosok_szama(kiv_jat);
-        vez->max_pontszam = (vez->jatekosszam - 1) * 40;
+        vez->max_elerheto_pontszam = (vez->jatekosszam - 1) * 40;
         
         /*** JATEKOSOK LETREHOZASA ***/
         jatekosokat_fogalal(vez, cim_jatekosok); // + Vonalak inicializalása NULL-ra
@@ -223,6 +223,7 @@ void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, J
         bill->jatek_Esc = false;
         vez->megallitva_felhasznalo = false;
         vez->megallitva_jatek = true;
+        vez->jatek_vege = false;
         
         vonalakat_torol(*cim_jatekosok, vez);
 
@@ -230,11 +231,11 @@ void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, J
         *cim_jatekosok = NULL;
     }
     /* Megallitas - Felhasznalo */
-    else if (bill->jatek_Esc && !vez->megallitva_felhasznalo && jatek_ablak->nyitva) {
+    else if (bill->jatek_Esc && !vez->megallitva_felhasznalo && jatek_ablak->nyitva && !vez->jatek_vege) {
         vez->megallitva_felhasznalo = true;
     }
     /* Folytatas - Felhasznalo */
-    else if (bill->jatek_Szokoz && (vez->megallitva_felhasznalo || vez->megallitva_jatek) && jatek_ablak->nyitva) {
+    else if (bill->jatek_Szokoz && (vez->megallitva_felhasznalo || vez->megallitva_jatek) && jatek_ablak->nyitva && !vez->jatek_vege) {
         vez->megallitva_felhasznalo = false;
         vez->megallitva_jatek = false;
     }
@@ -246,6 +247,7 @@ static void jatek_hatteret_kirajzol(Ablak* jatek_ablak, Vezerles* vez) {
 
 void uj_menet(Vezerles* vez, Jatekos* jatekosok) {
     vez->megallitva_jatek = true;
+    vez->megallitva_felhasznalo = true;
     vez->menet_vege = false;
     vez->menetido = 0;
     vez->vonal_szamlalo = 1;
@@ -402,15 +404,41 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Be
         szoveget_kiir(pontszam, 1500, 100 + i*50, SDL_Szin[jatekosok[i].szin], SZURKE_SDL, bt->bold20, jatek_ablak->megjelenito, false);
     }
 
-    /* Lyukak */
-    /*
-    Lyuk* lyuk_mozgo;
-    for (lyuk_mozgo = vez->lyukak; lyuk_mozgo != NULL; lyuk_mozgo = lyuk_mozgo->kov) {
-        circleRGBA(jatek_ablak->megjelenito, (Sint16)lyuk_mozgo->eleje.x, (Sint16)lyuk_mozgo->eleje.y, 5, 255, 255, 255, 255);
-        circleRGBA(jatek_ablak->megjelenito, (Sint16)lyuk_mozgo->vege.x, (Sint16)lyuk_mozgo->vege.y, 5, 255, 255, 255, 255);
+    /* Uj menet inditasa felirat */
+    if (vez->megallitva_jatek && vez->jatek_vege == false) {
+        boxRGBA(jatek_ablak->megjelenito, 375, 400-20, 999, 549-20, 20, 20, 20, 200);
+        szoveget_kiir("Új menet", 655, 420-20, FEHER_SDL, SZURKE_SDL, bt->bold20, jatek_ablak->megjelenito, false);
+        szoveget_kiir("Új menet indításához nyomja meg a szóközt.", 495, 460-20, FEHER_SDL, SZURKE_SDL, bt->reg20, jatek_ablak->megjelenito, false);
+        szoveget_kiir("A játékból való kilépéshez nyomja meg az Esc-et", 475, 490-20, FEHER_SDL, SZURKE_SDL, bt->reg20, jatek_ablak->megjelenito, false);
     }
-    */
+    /* Jatek megallitva - Folytatas felirat */
+    else if (vez->megallitva_felhasznalo && vez->jatek_vege == false) {
+        boxRGBA(jatek_ablak->megjelenito, 375, 400-20, 999, 549-20, 20, 20, 20, 200);
+        szoveget_kiir("Játék megállítva", 620, 420-20, FEHER_SDL, SZURKE_SDL, bt->bold20, jatek_ablak->megjelenito, false);
+        szoveget_kiir("A játék folytatásához nyomja meg a szóközt", 495, 460-20, FEHER_SDL, SZURKE_SDL, bt->reg20, jatek_ablak->megjelenito, false);
+        szoveget_kiir("A játékból való kilépéshez nyomja meg az Esc-et", 475, 490-20, FEHER_SDL, SZURKE_SDL, bt->reg20, jatek_ablak->megjelenito, false);
+    }
+    /* Jatek vege felirat */
+    else if (vez->megallitva_jatek && vez->jatek_vege == true) {
+        boxRGBA(jatek_ablak->megjelenito, 400, 400-20, 999, 549-20, 20, 20, 20, 200);
+        szoveget_kiir("Játék vége", 655, 420-20, FEHER_SDL, SZURKE_SDL, bt->bold20, jatek_ablak->megjelenito, false);
+        
+        char max_pontszam_str[4+1];
+        snprintf(max_pontszam_str, 4+1, "%d", vez->max_pontszam);
+        szoveget_kiir("Nyertes pontszáma:", 590, 460-20, FEHER_SDL, SZURKE_SDL, bt->reg20, jatek_ablak->megjelenito, false);
+        szoveget_kiir(max_pontszam_str, 790, 460-20, FEHER_SDL, SZURKE_SDL, bt->bold20, jatek_ablak->megjelenito, false);
+        
+        szoveget_kiir("A játékból való kilépéshez nyomja meg az Esc-et", 475, 490-20, FEHER_SDL, SZURKE_SDL, bt->reg20, jatek_ablak->megjelenito, false);
+    }
+    
+    //lineRGBA(jatek_ablak->megjelenito, 700, 0, 700, 900, 255, 0, 0, 255);
+    //lineRGBA(jatek_ablak->megjelenito, 0, 450, 1400, 450, 255, 0, 0, 255);
 
+    //lineRGBA(jatek_ablak->megjelenito, 640, 10, 640, 800, 0, 255, 0, 255);
+    //lineRGBA(jatek_ablak->megjelenito, 760, 10, 760, 800, 0, 255, 0, 255);
+
+    //lineRGBA(jatek_ablak->megjelenito, 900, 10, 900, 800, 0, 255, 255, 255);
+    //lineRGBA(jatek_ablak->megjelenito, 500, 10, 500, 800, 0, 255, 255, 255);
 
 
     // Logo
@@ -603,11 +631,39 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
     // HA jatekosok[i].eletben_van == false
     // halalfej animaciot rajzol !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-    
+    /* Menet vege */
     if (halottak >= vez->jatekosszam-1) {
         vez->menet_vege = true;
         vez->megallitva_jatek = true;
-        // Szóközzel kell jatekot inditani szoveg!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    }
+    /* Jatek vege */
+    for (int i=0; i < vez->jatekosszam; ++i) {
+        if (jatekosok[i].pontszam >= vez->max_elerheto_pontszam) {
+            vez->jatek_vege = true;
+            vez->megallitva_jatek = true;
+            vez->megallitva_felhasznalo = true;
+
+            // Maxpontszam szamitasa
+            // NEM JO -- VALTOZTATSD MEG !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            int max = 0;
+            int sum = 0;
+            for (int i=0; i < vez->jatekosszam; ++i) {
+                if (jatekosok[i].pontszam > max)
+                    max = jatekosok[i].pontszam;
+                sum += jatekosok[i].pontszam;
+            }
+            double atlag = (sum-max) / (vez->jatekosszam-1);
+            double alap = max - atlag;
+            if (alap < 1.0) alap = 1.0;
+            double kitevo = 1.0 + 2.0 / (double) vez->jatekosszam;
+            double m_pt_szam = pow(alap, kitevo);
+            
+            //Ellenorzes
+            if (m_pt_szam < 1) m_pt_szam = 1;
+            else if (m_pt_szam > 9999) m_pt_szam = 9999;
+
+            vez->max_pontszam = (int)m_pt_szam;
+        }
     }
 }
 
@@ -890,3 +946,4 @@ void lyuk_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
         }
     }
 }
+// Vege

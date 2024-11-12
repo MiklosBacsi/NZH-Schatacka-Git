@@ -83,7 +83,7 @@ int main(void) {
         jatek_ablak_kezelese(&bill, ablakok+JATEK, &vez, &jatekosok, kiv.kiv_jt_mod, kiv.aktiv_jatekosok);
         if (ablakok[JATEK].nyitva && bill.van_bemenet) {
             /* Ha nincs megallitva */
-            if (!vez.megallitva_felhasznalo && !vez.megallitva_jatek) {
+            if (!vez.megallitva_felhasznalo && !vez.megallitva_jatek && !vez.jatek_vege) {
                 jatekosok_mozditasa(jatekosok, &vez);
 
                 vonalat_hozzaad(jatekosok, &vez);
@@ -92,9 +92,11 @@ int main(void) {
                 
                 lovedekek_mozditasa(vez.lovedekek, vez.elmozd_lov);
 
+                lyuk_vizsgalata(jatekosok, &vez);
+
                 halal_vizsgalata(jatekosok, &vez); // + vonal torlese
 
-                lyuk_vizsgalata(jatekosok, &vez);
+                
 
 
 

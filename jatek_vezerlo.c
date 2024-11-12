@@ -20,8 +20,8 @@
 #define FEKETE_SDL (SDL_Color) {0, 0, 0}
 // Uj vonal lerakasank idokoze (*20ms)
 #define GYAK 6
-#define VON_TAV_HALAL 4.0      // alap: 6.0
-#define KEZDOPONTSZAM 0
+#define VON_TAV_HALAL 4.0
+#define KEZDOPONTSZAM 50
 
 SDL_Color SDL_Szin[6] = {PIROS_SDL, ZOLD_SDL, KEK_SDL, ROZSA_SDL, FEHER_SDL, FEKETE_SDL};
 
@@ -248,12 +248,14 @@ void uj_menet(Vezerles* vez, Jatekos* jatekosok) {
     vez->megallitva_jatek = true;
     vez->menet_vege = false;
     vez->menetido = 0;
-    vez->vonal_szamlalo = 0;
+    vez->vonal_szamlalo = 1;
     lovedekeket_torol(vez);
+    lyukakat_torol(vez);
     vonalakat_torol(jatekosok, vez);
 
     for (int i=0; i < vez->jatekosszam; ++i) {
         *(jatekosok[i].tilt_lo) = false;
+        jatekosok[i].lyuk_tilt = 0;
     }
     
     
@@ -399,6 +401,17 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Be
         snprintf(pontszam, 3+1, "%d", jatekosok[i].pontszam);
         szoveget_kiir(pontszam, 1500, 100 + i*50, SDL_Szin[jatekosok[i].szin], SZURKE_SDL, bt->bold20, jatek_ablak->megjelenito, false);
     }
+
+    /* Lyukak */
+    /*
+    Lyuk* lyuk_mozgo;
+    for (lyuk_mozgo = vez->lyukak; lyuk_mozgo != NULL; lyuk_mozgo = lyuk_mozgo->kov) {
+        circleRGBA(jatek_ablak->megjelenito, (Sint16)lyuk_mozgo->eleje.x, (Sint16)lyuk_mozgo->eleje.y, 5, 255, 255, 255, 255);
+        circleRGBA(jatek_ablak->megjelenito, (Sint16)lyuk_mozgo->vege.x, (Sint16)lyuk_mozgo->vege.y, 5, 255, 255, 255, 255);
+    }
+    */
+
+
 
     // Logo
     logot_rajzol(jatek_ablak, 1425, 10);
@@ -660,6 +673,25 @@ void vonalat_hozzaad(Jatekos* jatekosok, Vezerles* vez) {
 
                 uj_eleje->kov = jatekosok[i].vonal;
                 jatekosok[i].vonal = uj_eleje;
+
+                // Lyuk hozzaadasa
+                if (vonal_ido == 0 && jatekosok[i].vonal != NULL && jatekosok[i].vonal->id != -1) {
+                    Vonal* mozgo = jatekosok[i].vonal;
+                    while (mozgo != NULL && mozgo->kov != NULL) {
+                        if (mozgo->id + 1 == mozgo->kov->id) {
+                            Lyuk* uj_lyuk = (Lyuk*) malloc(sizeof(Lyuk));
+                            if (!uj_lyuk) printf("Nem sikerult memoriat fogalalni a lyuknak! :c\n");
+
+                            uj_lyuk->eleje = mozgo->kord;
+                            uj_lyuk->vege = mozgo->kov->kord;
+
+                            uj_lyuk->kov = vez->lyukak;
+                            vez->lyukak = uj_lyuk;
+
+                            break;
+                        }
+                    }
+                }
             }
             // Vonal kozepe
             else if (vonal_ido < GYAK * (20 - 3)) {
@@ -705,6 +737,16 @@ void vonalakat_torol(Jatekos* jatekosok, Vezerles* vez) {
             jatekosok[i].vonal = NULL;
         }
     }
+}
+
+void lyukakat_torol(Vezerles* vez) {
+    Lyuk* iter = vez->lyukak;
+    while (iter != NULL) {
+        Lyuk* kov = iter->kov;
+        free(iter);
+        iter = kov;
+    }
+    vez->lyukak = NULL;
 }
 
 static bool kint_van(Koordinata kord, double sugar, Vezerles* vez) {
@@ -791,6 +833,60 @@ void falak_es_lovekek_torlesenek_vizsgalata(Vezerles* vez) {
                     vez->falak.jobb[i].torolve = true;
                 }
             }
+        }
+    }
+}
+/*
+static bool athaladt_a_lyukon (Jatekos* jatekos, Vezerles* vez) {
+
+}
+*/
+void lyuk_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
+    /* Lyuk lovedek altali torlese */
+    Lovedek* mozgoLov = vez->lovedekek;
+    while (mozgoLov != NULL) {
+        Lyuk* mozgoLyuk = vez->lyukak;
+        Lyuk* lemaradoLyuk = NULL;
+        
+        while (mozgoLyuk != NULL) {
+            // Kell torolni
+            if (tav(mozgoLyuk->eleje, mozgoLov->kp) < mozgoLov->sugar || tav(mozgoLyuk->vege, mozgoLov->kp) < mozgoLov->sugar) {
+                // Elejerol torlok
+                if (lemaradoLyuk == NULL) {
+                    free(mozgoLyuk);
+                    vez->lyukak = NULL;
+                    break;
+                }
+                // Kozeperol vagy vegerol torlunk
+                else {
+                    Lyuk* torlendo = mozgoLyuk;
+                    mozgoLyuk = mozgoLyuk->kov;
+                    lemaradoLyuk->kov = mozgoLyuk;
+                    free(torlendo);
+                }
+            }
+            // Nem torlok, leptetes
+            else {
+                lemaradoLyuk = mozgoLyuk;
+                mozgoLyuk = mozgoLyuk->kov;
+            }
+        }
+        mozgoLov = mozgoLov->kov;
+    }
+    
+    
+    
+    
+    /* Lyukon valo athaladas vizsgalata */
+    for (int i=0; i < vez->jatekosszam; ++i) {
+        Lyuk* mozgo = vez->lyukak;
+        while (mozgo != NULL) {
+            if (tav(mozgo->eleje, jatekosok[i].fej) < 15.0 && tav(mozgo->vege, jatekosok[i].fej) < 15.0 && jatekosok[i].lyuk_tilt < vez->menetido) {
+                jatekosok[i].pontszam += 1;
+                jatekosok[i].lyuk_tilt = vez->menetido + 20;
+                break;
+            }
+            mozgo = mozgo->kov;
         }
     }
 }

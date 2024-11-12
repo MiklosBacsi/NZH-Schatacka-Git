@@ -119,9 +119,14 @@ typedef struct Vonal {
     struct Vonal* kov;  ///< vonal középpontja (Vonal*) @see Vonal
 } Vonal;
 
+
+/**
+ * @brief Ez az adattípus egy lyukat (egy végpontpárt) reprezentál, amin való áthaladásért jutalmat kapnak a játékosok
+ */
 typedef struct Lyuk {
-    Koordinata eleje;
-    Koordinata vege;
+    Koordinata eleje;   ///< a lyuk elejének koordinátája (Koordinata) @see Koordinata
+    Koordinata vege;    ///< a lyuk végének koordinátája (Koordinata) @see Koordinata
+    struct Lyuk* kov;    ///< láncolt lista következő eleme (Lyuk*) @see Lyuk
 } Lyuk;
 
 
@@ -170,6 +175,7 @@ typedef struct Jatekos {
     Vonal* vonal;       ///< mutató a játékoshoz tartozó vonalra (Vonal*) @see Vonal
     bool eletben_van;   ///< jelzi életben van-e a játékos (bool)
     int pontszam;       ///< játékos pontszáma (int)
+    int16_t lyuk_tilt;  ///< lyukon való áthaladás tiltása egy rövid ideig (hogy pontosan 1 pontot kapjon)
 } Jatekos;
 
 
@@ -191,6 +197,7 @@ typedef struct Vezerles {
     Falak falak;                ///< struktúra, mely tartalmaz pointereket, melyek a 4 falra (dinamikus tömb) mutatnak @see Falak
     Pixel palya_meret;          ///< pixel típusú adattípus, mely tartalmazza a pálya szélességét és hosszát (Pixel) @see Pixel
     Lovedek* lovedekek;         ///< pointer, mely a lövedékekre (láncolt lista) mutat (Lovedek*) @see Lovedek
+    Lyuk* lyukak;               ///< lyukakat tartalmazó láncolt lista, amiken való áthaladásért a játékosok jutalomban részesülnak (Lyuk*)
     //FelvehetoElemek felv_e_K;
     //Animacio* animaciok;
 
@@ -319,6 +326,16 @@ void lovedekeket_torol(Vezerles* vez);
 
 
 /**
+ * @brief Egyesével iterál a lyukakon (láncolt lista) majd felszabadítja azokat
+ * 
+ * A paraméterként fogadott vez Vezerles struktúrára mutató pointer tartalmazza a lyukakat.
+ * 
+ * @param[out] vez játékvezérléshez szükséges adatokat tartalmazó struktúra (Vezerles*) @see Vezerles
+ */
+void lyukakat_torol(Vezerles* vez);
+
+
+/**
  * @brief Különböző esetekben vizsgálja és törli a falakat és lövedékeket
  * 
  * A paraméterként fogadott vez Vezerles struktúrára mutató pointer tartalmazza a
@@ -353,5 +370,7 @@ void vonalat_hozzaad(Jatekos* jatekosok, Vezerles* vez);
  * @param vez játékvezérléshez szükséges adatokat tartalmazó struktúra (Vezerles*) @see Vezerles
  */
 void vonalakat_torol(Jatekos* jatekosok, Vezerles* vez);
+
+void lyuk_vizsgalata(Jatekos* jatekosok, Vezerles* vez);
 
 #endif

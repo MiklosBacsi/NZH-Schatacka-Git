@@ -946,4 +946,4 @@ void lyuk_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
         }
     }
 }
-// Vege
+// Vege ********************************************************

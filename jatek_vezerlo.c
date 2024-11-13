@@ -937,7 +937,7 @@ void lyuk_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
     for (int i=0; i < vez->jatekosszam; ++i) {
         Lyuk* mozgo = vez->lyukak;
         while (mozgo != NULL) {
-            if (tav(mozgo->eleje, jatekosok[i].fej) < 15.0 && tav(mozgo->vege, jatekosok[i].fej) < 15.0 && jatekosok[i].lyuk_tilt < vez->menetido) {
+            if (tav(mozgo->eleje, jatekosok[i].fej) < 15.0 && tav(mozgo->vege, jatekosok[i].fej) < 15.0 && jatekosok[i].lyuk_tilt < vez->menetido && jatekosok[i].eletben_van) {
                 jatekosok[i].pontszam += 1;
                 jatekosok[i].lyuk_tilt = vez->menetido + 20;
                 break;

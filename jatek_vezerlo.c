@@ -226,6 +226,7 @@ void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, J
         vez->jatek_vege = false;
         
         vonalakat_torol(*cim_jatekosok, vez);
+        lyukakat_torol(vez);
 
         free(*cim_jatekosok);
         *cim_jatekosok = NULL;
@@ -430,6 +431,14 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Be
         
         szoveget_kiir("A játékból való kilépéshez nyomja meg az Esc-et", 475, 490-20, FEHER_SDL, SZURKE_SDL, bt->reg20, jatek_ablak->megjelenito, false);
     }
+
+    //Lyukat - töröld ki!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!4
+    Lyuk* iter = vez->lyukak;
+    while (iter != NULL) {
+        circleRGBA(jatek_ablak->megjelenito, (Sint16)iter->eleje.x, (Sint16)iter->eleje.y, 2, 255, 255, 255, 255);
+        circleRGBA(jatek_ablak->megjelenito, (Sint16)iter->vege.x, (Sint16)iter->vege.y, 2, 255, 255, 255, 255);
+        iter = iter->kov;
+    }
     
     //lineRGBA(jatek_ablak->megjelenito, 700, 0, 700, 900, 255, 0, 0, 255);
     //lineRGBA(jatek_ablak->megjelenito, 0, 450, 1400, 450, 255, 0, 0, 255);
@@ -567,12 +576,12 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
             break;
 
         Vonal* lemaradoV = NULL;
-        Vonal* mozgoV = jatekosok[i].vonal; //jatek eleje???????????????
+        Vonal* mozgoV = jatekosok[i].vonal;
         while (mozgoV != NULL) {
             /*** Jatekos halalanak vizsgalata ***/
             for (int i=0; i < vez->jatekosszam; ++i) {
                 if (mozgoV == jatekosok[i].vonal)
-                    break;
+                    continue;
 
                 if (tav(jatekosok[i].fej, mozgoV->kord) < VON_TAV_HALAL && jatekosok[i].eletben_van) {
                     jatekosok[i].eletben_van = false;
@@ -586,19 +595,20 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
             // Megall ha van torlendo vonal vagy ha a lovedekek vegere ert
             while (mozgoLov != NULL && tav(mozgoLov->kp, mozgoV->kord) > mozgoLov->sugar) {
                 mozgoLov = mozgoLov->kov;
-            }    
+            }
                 
             // Nem torlok, mert nincs torlendo lovedek
-            if (mozgoLov == NULL) {                    
-                // Vonal leptetese        
+            if (mozgoLov == NULL) {
+                // Vonal leptetese
                 lemaradoV = mozgoV;
-                mozgoV = mozgoV->kov;                
+                mozgoV = mozgoV->kov;
             }
             // Elso vonalat torlom
             else if (lemaradoV == NULL) {
-                jatekosok[i].vonal = mozgoV->kov;
-                free(mozgoV);
-                mozgoV = jatekosok[i].vonal;
+                Vonal* torlendo = mozgoV;
+                mozgoV = mozgoV->kov;
+                jatekosok[i].vonal = mozgoV;
+                free(torlendo);
             }
             // Kozeperol vagy vegerol torlok vonalat
             else {                    
@@ -909,9 +919,10 @@ void lyuk_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
             if (tav(mozgoLyuk->eleje, mozgoLov->kp) < mozgoLov->sugar || tav(mozgoLyuk->vege, mozgoLov->kp) < mozgoLov->sugar) {
                 // Elejerol torlok
                 if (lemaradoLyuk == NULL) {
-                    free(mozgoLyuk);
-                    vez->lyukak = NULL;
-                    break;
+                    Lyuk* torlendo = mozgoLyuk;
+                    mozgoLyuk = mozgoLyuk->kov;
+                    vez->lyukak = mozgoLyuk;
+                    free(torlendo);
                 }
                 // Kozeperol vagy vegerol torlunk
                 else {

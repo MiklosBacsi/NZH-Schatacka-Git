@@ -84,6 +84,8 @@ int main(void) {
         if (ablakok[JATEK].nyitva && bill.van_bemenet) {
             /* Ha nincs megallitva */
             if (!vez.megallitva_felhasznalo && !vez.megallitva_jatek && !vez.jatek_vege) {
+                animaciok_kezelese(&vez);
+                
                 jatekosok_mozditasa(jatekosok, &vez);
 
                 vonalat_hozzaad(jatekosok, &vez);
@@ -103,8 +105,6 @@ int main(void) {
 
 
                 falak_es_lovekek_torlesenek_vizsgalata(&vez);
-
-                animaciok_kezelese(&vez);
 
                 ++vez.menetido;
             }
@@ -127,7 +127,6 @@ int main(void) {
     
     
     /* KILEPES */
-    //texturak_torlese(ablakok);
     SDL_RemoveTimer(idozito);
     betutipusok_bezarasa(&bt);
     animacio_texturak_bezarasa(&vez);
@@ -168,10 +167,11 @@ void inicializalas(Ablak* ablakok, Betutipusok* bt, Vezerles* vez) {
     vez->falak.y_db = vez->palya_meret.y;
 }
 
-void felszabadit(Ablak* ablakok, Jatekos* jatekosok, Vezerles* vez) {    
+void felszabadit(Ablak* ablakok, Jatekos* jatekosok, Vezerles* vez) {
     lovedekeket_torol(vez);
     lyukakat_torol(vez);
     vonalakat_torol(jatekosok, vez);
+    animaciokat_torol(vez);
     
     free(ablakok);
     free(jatekosok);

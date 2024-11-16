@@ -145,30 +145,39 @@ typedef struct Kivalasztas {
 
 //???????????????????????????????????????????????????????????????????????????,
 
+/**
+ * @brief Animációk típusát (+1, halálfej) jelöli
+ */
+typedef enum AniTipus {
+    HALALFEJ = 0,   ///< Halálfej animációt jelöli
+    PIROSPLUSZ1,    ///< Piros '+1' animációt jelöli
+    ZOLDPLUSZ1,     ///< Zöld '+1' animációt jelöli
+    KEKPLUSZ1,      ///< Kék '+1' animációt jelöli
+    ROZSAPLUSZ1     ///< Rózsaszín '+1' animációt jelöli
+} AniTipus;
+
 
 /**
  * @brief Animációkat (+1, halálfej) tartalmazó láncolt lista
  */
 typedef struct Animacio {
-    SDL_Texture* kep;
-    Pixel poz;
-    double elet_tartam; //      = 3.0; koronkent: -= 0.02;
-    short telitettseg;  // alap=255; koronkent: -= 1 pl.
-    struct Animacio* kov;
+    SDL_Texture* kep;       ///< betöltött textúrára mutató pointer (SDL_Texture*)
+    Pixel poz;              ///< animáció középpontjának koordinátái (Pixel) @see Pixel
+    double elet_tartam;     ///< animáció élettartama másodpercben megadva (double)
+    struct Animacio* kov;   ///< láncolt lista következő eleme (Animacio*) @see Animacio
 } Animacio;
+
 
 /**
  * @brief Animációk (+1, halálfej) textúráit tartalmazó struktúra
  */
 typedef struct AnimacioTexturak {
-    SDL_Texture* halalfej;
-    SDL_Texture* pirosPluszEgy;
-    SDL_Texture* zoldPluszEgy;
-    SDL_Texture* kekPluszEgy;
-    SDL_Texture* rozsaPluszEgy;
+    SDL_Texture* halalfej;      ///< Halálfej textúrára mutató pointer (SDL_Texture*)
+    SDL_Texture* pirosPluszEgy; ///< Piros +1 textúrára mutató pointer (SDL_Texture*)
+    SDL_Texture* zoldPluszEgy;  ///< Zöld +1 textúrára mutató pointer (SDL_Texture*)
+    SDL_Texture* kekPluszEgy;   ///< Kék +1 textúrára mutató pointer (SDL_Texture*)
+    SDL_Texture* rozsaPluszEgy; ///< Rózsaszín +1 textúrára mutató pointer (SDL_Texture*)
 } AnimacioTexturak;
-
-//???????????????????????????????????????????????????????????????????????????,
 
 
 /**
@@ -219,7 +228,6 @@ typedef struct Vezerles {
     AnimacioTexturak ani;       ///> animációk textúráit tartalmazó struktúra (AnimacioTexturak) @see AnimacioTexturak
     Animacio* animaciok;        ///< animációkat (+1, halálfej) tartalmazó láncolt lista (Animacio*) @see Animacio
 } Vezerles;
-
 
 
 /**
@@ -398,12 +406,40 @@ void vonalakat_torol(Jatekos* jatekosok, Vezerles* vez);
  */
 void lyuk_vizsgalata(Jatekos* jatekosok, Vezerles* vez);
 
+
+/**
+ * @brief Betölt egy textúrát egy mejelenítőre az SDL könyvtár segítségével
+ * 
+ * @param[in] nev betöltendő kép neve (char*)
+ * @param[out] jatekablak ennek az ablaknak a megjelenítőjére tölti majd be a textrúrát (Ablak*) @see Ablak
+ * @return betöltött textúra címe (SDL_Texture*)
+ */
 SDL_Texture* textura_betoltese(char* nev, Ablak* jatekablak);
 
+
+/**
+ * @brief Bezárja az animáció textrúráit
+ * 
+ * @param[out] vez struktúra, mely tartalmazza a beolvasott textúrák címeit (Vezerles*) @see Vezerles
+ */
 void animacio_texturak_bezarasa(Vezerles* vez);
 
+
+/**
+ * @brief Bezárja az animáció textrúráit
+ * 
+ * @param[out] vez struktúra, mely tartalmazza az 'animaciok' láncolt listát, illetve a beolvasott textúrák címeit (Vezerles*) @see Vezerles
+ */
 void animaciok_kezelese(Vezerles* vez);
 
+
+/**
+ * @brief Egyesével iterál az animációkon (láncolt lista) majd felszabadítja azokat
+ * 
+ * A paraméterként fogadott vez Vezerles struktúrára mutató pointer tartalmazza az animációkat
+ * 
+ * @param[out] vez játékvezérléshez szükséges adatokat tartalmazó struktúra (Vezerles*) @see Vezerles
+ */
 void animaciokat_torol(Vezerles* vez);
 
 #endif

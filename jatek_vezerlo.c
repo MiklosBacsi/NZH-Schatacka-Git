@@ -174,6 +174,30 @@ static void falak_letrehozasa(Vezerles* vez) {
     }
 }
 
+static void animacio_hozzaadasa(AniTipus tipus, short x, short y, Vezerles* vez) {
+    Animacio* uj_eleje = (Animacio*) malloc(sizeof(Animacio));
+    if (!uj_eleje) {
+        printf("Nem sikerult memoriat foglalni animacionak! :c\n"); fflush(stdout);
+        return;
+    }
+
+    switch (tipus) {
+        case HALALFEJ: uj_eleje->kep = vez->ani.halalfej; break;
+        case PIROSPLUSZ1: uj_eleje->kep = vez->ani.pirosPluszEgy; break;
+        case ZOLDPLUSZ1: uj_eleje->kep = vez->ani.zoldPluszEgy; break;
+        case KEKPLUSZ1: uj_eleje->kep = vez->ani.kekPluszEgy; break;
+        case ROZSAPLUSZ1: uj_eleje->kep = vez->ani.rozsaPluszEgy; break;
+        default: printf("Hibas animacio tipus van megadva uj animacio hozzaadasanal!\n}"); fflush(stdout); break;
+    }
+
+    uj_eleje->poz.x = x;
+    uj_eleje->poz.y = y;
+    uj_eleje->elet_tartam = 0.5;
+    
+    uj_eleje->kov = vez->animaciok;
+    vez->animaciok = uj_eleje;
+}
+
 static void animaciot_kirajzol(SDL_Texture* kep, short kpx, short kpy, SDL_Renderer* megjelenito) {
     SDL_Rect cel = { kpx-75/2, kpy-75/2, 75, 75 };
     /* Logo atmasolasa az ablakra */
@@ -242,6 +266,7 @@ void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, J
         
         vonalakat_torol(*cim_jatekosok, vez);
         lyukakat_torol(vez);
+        animaciokat_torol(vez);
 
         free(*cim_jatekosok);
         *cim_jatekosok = NULL;
@@ -270,6 +295,7 @@ void uj_menet(Vezerles* vez, Jatekos* jatekosok) {
     lovedekeket_torol(vez);
     lyukakat_torol(vez);
     vonalakat_torol(jatekosok, vez);
+    animaciokat_torol(vez);
 
     for (int i=0; i < vez->jatekosszam; ++i) {
         *(jatekosok[i].tilt_lo) = false;
@@ -289,16 +315,6 @@ void uj_menet(Vezerles* vez, Jatekos* jatekosok) {
             vez->falak.jobb[i].torolve = false;
         }
     }
-
-    /* Megjelenites */
-    // Kiir: A menet inditasahoz nyomja meg a Szokozt
-    
-    // Jatekosok vonalanak torlese (din. tomb)
-    // Lovedekek torlese (din. tomb)
-    // Felveheto elemek torlese (din. tomb)
-    // Animaciok torlese (din. tomb)
-
-    
 
     // Jatekosok: random fej, irany
     randFej(jatekosok, vez);
@@ -447,14 +463,7 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Be
         szoveget_kiir("A játékból való kilépéshez nyomja meg az Esc-et", 475, 490-20, FEHER_SDL, SZURKE_SDL, bt->reg20, jatek_ablak->megjelenito, false);
     }
 
-    //Lyukat - töröld ki!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!4
-    Lyuk* iter = vez->lyukak;
-    while (iter != NULL) {
-        circleRGBA(jatek_ablak->megjelenito, (Sint16)iter->eleje.x, (Sint16)iter->eleje.y, 2, 255, 255, 255, 255);
-        circleRGBA(jatek_ablak->megjelenito, (Sint16)iter->vege.x, (Sint16)iter->vege.y, 2, 255, 255, 255, 255);
-        iter = iter->kov;
-    }
-    
+
     //lineRGBA(jatek_ablak->megjelenito, 700, 0, 700, 900, 255, 0, 0, 255);
     //lineRGBA(jatek_ablak->megjelenito, 0, 450, 1400, 450, 255, 0, 0, 255);
 
@@ -468,9 +477,15 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Be
     // Logo
     logot_rajzol(jatek_ablak, 1425, 10);
 
-    // Animacio
-    animaciot_kirajzol(vez->ani.halalfej, 38, 38, jatek_ablak->megjelenito);
+    /* Animaciok */
+    Animacio* mozgoA = vez->animaciok;
+    while (mozgoA != NULL) {
+        animaciot_kirajzol(mozgoA->kep, mozgoA->poz.x, mozgoA->poz.y, jatek_ablak->megjelenito);
 
+        mozgoA = mozgoA->kov;
+    }
+
+    /*** MEGJELENITES ***/
     SDL_RenderPresent(jatek_ablak->megjelenito);
 }
 
@@ -550,6 +565,7 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
         if (tulcs_x_max > 0 && tulcs_x_max >= tulcs_y_min && tulcs_x_max >= tulcs_y_max) {
             if (vez->jt_mod != FAL_NELKULI && van_fal_atmenetkor_X((short)jatekosok[i].fej.y, vez)) {
                 jatekosok[i].eletben_van = false;
+                animacio_hozzaadasa(HALALFEJ, (short) jatekosok[i].fej.x, (short) jatekosok[i].fej.y, vez);
                 ++halottak;
                 eletben_levo_jatekosok_pontjanak_novelese_halalkor(jatekosok, vez, halottak);
             }
@@ -560,6 +576,7 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
         else if (tulcs_x_min > 0 && tulcs_x_min >= tulcs_y_min && tulcs_x_min >= tulcs_y_max) {
             if (vez->jt_mod != FAL_NELKULI && van_fal_atmenetkor_X((short)jatekosok[i].fej.y, vez)) {
                 jatekosok[i].eletben_van = false;
+                animacio_hozzaadasa(HALALFEJ, (short) jatekosok[i].fej.x, (short) jatekosok[i].fej.y, vez);
                 ++halottak;
                 eletben_levo_jatekosok_pontjanak_novelese_halalkor(jatekosok, vez, halottak);
             }
@@ -570,6 +587,7 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
         else if (tulcs_y_min > 0 && tulcs_y_min >= tulcs_x_min && tulcs_y_min >= tulcs_x_max) {
             if (vez->jt_mod != FAL_NELKULI && van_fal_atmenetkor_Y((short)jatekosok[i].fej.x, vez)) {
                 jatekosok[i].eletben_van = false;
+                animacio_hozzaadasa(HALALFEJ, (short) jatekosok[i].fej.x, (short) jatekosok[i].fej.y, vez);
                 ++halottak;
                 eletben_levo_jatekosok_pontjanak_novelese_halalkor(jatekosok, vez, halottak);
             }
@@ -580,6 +598,7 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
         else if (tulcs_y_max > 0 && tulcs_y_max >= tulcs_x_min && tulcs_y_max >= tulcs_x_max) {
             if (vez->jt_mod != FAL_NELKULI && van_fal_atmenetkor_Y((short)jatekosok[i].fej.x, vez)) {
                 jatekosok[i].eletben_van = false;
+                animacio_hozzaadasa(HALALFEJ, (short) jatekosok[i].fej.x, (short) jatekosok[i].fej.y, vez);
                 ++halottak;
                 eletben_levo_jatekosok_pontjanak_novelese_halalkor(jatekosok, vez, halottak);
             }
@@ -603,6 +622,7 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
 
                 if (tav(jatekosok[i].fej, mozgoV->kord) < VON_TAV_HALAL && jatekosok[i].eletben_van) {
                     jatekosok[i].eletben_van = false;
+                    animacio_hozzaadasa(HALALFEJ, (short) jatekosok[i].fej.x, (short) jatekosok[i].fej.y, vez);
                     ++halottak;
                     eletben_levo_jatekosok_pontjanak_novelese_halalkor(jatekosok, vez, halottak);
                 }
@@ -647,6 +667,7 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
         while (mozgo != NULL) {
             if (tav(jatekosok[i].fej, mozgo->kp) <= mozgo->sugar) {
                 jatekosok[i].eletben_van = false;
+                animacio_hozzaadasa(HALALFEJ, (short) jatekosok[i].fej.x, (short) jatekosok[i].fej.y, vez);
                 ++halottak;
                 jatekosok[mozgo->szin].pontszam += 3;
                 eletben_levo_jatekosok_pontjanak_novelese_halalkor(jatekosok, vez, halottak);
@@ -656,8 +677,6 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
         }
     }
 
-    // HA jatekosok[i].eletben_van == false
-    // halalfej animaciot rajzol !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     /* Menet vege */
     if (halottak >= vez->jatekosszam-1) {
@@ -672,7 +691,6 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
             vez->megallitva_felhasznalo = true;
 
             // Maxpontszam szamitasa
-            // NEM JO -- VALTOZTATSD MEG !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             int max = 0;
             int sum = 0;
             for (int i=0; i < vez->jatekosszam; ++i) {
@@ -959,9 +977,6 @@ void lyuk_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
         mozgoLov = mozgoLov->kov;
     }
     
-    
-    
-    
     /* Lyukon valo athaladas vizsgalata */
     for (int i=0; i < vez->jatekosszam; ++i) {
         Lyuk* mozgo = vez->lyukak;
@@ -969,6 +984,16 @@ void lyuk_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
             if (tav(mozgo->eleje, jatekosok[i].fej) < 15.0 && tav(mozgo->vege, jatekosok[i].fej) < 15.0 && jatekosok[i].lyuk_tilt < vez->menetido && jatekosok[i].eletben_van) {
                 jatekosok[i].pontszam += 1;
                 jatekosok[i].lyuk_tilt = vez->menetido + 20;
+                
+                // Animacio
+                switch (jatekosok[i].szin) {
+                    case PIROS: animacio_hozzaadasa(PIROSPLUSZ1, (short) jatekosok[i].fej.x, (short) jatekosok[i].fej.y, vez); break;
+                    case ZOLD: animacio_hozzaadasa(ZOLDPLUSZ1, (short) jatekosok[i].fej.x, (short) jatekosok[i].fej.y, vez); break;
+                    case KEK: animacio_hozzaadasa(KEKPLUSZ1, (short) jatekosok[i].fej.x, (short) jatekosok[i].fej.y, vez); break;
+                    case ROZSA: animacio_hozzaadasa(ROZSAPLUSZ1, (short) jatekosok[i].fej.x, (short) jatekosok[i].fej.y, vez); break;
+                    default: printf("Hibas szin +1 animacio hozzaadasanak (lyuk)!\n");
+                }
+
                 break;
             }
             mozgo = mozgo->kov;
@@ -994,15 +1019,50 @@ void animacio_texturak_bezarasa(Vezerles* vez) {
 }
 
 void animaciok_kezelese(Vezerles* vez) {
+    /* Lejart animaciok torlese */
+    Animacio* mozgo = vez->animaciok;
+    Animacio* lemarado = NULL;
+    while (mozgo != NULL) {
+        // Torolni kell
+        if (mozgo->elet_tartam < 0) {
+            // Elso elemet
+            if (lemarado == NULL) {
+                Animacio* torlendo = mozgo;
+                mozgo = mozgo->kov;
+                vez->animaciok = mozgo;
+                free(torlendo);
+            }
+            // Kozeperol/vegerol torlok
+            else {
+                Animacio* torlendo = mozgo;
+                mozgo = mozgo->kov;
+                lemarado->kov = mozgo;
+                free(torlendo);
+            }
+        }
+        // Nem torlok
+        else {
+            lemarado = mozgo;
+            mozgo = mozgo->kov;
+        }
+    }
 
+    /* Animaciok transzformalasa */
+    mozgo = vez->animaciok;
+    while (mozgo != NULL) {
+        mozgo->elet_tartam -= 0.02;
+        mozgo->poz.y -= 1;
+
+        mozgo = mozgo->kov;
+    }
 }
 
 void animaciokat_torol(Vezerles* vez) {
     Animacio* iter = vez->animaciok;
     while (iter != NULL) {
-        Animacio* kov = iter->kov;
-        free(iter);
-        iter = kov;
+        Animacio* torlendo = iter;
+        iter = iter->kov;
+        free(torlendo);
     }
     vez->animaciok = NULL;
 }

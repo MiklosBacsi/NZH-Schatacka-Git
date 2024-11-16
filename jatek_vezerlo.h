@@ -145,13 +145,28 @@ typedef struct Kivalasztas {
 
 //???????????????????????????????????????????????????????????????????????????,
 
-/*
+
+/**
+ * @brief Animációkat (+1, halálfej) tartalmazó láncolt lista
+ */
 typedef struct Animacio {
     SDL_Texture* kep;
-    Koordinata kp;
+    Pixel poz;
     double elet_tartam; //      = 3.0; koronkent: -= 0.02;
+    short telitettseg;  // alap=255; koronkent: -= 1 pl.
+    struct Animacio* kov;
 } Animacio;
-*/
+
+/**
+ * @brief Animációk (+1, halálfej) textúráit tartalmazó struktúra
+ */
+typedef struct AnimacioTexturak {
+    SDL_Texture* halalfej;
+    SDL_Texture* pirosPluszEgy;
+    SDL_Texture* zoldPluszEgy;
+    SDL_Texture* kekPluszEgy;
+    SDL_Texture* rozsaPluszEgy;
+} AnimacioTexturak;
 
 //???????????????????????????????????????????????????????????????????????????,
 
@@ -201,8 +216,8 @@ typedef struct Vezerles {
     Lovedek* lovedekek;         ///< pointer, mely a lövedékekre (láncolt lista) mutat (Lovedek*) @see Lovedek
     Lyuk* lyukak;               ///< lyukakat tartalmazó láncolt lista, amiken való áthaladásért a játékosok jutalomban részesülnak (Lyuk*)
     //FelvehetoElemek felv_e_K;
-    //Animacio* animaciok;
-
+    AnimacioTexturak ani;       ///> animációk textúráit tartalmazó struktúra (AnimacioTexturak) @see AnimacioTexturak
+    Animacio* animaciok;        ///< animációkat (+1, halálfej) tartalmazó láncolt lista (Animacio*) @see Animacio
 } Vezerles;
 
 
@@ -382,5 +397,13 @@ void vonalakat_torol(Jatekos* jatekosok, Vezerles* vez);
  * @param[out] vez játékvezérléshez szükséges adatokat tartalmazó struktúra (Vezerles*) @see Vezerles
  */
 void lyuk_vizsgalata(Jatekos* jatekosok, Vezerles* vez);
+
+SDL_Texture* textura_betoltese(char* nev, Ablak* jatekablak);
+
+void animacio_texturak_bezarasa(Vezerles* vez);
+
+void animaciok_kezelese(Vezerles* vez);
+
+void animaciokat_torol(Vezerles* vez);
 
 #endif

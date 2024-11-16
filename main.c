@@ -104,6 +104,7 @@ int main(void) {
 
                 falak_es_lovekek_torlesenek_vizsgalata(&vez);
 
+                animaciok_kezelese(&vez);
 
                 ++vez.menetido;
             }
@@ -129,6 +130,7 @@ int main(void) {
     //texturak_torlese(ablakok);
     SDL_RemoveTimer(idozito);
     betutipusok_bezarasa(&bt);
+    animacio_texturak_bezarasa(&vez);
     if (!ablakok[JATEK].megjelenito)
         SDL_DestroyRenderer(ablakok[JATEK].megjelenito);
     if (!ablakok[JATEK].ablak)
@@ -160,7 +162,7 @@ void inicializalas(Ablak* ablakok, Betutipusok* bt, Vezerles* vez) {
     /* Jatek: Vezerles */
     vez->palya_meret = (Pixel) {1400, 900}; vez->menet_vege = false;
     vez->elmozd_jat = 1.1; vez->elmozd_lov = 2.0; vez->fordulas = 0.04;
-    vez->lovedekek = NULL; vez->lyukak = NULL;
+    vez->lovedekek = NULL; vez->lyukak = NULL; vez->animaciok = NULL;
     vez->falak.felso=NULL; vez->falak.also=NULL; vez->falak.bal=NULL; vez->falak.jobb=NULL;
     vez->falak.x_db = vez->palya_meret.x;
     vez->falak.y_db = vez->palya_meret.y;

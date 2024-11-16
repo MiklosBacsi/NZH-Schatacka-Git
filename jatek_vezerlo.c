@@ -174,6 +174,12 @@ static void falak_letrehozasa(Vezerles* vez) {
     }
 }
 
+static void animaciot_kirajzol(SDL_Texture* kep, short kpx, short kpy, SDL_Renderer* megjelenito) {
+    SDL_Rect cel = { kpx-75/2, kpy-75/2, 75, 75 };
+    /* Logo atmasolasa az ablakra */
+    SDL_RenderCopy(megjelenito, kep, NULL, &cel);
+}
+
 void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, Jatekos** cim_jatekosok, int jt_mod, bool* kiv_jat) {
     /* Ablak megnyitasa */
     if (bill->menu_Szokoz && !jatek_ablak->nyitva && aktiv_jatekosok_szama(kiv_jat) >= 2) {
@@ -206,14 +212,23 @@ void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, J
             }
         }
 
+        // Jatekosok pontszamanak inicializalasa
         for (int i=0; i < vez->jatekosszam; ++i) {
             (*cim_jatekosok)[i].pontszam = KEZDOPONTSZAM;
         }
+
+        // Animaciok texturainak betoltese
+        vez->ani.halalfej = textura_betoltese("Halalfej.png", jatek_ablak);
+        vez->ani.pirosPluszEgy = textura_betoltese("PirosPluszEgy.png", jatek_ablak);
+        vez->ani.zoldPluszEgy = textura_betoltese("ZoldPluszEgy.png", jatek_ablak);
+        vez->ani.kekPluszEgy = textura_betoltese("KekPluszEgy.png", jatek_ablak);
+        vez->ani.rozsaPluszEgy = textura_betoltese("RozsaPluszEgy.png", jatek_ablak);
             
         uj_menet(vez, *cim_jatekosok);
     }
     /* Ablak bezarasa */
     else if (bill->jatek_Esc && !bill->tilt_Esc && vez->megallitva_felhasznalo && jatek_ablak->nyitva) {
+        animacio_texturak_bezarasa(vez);
         SDL_DestroyRenderer(jatek_ablak->megjelenito);
         SDL_DestroyWindow(jatek_ablak->ablak);
         jatek_ablak->ablak = NULL;
@@ -452,6 +467,9 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Be
 
     // Logo
     logot_rajzol(jatek_ablak, 1425, 10);
+
+    // Animacio
+    animaciot_kirajzol(vez->ani.halalfej, 38, 38, jatek_ablak->megjelenito);
 
     SDL_RenderPresent(jatek_ablak->megjelenito);
 }
@@ -956,5 +974,36 @@ void lyuk_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
             mozgo = mozgo->kov;
         }
     }
+}
+
+SDL_Texture* textura_betoltese(char* nev, Ablak* jatekablak) {
+    SDL_Texture* textura = IMG_LoadTexture(jatekablak->megjelenito, nev);
+    if (!textura) {
+        SDL_Log("Nem sikerult megnyitni az animacio texturajat! %s\n", TTF_GetError());
+        exit(1);
+    }
+    return textura;
+}
+
+void animacio_texturak_bezarasa(Vezerles* vez) {
+    SDL_DestroyTexture(vez->ani.halalfej);
+    SDL_DestroyTexture(vez->ani.pirosPluszEgy);
+    SDL_DestroyTexture(vez->ani.zoldPluszEgy);
+    SDL_DestroyTexture(vez->ani.kekPluszEgy);
+    SDL_DestroyTexture(vez->ani.rozsaPluszEgy);
+}
+
+void animaciok_kezelese(Vezerles* vez) {
+
+}
+
+void animaciokat_torol(Vezerles* vez) {
+    Animacio* iter = vez->animaciok;
+    while (iter != NULL) {
+        Animacio* kov = iter->kov;
+        free(iter);
+        iter = kov;
+    }
+    vez->animaciok = NULL;
 }
 // Vege ********************************************************

@@ -1011,11 +1011,21 @@ SDL_Texture* textura_betoltese(char* nev, Ablak* jatekablak) {
 }
 
 void animacio_texturak_bezarasa(Vezerles* vez) {
-    SDL_DestroyTexture(vez->ani.halalfej);
-    SDL_DestroyTexture(vez->ani.pirosPluszEgy);
-    SDL_DestroyTexture(vez->ani.zoldPluszEgy);
-    SDL_DestroyTexture(vez->ani.kekPluszEgy);
-    SDL_DestroyTexture(vez->ani.rozsaPluszEgy);
+    // Halalfej
+    if (vez->ani.halalfej != NULL)
+        SDL_DestroyTexture(vez->ani.halalfej);
+    // Piros '+1'
+    if (vez->ani.pirosPluszEgy != NULL)
+        SDL_DestroyTexture(vez->ani.pirosPluszEgy);
+    // Zold '+1'
+    if (vez->ani.zoldPluszEgy != NULL)
+        SDL_DestroyTexture(vez->ani.zoldPluszEgy);
+    // Kek '+1'
+    if (vez->ani.kekPluszEgy != NULL)
+        SDL_DestroyTexture(vez->ani.kekPluszEgy);
+    // Rozsaszin '+1'
+    if (vez->ani.rozsaPluszEgy != NULL)
+        SDL_DestroyTexture(vez->ani.rozsaPluszEgy);
 }
 
 void animaciok_kezelese(Vezerles* vez) {

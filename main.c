@@ -165,6 +165,12 @@ void inicializalas(Ablak* ablakok, Betutipusok* bt, Vezerles* vez) {
     vez->falak.felso=NULL; vez->falak.also=NULL; vez->falak.bal=NULL; vez->falak.jobb=NULL;
     vez->falak.x_db = vez->palya_meret.x;
     vez->falak.y_db = vez->palya_meret.y;
+
+    vez->ani.halalfej = NULL;
+    vez->ani.pirosPluszEgy = NULL;
+    vez->ani.zoldPluszEgy = NULL;
+    vez->ani.kekPluszEgy = NULL;
+    vez->ani.rozsaPluszEgy = NULL;
 }
 
 void felszabadit(Ablak* ablakok, Jatekos* jatekosok, Vezerles* vez) {

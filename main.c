@@ -153,10 +153,10 @@ void inicializalas(Ablak* ablakok, Betutipusok* bt, Vezerles* vez) {
 
     /* Betutipus betoltese, X pont magassaggal */
     TTF_Init();
-    bt->med20 = betutipus_betoltese("OpenSans-Medium.ttf", 20);
-    bt->reg15 = betutipus_betoltese("OpenSans-Regular.ttf", 15);
-    bt->reg20 = betutipus_betoltese("OpenSans-Regular.ttf", 20);
-    bt->bold20 = betutipus_betoltese("OpenSans-Bold.ttf", 20);
+    bt->med20 = betutipus_betoltese("./Betutipusok/OpenSans-Medium.ttf", 20);
+    bt->reg15 = betutipus_betoltese("./Betutipusok/OpenSans-Regular.ttf", 15);
+    bt->reg20 = betutipus_betoltese("./Betutipusok/OpenSans-Regular.ttf", 20);
+    bt->bold20 = betutipus_betoltese("./Betutipusok/OpenSans-Bold.ttf", 20);
 
     fix_menut_kirajzol(ablakok+MENU, bt);
 

@@ -21,7 +21,7 @@
 // Uj vonal lerakasank idokoze (*20ms)
 #define GYAK 6
 #define VON_TAV_HALAL 4.0
-#define KEZDOPONTSZAM 50
+#define KEZDOPONTSZAM 0
 #define RADIAN(fok) (fok * 3.1416 / 180.0)
 
 SDL_Color SDL_Szin[6] = {PIROS_SDL, ZOLD_SDL, KEK_SDL, ROZSA_SDL, FEHER_SDL, FEKETE_SDL};
@@ -201,7 +201,13 @@ static void animacio_hozzaadasa(AniTipus tipus, short x, short y, Vezerles* vez)
 
 static void animaciot_kirajzol(SDL_Texture* kep, short kpx, short kpy, SDL_Renderer* megjelenito) {
     SDL_Rect cel = { kpx-75/2, kpy-75/2, 75, 75 };
-    /* Logo atmasolasa az ablakra */
+    /* Animacio atmasolasa az ablakra */
+    SDL_RenderCopy(megjelenito, kep, NULL, &cel);
+}
+
+static void piktogramot_rajzol(SDL_Texture* kep, short x, short y, SDL_Renderer* megjelenito) {
+    SDL_Rect cel = { x, y, 20, 20 };
+    /* Piktogram atmasolasa az ablakra */
     SDL_RenderCopy(megjelenito, kep, NULL, &cel);
 }
 
@@ -243,12 +249,28 @@ void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, J
         }
 
         // Animaciok texturainak betoltese
-        vez->ani.halalfej = textura_betoltese("Halalfej.png", jatek_ablak);
-        vez->ani.pirosPluszEgy = textura_betoltese("PirosPluszEgy.png", jatek_ablak);
-        vez->ani.zoldPluszEgy = textura_betoltese("ZoldPluszEgy.png", jatek_ablak);
-        vez->ani.kekPluszEgy = textura_betoltese("KekPluszEgy.png", jatek_ablak);
-        vez->ani.rozsaPluszEgy = textura_betoltese("RozsaPluszEgy.png", jatek_ablak);
-        vez->ani.buborek = textura_betoltese("FelvehetoElem.png", jatek_ablak);
+        vez->ani.halalfej = textura_betoltese("./Texturak/Halalfej.png", jatek_ablak);
+        vez->ani.buborek = textura_betoltese("./Texturak/FelvehetoElem.png", jatek_ablak);
+        // '+1'
+        vez->ani.pirosPluszEgy = textura_betoltese("./Texturak/PirosPluszEgy.png", jatek_ablak);
+        vez->ani.zoldPluszEgy = textura_betoltese("./Texturak/ZoldPluszEgy.png", jatek_ablak);
+        vez->ani.kekPluszEgy = textura_betoltese("./Texturak/KekPluszEgy.png", jatek_ablak);
+        vez->ani.rozsaPluszEgy = textura_betoltese("./Texturak/RozsaPluszEgy.png", jatek_ablak);
+        // Normal loves
+        vez->ani.pirosNormalLov = textura_betoltese("./Texturak/PirosNormalLoves.png", jatek_ablak);
+        vez->ani.zoldNormalLov = textura_betoltese("./Texturak/ZoldNormalLoves.png", jatek_ablak);
+        vez->ani.kekNormalLov = textura_betoltese("./Texturak/KekNormalLoves.png", jatek_ablak);
+        vez->ani.rozsaNormalLov = textura_betoltese("./Texturak/RozsaNormalLoves.png", jatek_ablak);
+        // Nagy loves
+        vez->ani.pirosNagyLov = textura_betoltese("./Texturak/PirosNagyLoves.png", jatek_ablak);
+        vez->ani.zoldNagyLov = textura_betoltese("./Texturak/ZoldNagyLoves.png", jatek_ablak);
+        vez->ani.kekNagyLov = textura_betoltese("./Texturak/KekNagyLoves.png", jatek_ablak);
+        vez->ani.rozsaNagyLov = textura_betoltese("./Texturak/RozsaNagyLoves.png", jatek_ablak);
+        // Sok loves
+        vez->ani.pirosSokLov = textura_betoltese("./Texturak/PirosSokLoves.png", jatek_ablak);
+        vez->ani.zoldSokLov = textura_betoltese("./Texturak/ZoldSokLoves.png", jatek_ablak);
+        vez->ani.kekSokLov = textura_betoltese("./Texturak/KekSokLoves.png", jatek_ablak);
+        vez->ani.rozsaSokLov = textura_betoltese("./Texturak/RozsaSokLoves.png", jatek_ablak);
             
         uj_menet(vez, *cim_jatekosok);
     }
@@ -286,6 +308,74 @@ void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, J
 
 static void jatek_hatteret_kirajzol(Ablak* jatek_ablak, Vezerles* vez) {
     boxRGBA(jatek_ablak->megjelenito, 0, 0, 1600, 900, 30, 30, 30, 255);
+}
+
+static void loves_piktogramokat_rajzol(Vezerles* vez, Jatekos* jatekosok, Ablak* jatek_ablak) {
+    for (int i=0; i < vez->jatekosszam; ++i) {
+        /* Nincs loves */
+        if (jatekosok[i].eletben_van == false || (jatekosok[i].pontszam < 6 && jatekosok[i].spec.tipus != NAGY_LOV && jatekosok[i].spec.tipus != SOK_LOV))
+            continue;
+        /* Nagy loves */
+        else if (jatekosok[i].spec.tipus == NAGY_LOV) {
+            switch (jatekosok[i].szin) {
+                case PIROS:
+                    piktogramot_rajzol(vez->ani.pirosNagyLov, 1450, 104 + i*50, jatek_ablak->megjelenito);
+                    break;
+                case ZOLD:
+                    piktogramot_rajzol(vez->ani.zoldNagyLov, 1450, 104 + i*50, jatek_ablak->megjelenito);
+                    break;
+                case KEK:
+                    piktogramot_rajzol(vez->ani.kekNagyLov, 1450, 104 + i*50, jatek_ablak->megjelenito);
+                    break;
+                case ROZSA:
+                    piktogramot_rajzol(vez->ani.rozsaNagyLov, 1450, 104 + i*50, jatek_ablak->megjelenito);
+                    break;
+                default:
+                    printf("Hibas szin loves piktrogramjanak kiirasakor (Nagy loves)\n");
+                    break;
+            }
+        }
+        /* Sok loves */
+        else if (jatekosok[i].spec.tipus == SOK_LOV) {
+            switch (jatekosok[i].szin) {
+                case PIROS:
+                    piktogramot_rajzol(vez->ani.pirosSokLov, 1450, 104 + i*50, jatek_ablak->megjelenito);
+                    break;
+                case ZOLD:
+                    piktogramot_rajzol(vez->ani.zoldSokLov, 1450, 104 + i*50, jatek_ablak->megjelenito);
+                    break;
+                case KEK:
+                    piktogramot_rajzol(vez->ani.kekSokLov, 1450, 104 + i*50, jatek_ablak->megjelenito);
+                    break;
+                case ROZSA:
+                    piktogramot_rajzol(vez->ani.rozsaSokLov, 1450, 104 + i*50, jatek_ablak->megjelenito);
+                    break;
+                default:
+                    printf("Hibas szin loves piktrogramjanak kiirasakor (Sok loves)\n");
+                    break;
+            }
+        }
+        /* Normal loves */
+        else if (jatekosok[i].pontszam >= 6) {
+            switch (jatekosok[i].szin) {
+                case PIROS:
+                    piktogramot_rajzol(vez->ani.pirosNormalLov, 1450, 104 + i*50, jatek_ablak->megjelenito);
+                    break;
+                case ZOLD:
+                    piktogramot_rajzol(vez->ani.zoldNormalLov, 1450, 104 + i*50, jatek_ablak->megjelenito);
+                    break;
+                case KEK:
+                    piktogramot_rajzol(vez->ani.kekNormalLov, 1450, 104 + i*50, jatek_ablak->megjelenito);
+                    break;
+                case ROZSA:
+                    piktogramot_rajzol(vez->ani.rozsaNormalLov, 1450, 104 + i*50, jatek_ablak->megjelenito);
+                    break;
+                default:
+                    printf("Hibas szin loves piktrogramjanak kiirasakor (Nagy loves)\n");
+                    break;
+            }
+        }
+    }
 }
 
 void uj_menet(Vezerles* vez, Jatekos* jatekosok) {
@@ -488,6 +578,9 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Be
         snprintf(pontszam, 3+1, "%d", jatekosok[i].pontszam);
         szoveget_kiir(pontszam, 1500, 100 + i*50, SDL_Szin[jatekosok[i].szin], SZURKE_SDL, bt->bold20, jatek_ablak->megjelenito, false);
     }
+
+    /* Loves piktoramok */
+    loves_piktogramokat_rajzol(vez, jatekosok, jatek_ablak);
 
     /* Uj menet inditasa felirat */
     if (vez->megallitva_jatek && vez->jatek_vege == false) {
@@ -952,16 +1045,6 @@ void felveheto_elemek_kezelese(Vezerles* vez, Jatekos* jatekosok) {
                 /* Elem hozzaadasa */
                 srand(time(NULL));
                 jatekosok[i].spec.tipus = (rand() % 3) + 1;
-                
-                // Töröld ki!!! @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@v
-                //jatekosok[i].spec.tipus = PAJZS;
-                switch (jatekosok[i].spec.tipus) {
-                    case NAGY_LOV: printf("Nagy lövés\n"); break;
-                    case SOK_LOV: printf("Sok lövés\n"); break;
-                    case PAJZS: printf("Pajzs\n"); break;
-                    default: printf("Hibás típus\n"); break;
-                }
-                //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
                 if (jatekosok[i].spec.tipus == PAJZS)
                     jatekosok[i].spec.elet_tartam = 15.0;
@@ -1268,6 +1351,10 @@ void animacio_texturak_bezarasa(Vezerles* vez) {
     // Halalfej
     if (vez->ani.halalfej != NULL)
         SDL_DestroyTexture(vez->ani.halalfej);
+    // Felveheto elem (buborek)
+    if (vez->ani.buborek != NULL)
+        SDL_DestroyTexture(vez->ani.buborek);
+    
     // Piros '+1'
     if (vez->ani.pirosPluszEgy != NULL)
         SDL_DestroyTexture(vez->ani.pirosPluszEgy);
@@ -1280,9 +1367,45 @@ void animacio_texturak_bezarasa(Vezerles* vez) {
     // Rozsaszin '+1'
     if (vez->ani.rozsaPluszEgy != NULL)
         SDL_DestroyTexture(vez->ani.rozsaPluszEgy);
-    // Felveheto elem (buborek)
-    if (vez->ani.buborek != NULL)
-        SDL_DestroyTexture(vez->ani.buborek);
+    
+    // Piros Normal loves
+    if (vez->ani.pirosNormalLov != NULL)
+        SDL_DestroyTexture(vez->ani.pirosNormalLov);
+    // Zold Normal loves
+    if (vez->ani.zoldNormalLov != NULL)
+        SDL_DestroyTexture(vez->ani.zoldNormalLov);
+    // Kek Normal loves
+    if (vez->ani.kekNormalLov != NULL)
+        SDL_DestroyTexture(vez->ani.kekNormalLov);
+    // Rozsaszin Normal loves
+    if (vez->ani.rozsaNormalLov != NULL)
+        SDL_DestroyTexture(vez->ani.rozsaNormalLov);
+
+    // Piros Nagy loves
+    if (vez->ani.pirosNagyLov != NULL)
+        SDL_DestroyTexture(vez->ani.pirosNagyLov);
+    // Zold Nagy loves
+    if (vez->ani.zoldNagyLov != NULL)
+        SDL_DestroyTexture(vez->ani.zoldNagyLov);
+    // Kek Nagy loves
+    if (vez->ani.kekNagyLov != NULL)
+        SDL_DestroyTexture(vez->ani.kekNagyLov);
+    // Rozsaszin Nagy loves
+    if (vez->ani.rozsaNagyLov != NULL)
+        SDL_DestroyTexture(vez->ani.rozsaNagyLov);
+    
+    // Piros Sok loves
+    if (vez->ani.pirosSokLov != NULL)
+        SDL_DestroyTexture(vez->ani.pirosSokLov);
+    // Zold Sok loves
+    if (vez->ani.zoldSokLov != NULL)
+        SDL_DestroyTexture(vez->ani.zoldSokLov);
+    // Kek Sok loves
+    if (vez->ani.kekSokLov != NULL)
+        SDL_DestroyTexture(vez->ani.kekSokLov);
+    // Rozsaszin Sok loves
+    if (vez->ani.rozsaSokLov != NULL)
+        SDL_DestroyTexture(vez->ani.rozsaSokLov);
 }
 
 void animaciok_kezelese(Vezerles* vez) {

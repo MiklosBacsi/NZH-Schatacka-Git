@@ -200,11 +200,27 @@ typedef struct Animacio {
  */
 typedef struct AnimacioTexturak {
     SDL_Texture* halalfej;      ///< Halálfej textúrára mutató pointer (SDL_Texture*)
+    SDL_Texture* buborek;       ///< Felvehető elem (buborék) (SDL_Texture*)
+    // '+1'
     SDL_Texture* pirosPluszEgy; ///< Piros +1 textúrára mutató pointer (SDL_Texture*)
     SDL_Texture* zoldPluszEgy;  ///< Zöld +1 textúrára mutató pointer (SDL_Texture*)
     SDL_Texture* kekPluszEgy;   ///< Kék +1 textúrára mutató pointer (SDL_Texture*)
     SDL_Texture* rozsaPluszEgy; ///< Rózsaszín +1 textúrára mutató pointer (SDL_Texture*)
-    SDL_Texture* buborek;       ///< Felvehető elem (buborék) (SDL_Texture*)
+    // Normal loves piktogram
+    SDL_Texture* pirosNormalLov;///< Piros normál lövésre textúrára mutató pointer (SDL_Texture*)
+    SDL_Texture* zoldNormalLov; ///< Zöld normál lövésre textúrára mutató pointer (SDL_Texture*)
+    SDL_Texture* kekNormalLov;  ///< Kék normál lövésre textúrára mutató pointer (SDL_Texture*)
+    SDL_Texture* rozsaNormalLov;///< Rózsaszín normál lövésre textúrára mutató pointer (SDL_Texture*)
+    // Nagy loves piktogram
+    SDL_Texture* pirosNagyLov;  ///< Piros nagy lövésre textúrára mutató pointer (SDL_Texture*)
+    SDL_Texture* zoldNagyLov;   ///< Zöld nagy lövésre textúrára mutató pointer (SDL_Texture*)
+    SDL_Texture* kekNagyLov;    ///< Kék nagy lövésre textúrára mutató pointer (SDL_Texture*)
+    SDL_Texture* rozsaNagyLov;  ///< Rózsaszín nagy lövésre textúrára mutató pointer (SDL_Texture*)
+    // Sok loves piktogram
+    SDL_Texture* pirosSokLov;   ///< Piros sok lövésre textúrára mutató pointer (SDL_Texture*)
+    SDL_Texture* zoldSokLov;    ///< Zöld sok lövésre textúrára mutató pointer (SDL_Texture*)
+    SDL_Texture* kekSokLov;     ///< Kék sok lövésre textúrára mutató pointer (SDL_Texture*)
+    SDL_Texture* rozsaSokLov;   ///< Rózsaszín sok lövésre textúrára mutató pointer (SDL_Texture*)
 } AnimacioTexturak;
 
 

@@ -35,7 +35,7 @@ void ablakot_letrehoz (Ablak* ablak) {
 
 void logot_rajzol(Ablak* ablak, int x, int y) {
     /* Logo betoltese */
-    ablak->logo = IMG_LoadTexture(ablak->megjelenito, "schatacka_logo.png");
+    ablak->logo = IMG_LoadTexture(ablak->megjelenito, "./Texturak/schatacka_logo.png");
     if (ablak->logo == NULL) {
         SDL_Log("Nem nyithato meg a kepfajl: %s", IMG_GetError());
         exit(1);
@@ -144,7 +144,7 @@ void sugot_kirajzol(Ablak* ablak, Betutipusok* bt) {
     boxRGBA(ablak->megjelenito, 0, 0, 800, 600, 30, 30, 30, 255);  
     
     /* Kepek betoltese */
-    SDL_Texture* billenytu_kep = IMG_LoadTexture(ablak->megjelenito, "Schatacka_keyboard.png");
+    SDL_Texture* billenytu_kep = IMG_LoadTexture(ablak->megjelenito, "./Texturak/Schatacka_keyboard.png");
     if (billenytu_kep == NULL) {
         SDL_Log("Nem nyithato meg a kepfajl: %s", IMG_GetError());
         exit(1);

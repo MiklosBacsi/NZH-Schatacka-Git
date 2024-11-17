@@ -169,11 +169,27 @@ void inicializalas(Ablak* ablakok, Betutipusok* bt, Vezerles* vez) {
     vez->falak.y_db = vez->palya_meret.y;
 
     vez->ani.halalfej = NULL;
+    vez->ani.buborek = NULL;
+    // '+1'
     vez->ani.pirosPluszEgy = NULL;
     vez->ani.zoldPluszEgy = NULL;
     vez->ani.kekPluszEgy = NULL;
     vez->ani.rozsaPluszEgy = NULL;
-    vez->ani.buborek = NULL;
+    // Normal loves
+    vez->ani.pirosNormalLov = NULL;
+    vez->ani.zoldNormalLov = NULL;
+    vez->ani.kekNormalLov = NULL;
+    vez->ani.rozsaNormalLov = NULL;
+    // Nagy loves
+    vez->ani.pirosNagyLov = NULL;
+    vez->ani.zoldNagyLov = NULL;
+    vez->ani.kekNagyLov = NULL;
+    vez->ani.rozsaNagyLov = NULL;
+    // Sok loves
+    vez->ani.pirosSokLov = NULL;
+    vez->ani.zoldSokLov = NULL;
+    vez->ani.kekSokLov = NULL;
+    vez->ani.rozsaSokLov = NULL;
 }
 
 void felszabadit(Ablak* ablakok, Jatekos* jatekosok, Vezerles* vez) {

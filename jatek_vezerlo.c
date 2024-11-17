@@ -516,7 +516,15 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Be
         szoveget_kiir("A játékból való kilépéshez nyomja meg az Esc-et", 475, 490-20, FEHER_SDL, SZURKE_SDL, bt->reg20, jatek_ablak->megjelenito, false);
     }
 
+    /*
+    Lyuk* mozgoLyuk = vez->lyukak;
+    while (mozgoLyuk != NULL) {
+        circleRGBA(jatek_ablak->megjelenito, (Sint16)mozgoLyuk->eleje.x, (Sint16)mozgoLyuk->eleje.y, 3, 255, 255, 255, 255);
+        circleRGBA(jatek_ablak->megjelenito, (Sint16)mozgoLyuk->vege.x, (Sint16)mozgoLyuk->vege.y, 3, 255, 255, 255, 255);
 
+        mozgoLyuk = mozgoLyuk->kov;
+    }
+    */
     //lineRGBA(jatek_ablak->megjelenito, 700, 0, 700, 900, 255, 0, 0, 255);
     //lineRGBA(jatek_ablak->megjelenito, 0, 450, 1400, 450, 255, 0, 0, 255);
 
@@ -677,7 +685,9 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
             /*** Vonal torlesenek vizsgalata ***/
             Lovedek* mozgoLov = vez->lovedekek;
             // Megall ha van torlendo vonal vagy ha a lovedekek vegere ert
-            while (mozgoLov != NULL && tav(mozgoLov->kp, mozgoV->kord) > mozgoLov->sugar) {
+            while (mozgoLov != NULL) {
+                if (tav(mozgoLov->kp, mozgoV->kord) < mozgoLov->sugar)
+                    break;
                 mozgoLov = mozgoLov->kov;
             }
                 
@@ -1017,20 +1027,15 @@ void vonalat_hozzaad(Jatekos* jatekosok, Vezerles* vez) {
 
                 // Lyuk hozzaadasa
                 if (vonal_ido == 0 && jatekosok[i].vonal != NULL && jatekosok[i].vonal->id != -1) {
-                    Vonal* mozgo = jatekosok[i].vonal;
-                    while (mozgo != NULL && mozgo->kov != NULL) {
-                        if (mozgo->id + 1 == mozgo->kov->id) {
-                            Lyuk* uj_lyuk = (Lyuk*) malloc(sizeof(Lyuk));
-                            if (!uj_lyuk) printf("Nem sikerult memoriat fogalalni a lyuknak! :c\n");
+                    if (jatekosok[i].vonal->id + 1 == jatekosok[i].vonal->kov->id) {
+                        Lyuk* uj_lyuk = (Lyuk*) malloc(sizeof(Lyuk));
+                        if (!uj_lyuk) printf("Nem sikerult memoriat fogalalni a lyuknak! :c\n");
 
-                            uj_lyuk->eleje = mozgo->kord;
-                            uj_lyuk->vege = mozgo->kov->kord;
+                        uj_lyuk->eleje = jatekosok[i].vonal->kord;
+                        uj_lyuk->vege = jatekosok[i].vonal->kov->kord;
 
-                            uj_lyuk->kov = vez->lyukak;
-                            vez->lyukak = uj_lyuk;
-
-                            break;
-                        }
+                        uj_lyuk->kov = vez->lyukak;
+                        vez->lyukak = uj_lyuk;
                     }
                 }
             }

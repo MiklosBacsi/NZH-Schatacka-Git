@@ -90,6 +90,8 @@ int main(void) {
 
                 vonalat_hozzaad(jatekosok, &vez);
 
+                felveheto_elemek_kezelese(&vez, jatekosok);
+
                 loves_vizsgalata(jatekosok, &vez);
                 
                 lovedekek_mozditasa(vez.lovedekek, vez.elmozd_lov);
@@ -161,7 +163,7 @@ void inicializalas(Ablak* ablakok, Betutipusok* bt, Vezerles* vez) {
     /* Jatek: Vezerles */
     vez->palya_meret = (Pixel) {1400, 900}; vez->menet_vege = false;
     vez->elmozd_jat = 1.1; vez->elmozd_lov = 2.0; vez->fordulas = 0.04;
-    vez->lovedekek = NULL; vez->lyukak = NULL; vez->animaciok = NULL;
+    vez->lovedekek = NULL; vez->lyukak = NULL; vez->animaciok = NULL; vez->buborekok = NULL;
     vez->falak.felso=NULL; vez->falak.also=NULL; vez->falak.bal=NULL; vez->falak.jobb=NULL;
     vez->falak.x_db = vez->palya_meret.x;
     vez->falak.y_db = vez->palya_meret.y;
@@ -171,6 +173,7 @@ void inicializalas(Ablak* ablakok, Betutipusok* bt, Vezerles* vez) {
     vez->ani.zoldPluszEgy = NULL;
     vez->ani.kekPluszEgy = NULL;
     vez->ani.rozsaPluszEgy = NULL;
+    vez->ani.buborek = NULL;
 }
 
 void felszabadit(Ablak* ablakok, Jatekos* jatekosok, Vezerles* vez) {
@@ -178,6 +181,7 @@ void felszabadit(Ablak* ablakok, Jatekos* jatekosok, Vezerles* vez) {
     lyukakat_torol(vez);
     vonalakat_torol(jatekosok, vez);
     animaciokat_torol(vez);
+    felveheto_elemeket_torol(vez);
     
     free(ablakok);
     free(jatekosok);

@@ -21,7 +21,8 @@
 // Uj vonal lerakasank idokoze (*20ms)
 #define GYAK 6
 #define VON_TAV_HALAL 4.0
-#define KEZDOPONTSZAM 0
+#define KEZDOPONTSZAM 50
+#define RADIAN(fok) (fok * 3.1416 / 180.0)
 
 SDL_Color SDL_Szin[6] = {PIROS_SDL, ZOLD_SDL, KEK_SDL, ROZSA_SDL, FEHER_SDL, FEKETE_SDL};
 
@@ -247,6 +248,7 @@ void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, J
         vez->ani.zoldPluszEgy = textura_betoltese("ZoldPluszEgy.png", jatek_ablak);
         vez->ani.kekPluszEgy = textura_betoltese("KekPluszEgy.png", jatek_ablak);
         vez->ani.rozsaPluszEgy = textura_betoltese("RozsaPluszEgy.png", jatek_ablak);
+        vez->ani.buborek = textura_betoltese("FelvehetoElem.png", jatek_ablak);
             
         uj_menet(vez, *cim_jatekosok);
     }
@@ -296,6 +298,7 @@ void uj_menet(Vezerles* vez, Jatekos* jatekosok) {
     lyukakat_torol(vez);
     vonalakat_torol(jatekosok, vez);
     animaciokat_torol(vez);
+    felveheto_elemeket_torol(vez);
 
     for (int i=0; i < vez->jatekosszam; ++i) {
         *(jatekosok[i].tilt_lo) = false;
@@ -319,9 +322,11 @@ void uj_menet(Vezerles* vez, Jatekos* jatekosok) {
     // Jatekosok: random fej, irany
     randFej(jatekosok, vez);
 
-    // Jatekosok: eletben_van = true
+    // Jatekosok: eletben_van = true + spec. elemek
     for (int i=0; i < vez->jatekosszam; ++i) {
         jatekosok[i].eletben_van = true;
+        jatekosok[i].spec.tipus = NINCS;
+        jatekosok[i].spec.elet_tartam = 0.0;
     }
 }
 
@@ -374,7 +379,12 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Be
         }
     } 
     
-    /* Felveheto elemek */
+    /* Felveheto elemek (buborekok) */
+    FelvehetoElem* mozgoB = vez->buborekok;
+    while (mozgoB != NULL) {
+        animaciot_kirajzol(vez->ani.buborek, mozgoB->kp.x, mozgoB->kp.y, jatek_ablak->megjelenito);
+        mozgoB = mozgoB->kov;
+    }
 
     /* Lovedekek */
     Lovedek* mozgoL;
@@ -398,25 +408,61 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Be
         }
     }
     
-    /* Jatekosok fejei */
+    /* Jatekosok fejei + PAJZS */
     for (int i=0; i < vez->jatekosszam; ++i) {
         if (!jatekosok[i].eletben_van) continue;
 
         switch (jatekosok[i].szin) {
         case PIROS:
+            /* Fej */
             circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 2, 255, 0, 0, 255);
+            /* Pajzs */
+            if (jatekosok[i].spec.tipus == PAJZS) {
+                // Ha mindjart lejar
+                if (jatekosok[i].spec.elet_tartam < 3.0)
+                    circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 10, 255, 0, 0, 150);
+                else
+                    circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 10, 255, 0, 0, 255);
+            }
             break;
         case ZOLD:
+            /* Fej */
             circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 2, 0, 255, 0, 255);
+            /* Pajzs */
+            if (jatekosok[i].spec.tipus == PAJZS) {
+                // Ha mindjart lejar
+                if (jatekosok[i].spec.elet_tartam < 3.0)
+                    circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 10, 0, 255, 0, 150);
+                else
+                    circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 10, 0, 255, 0, 255);
+            }
             break;
         case KEK:
+            /* Fej */
             circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 2, 0, 100, 255, 255);
+            /* Pajzs */
+            if (jatekosok[i].spec.tipus == PAJZS) {
+                // Ha mindjart lejar
+                if (jatekosok[i].spec.elet_tartam < 3.0)
+                    circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 10, 0, 100, 255, 150);
+                else
+                    circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 10, 0, 100, 255, 255);
+            }
             break;
         case ROZSA:
+            /* Fej */
             circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 2, 255, 0, 255, 255);
+            /* Pajzs */
+            if (jatekosok[i].spec.tipus == PAJZS) {
+                // Ha mindjart lejar
+                if (jatekosok[i].spec.elet_tartam < 3.0)
+                    circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 10, 255, 0, 255, 150);
+                else
+                    circleRGBA(jatek_ablak->megjelenito, (Sint16)jatekosok[i].fej.x, (Sint16)jatekosok[i].fej.y, 10, 255, 0, 255, 255);
+            }
             break;
         default:
-            printf("Hiba a jatekosok fejenek kirajzolasaval! Szin: %d\n", jatekosok[i].szin);
+            printf("Hiba a jatekosok fejenek/pajzsanak kirajzolasaval! Szin: %d\n", jatekosok[i].szin);
             break;
         }
     }
@@ -427,6 +473,13 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Be
     // Hogy fal nelkuli jatekmodban latszodjon a palya szele
     if (vez->jt_mod == FAL_NELKULI) {
         boxRGBA(jatek_ablak->megjelenito, 1400, 0, 1401, 900, 255, 255, 255, 255);
+    }
+
+    /* Animaciok */
+    Animacio* mozgoA = vez->animaciok;
+    while (mozgoA != NULL) {
+        animaciot_kirajzol(mozgoA->kep, mozgoA->poz.x, mozgoA->poz.y, jatek_ablak->megjelenito);
+        mozgoA = mozgoA->kov;
     }
 
     /* Pontszamok */
@@ -477,13 +530,6 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Be
     // Logo
     logot_rajzol(jatek_ablak, 1425, 10);
 
-    /* Animaciok */
-    Animacio* mozgoA = vez->animaciok;
-    while (mozgoA != NULL) {
-        animaciot_kirajzol(mozgoA->kep, mozgoA->poz.x, mozgoA->poz.y, jatek_ablak->megjelenito);
-
-        mozgoA = mozgoA->kov;
-    }
 
     /*** MEGJELENITES ***/
     SDL_RenderPresent(jatek_ablak->megjelenito);
@@ -620,7 +666,7 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
                 if (mozgoV == jatekosok[i].vonal)
                     continue;
 
-                if (tav(jatekosok[i].fej, mozgoV->kord) < VON_TAV_HALAL && jatekosok[i].eletben_van) {
+                if (tav(jatekosok[i].fej, mozgoV->kord) < VON_TAV_HALAL && jatekosok[i].eletben_van && jatekosok[i].spec.tipus != PAJZS) {
                     jatekosok[i].eletben_van = false;
                     animacio_hozzaadasa(HALALFEJ, (short) jatekosok[i].fej.x, (short) jatekosok[i].fej.y, vez);
                     ++halottak;
@@ -660,9 +706,9 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
 
     /* Jatekos utkozik lovedekkel */ //pajzs
     for (int i=0; i < vez->jatekosszam; ++i) {
-        if (jatekosok[i].eletben_van == false)
+        if (jatekosok[i].eletben_van == false || jatekosok[i].spec.tipus == PAJZS) {
             continue;
-        // if van pajzs --> continue;
+        }
         Lovedek* mozgo = vez->lovedekek;
         while (mozgo != NULL) {
             if (tav(jatekosok[i].fej, mozgo->kp) <= mozgo->sugar) {
@@ -674,6 +720,23 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
                 break;
             }
             mozgo = mozgo->kov;
+        }
+    }
+
+    /* Pazsj megol egy masik jatekost */
+    for (int i=0; i < vez->jatekosszam; ++i) {
+        if (jatekosok[i].spec.tipus != PAJZS || jatekosok[i].eletben_van == false)
+            continue;
+        for (int j=0; j < vez->jatekosszam; ++j) {
+            if (i == j || jatekosok[j].eletben_van == false)
+                continue;
+            // Ha j. jatekos meghal
+            if (tav(jatekosok[i].fej, jatekosok[j].fej) < 10.0) {
+                jatekosok[j].eletben_van = false;
+                animacio_hozzaadasa(HALALFEJ, (short) jatekosok[j].fej.x, (short) jatekosok[j].fej.y, vez);
+                ++halottak;
+                eletben_levo_jatekosok_pontjanak_novelese_halalkor(jatekosok, vez, halottak);
+            }
         }
     }
 
@@ -713,19 +776,21 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
     }
 }
 
-static Lovedek* loves_hozzaadasa(double sugar, Lovedek* lov_eleje, Jatekos* jat) {
+static void loves_hozzaadasa(double sugar, Vezerles* vez, Jatekos* jat, double irany) {
     Lovedek* uj_eleje = (Lovedek*) malloc(sizeof(Lovedek));
-    if (!uj_eleje) printf("Nem sikerult memoriat fogalalni a lovedeknek! :c\n");
+    if (!uj_eleje) {
+        printf("Nem sikerult memoriat fogalalni a lovedeknek! :c\n");
+        return;
+    }
 
     Koordinata kp = (Koordinata) {jat->fej.x + 1.5 * sugar * cos(jat->irany), jat->fej.y + 1.5 * sugar * sin(jat->irany)};
     uj_eleje->kp = kp;
-    uj_eleje->irany = jat->irany;
+    uj_eleje->irany = irany;
     uj_eleje->sugar = sugar;
     uj_eleje->szin = jat->szin;
 
-    uj_eleje->kov = lov_eleje;
-
-    return uj_eleje;
+    uj_eleje->kov = vez->lovedekek;
+    vez->lovedekek = uj_eleje;
 }
 
 void loves_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
@@ -733,22 +798,196 @@ void loves_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
         if (jatekosok[i].eletben_van == false)
             continue;
 
-        if (*(jatekosok[i].lo) && !(*(jatekosok[i].tilt_lo)) && jatekosok[i].pontszam >= 6){ // VAGY VAN SPECIALIS ELEME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        if (*(jatekosok[i].lo) && !(*(jatekosok[i].tilt_lo)) && ((jatekosok[i].pontszam >= 6) || jatekosok[i].spec.tipus == NAGY_LOV || jatekosok[i].spec.tipus == SOK_LOV)){
             *(jatekosok[i].tilt_lo) = true;
-            jatekosok[i].pontszam -= 6;
+            /* Ha van specialis lovese */
+            // Nagy loves
+            if (jatekosok[i].spec.tipus == NAGY_LOV) {
+                loves_hozzaadasa(30.0, vez, &jatekosok[i], jatekosok[i].irany);
+                jatekosok[i].spec.tipus = NINCS;
+            }
+            // Sok loves
+            else if (jatekosok[i].spec.tipus == SOK_LOV) {
+                // Kozep - 60 fok
+                loves_hozzaadasa(15.0, vez, &jatekosok[i], jatekosok[i].irany - RADIAN(60.0));
+                // Kozep - 45 fok
+                loves_hozzaadasa(15.0, vez, &jatekosok[i], jatekosok[i].irany - RADIAN(45.0));
+                // Kozep - 30 fok
+                loves_hozzaadasa(15.0, vez, &jatekosok[i], jatekosok[i].irany - RADIAN(30.0));
+                // Kozep - 15 fok
+                loves_hozzaadasa(15.0, vez, &jatekosok[i], jatekosok[i].irany - RADIAN(15.0));
+                // Kozep
+                loves_hozzaadasa(15.0, vez, &jatekosok[i], jatekosok[i].irany);
+                // Kozep + 15 fok
+                loves_hozzaadasa(15.0, vez, &jatekosok[i], jatekosok[i].irany + RADIAN(15.0));
+                // Kozep + 30 fok
+                loves_hozzaadasa(15.0, vez, &jatekosok[i], jatekosok[i].irany + RADIAN(30.0));
+                // Kozep + 45 fok
+                loves_hozzaadasa(15.0, vez, &jatekosok[i], jatekosok[i].irany + RADIAN(45.0));
+                // Kozep + 60 fok
+                loves_hozzaadasa(15.0, vez, &jatekosok[i], jatekosok[i].irany + RADIAN(60.0));
 
-            // Loves tipusa???
+                jatekosok[i].spec.tipus = NINCS;
+            }
 
-
-            // Normal loves
-            vez->lovedekek = loves_hozzaadasa(20.0, vez->lovedekek, &jatekosok[i]);
-            // Y-tengely meg van invertalva !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            
-
-            // Nagyloves
-
-            // Sokloves
+            /* Normal loves */
+            else {
+                jatekosok[i].pontszam -= 6;
+                loves_hozzaadasa(15.0, vez, &jatekosok[i], jatekosok[i].irany);
+            }
         }
+    }
+}
+
+static void felveheto_elem_hozzaadasa(Vezerles* vez, Jatekos* jatekosok) {
+    FelvehetoElem* uj_eleje = (FelvehetoElem*) malloc(sizeof(FelvehetoElem));
+    if (!uj_eleje) {
+        printf("Nem sikerult memoriat foglalni felveheto elemnek! :c\n");
+        return;
+    }
+
+    /* Kozpeppont szamitasa */
+    // Random seed
+    srand(time(NULL));
+    Pixel kord;
+    bool jo_koordinata;
+    do
+    {
+        jo_koordinata = true;
+        kord = randPixel();
+
+        /* Megfelelo tavolsag biztositasa */
+        // Jatekosoktol
+        for (int i=0; i < vez->jatekosszam; ++i) {
+            if (tav(jatekosok[i].fej, (Koordinata) {(double)kord.x, (double)kord.y}) < 200.0) {
+                jo_koordinata = false;
+                break;
+            }
+        }
+        // Tobbi buborektol
+        FelvehetoElem* mozgo = vez->buborekok;
+        while (mozgo != NULL) {
+            if (tav((Koordinata) {(double)mozgo->kp.x, (double)mozgo->kp.y}, (Koordinata) {(double)kord.x, (double)kord.y}) < 200.0) {
+                jo_koordinata = false;
+                break;
+            }
+
+            mozgo = mozgo->kov;
+        }
+
+    } while (!jo_koordinata);
+    
+    uj_eleje->kp = kord;
+    uj_eleje->elet_tartam = 15.0;
+    
+    uj_eleje->kov = vez->buborekok;
+    vez->buborekok = uj_eleje;
+}
+
+void felveheto_elemek_kezelese(Vezerles* vez, Jatekos* jatekosok) {
+    if (vez->jt_mod == FELV_E_T)
+        return;
+    
+    /* Lejart buborekok torlese */
+    FelvehetoElem* mozgo = vez->buborekok;
+    FelvehetoElem* lemarado = NULL;
+    while (mozgo != NULL) {
+        // Torolni kell
+        if (mozgo->elet_tartam < 0) {
+            // Elso elemet
+            if (lemarado == NULL) {
+                FelvehetoElem* torlendo = mozgo;
+                mozgo = mozgo->kov;
+                vez->buborekok = mozgo;
+                free(torlendo);
+            }
+            // Kozeperol/vegerol torlok
+            else {
+                FelvehetoElem* torlendo = mozgo;
+                mozgo = mozgo->kov;
+                lemarado->kov = mozgo;
+                free(torlendo);
+            }
+        }
+        // Nem torlok
+        else {
+            lemarado = mozgo;
+            mozgo = mozgo->kov;
+        }
+    }
+
+    /* Jatekos felveszi az elemet */
+    for (int i=0; i < vez->jatekosszam; ++i) {
+        mozgo = vez->buborekok;
+        lemarado = NULL;
+        while(mozgo != NULL) {
+            // Buborekon belül van
+            if (tav(jatekosok[i].fej, (Koordinata){(double)mozgo->kp.x, (double)mozgo->kp.y}) < 37.5) {
+                /* Kitorlom a buborekot */
+                // Elso elemet torlom
+                if (lemarado == NULL) {
+                    FelvehetoElem* torlendo = mozgo;
+                    mozgo = mozgo->kov;
+                    vez->buborekok = mozgo;
+                    free(torlendo);
+                }
+                // Kozeperol/vegerol torlok
+                else {
+                    FelvehetoElem* torlendo = mozgo;
+                    mozgo = mozgo->kov;
+                    lemarado->kov = mozgo;
+                    free(torlendo);
+                }
+
+                /* Elem hozzaadasa */
+                srand(time(NULL));
+                jatekosok[i].spec.tipus = (rand() % 3) + 1;
+                
+                // Töröld ki!!! @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@v
+                //jatekosok[i].spec.tipus = PAJZS;
+                switch (jatekosok[i].spec.tipus) {
+                    case NAGY_LOV: printf("Nagy lövés\n"); break;
+                    case SOK_LOV: printf("Sok lövés\n"); break;
+                    case PAJZS: printf("Pajzs\n"); break;
+                    default: printf("Hibás típus\n"); break;
+                }
+                //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+                if (jatekosok[i].spec.tipus == PAJZS)
+                    jatekosok[i].spec.elet_tartam = 15.0;
+
+                break;
+            }
+            // Buborekon kivul van
+            else {
+                lemarado = mozgo;
+                mozgo = mozgo->kov;
+            }
+        }
+
+
+    }
+
+    /* Lejart pajzs eltavolitasa es meglevo elettartamanak csokkentese*/
+    for (int i=0; i < vez->jatekosszam; ++i) {
+        if (jatekosok[i].spec.tipus == PAJZS) {
+            jatekosok[i].spec.elet_tartam -= 0.02;
+
+            if (jatekosok[i].spec.elet_tartam < 0.0)
+                jatekosok[i].spec.tipus = NINCS;
+        }
+    }
+
+    /* Elettartam csokkentese */
+    mozgo = vez->buborekok;
+    while (mozgo != NULL) {
+        mozgo->elet_tartam -= 0.02;
+        mozgo = mozgo->kov;
+    }
+    
+    /* Felveheto elem (buborek) hozzaadasa */
+    if (vez->menetido % 500 == 200) {
+        felveheto_elem_hozzaadasa(vez, jatekosok);
     }
 }
 
@@ -815,6 +1054,16 @@ void vonalat_hozzaad(Jatekos* jatekosok, Vezerles* vez) {
         if (novelve)
             ++vez->vonal_szamlalo;
     }
+}
+
+void felveheto_elemeket_torol(Vezerles* vez) {
+    FelvehetoElem* iter = vez->buborekok;
+    while (iter != NULL) {
+        FelvehetoElem* torlendo = iter;
+        iter = iter->kov;
+        free(torlendo);
+    }
+    vez->buborekok = NULL;
 }
 
 void lovedekeket_torol(Vezerles* vez) {
@@ -981,7 +1230,7 @@ void lyuk_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
     for (int i=0; i < vez->jatekosszam; ++i) {
         Lyuk* mozgo = vez->lyukak;
         while (mozgo != NULL) {
-            if (tav(mozgo->eleje, jatekosok[i].fej) < 15.0 && tav(mozgo->vege, jatekosok[i].fej) < 15.0 && jatekosok[i].lyuk_tilt < vez->menetido && jatekosok[i].eletben_van) {
+            if (tav(mozgo->eleje, jatekosok[i].fej) < 15.0 && tav(mozgo->vege, jatekosok[i].fej) < 15.0 && jatekosok[i].lyuk_tilt < vez->menetido && jatekosok[i].eletben_van && jatekosok[i].spec.tipus != PAJZS) {
                 jatekosok[i].pontszam += 1;
                 jatekosok[i].lyuk_tilt = vez->menetido + 20;
                 
@@ -1026,6 +1275,9 @@ void animacio_texturak_bezarasa(Vezerles* vez) {
     // Rozsaszin '+1'
     if (vez->ani.rozsaPluszEgy != NULL)
         SDL_DestroyTexture(vez->ani.rozsaPluszEgy);
+    // Felveheto elem (buborek)
+    if (vez->ani.buborek != NULL)
+        SDL_DestroyTexture(vez->ani.buborek);
 }
 
 void animaciok_kezelese(Vezerles* vez) {

@@ -141,9 +141,36 @@ typedef struct Kivalasztas {
     bool aktiv_jatekosok[4];///< 4 elemű bool tömb (true: játékos kiválasztva, false: nem)  (bool*)
 } Kivalasztas;
 
-//typedef enum SpecialisElem {NINCS = 0, NAGY_L, SOK_L, PAJZS} SpecialisElem;
 
-//???????????????????????????????????????????????????????????????????????????,
+/**
+ * @brief Speciális elemek típusát jelöli
+ */
+typedef enum SpecialisElemTipus {
+    NINCS = 0,  ///< Játékos nem rendelkezik speciális elemmel
+    NAGY_LOV,   ///< Játékos nagy lövéssel rendelkezik
+    SOK_LOV,    ///< Játékos sok lövéssel rendelkezik
+    PAJZS       ///< Játékos pajzzsal rendelkezik
+} SpecialisElemTipus;
+
+
+/**
+ * @brief Egy speciális elemet jelöl, amivel egy játékos rendelkezik
+ */
+typedef struct SpecialisElem {
+    SpecialisElemTipus tipus;   ///< Játékos speciális elemének típusa (SpecialisElemTipus) @see SpecialisElemTipus
+    double elet_tartam;         ///< Játékos pajzsának élettartama (double)
+} SpecialisElem;
+
+
+/**
+ * @brief Felvehető elemet (buborékot) jelöl, ami a kijelzőn is meg fog jelenni
+ */
+typedef struct FelvehetoElem {
+    Pixel kp;                   ///< Felvehető elem (buborék) középpontja (Pixel) @see Pixel
+    double elet_tartam;         ///< Felvehető elem (buborék) élettartama mielőtt eltűnik (double)
+    struct FelvehetoElem* kov;  ///< Felvehető elemek láncolt listájának következő eleme (FelvehetoElem*) @see FelvehetoElem
+} FelvehetoElem;
+
 
 /**
  * @brief Animációk típusát (+1, halálfej) jelöli
@@ -177,6 +204,7 @@ typedef struct AnimacioTexturak {
     SDL_Texture* zoldPluszEgy;  ///< Zöld +1 textúrára mutató pointer (SDL_Texture*)
     SDL_Texture* kekPluszEgy;   ///< Kék +1 textúrára mutató pointer (SDL_Texture*)
     SDL_Texture* rozsaPluszEgy; ///< Rózsaszín +1 textúrára mutató pointer (SDL_Texture*)
+    SDL_Texture* buborek;       ///< Felvehető elem (buborék) (SDL_Texture*)
 } AnimacioTexturak;
 
 
@@ -191,7 +219,7 @@ typedef struct Jatekos {
     Koordinata fej;     ///< játékos feje (Koordinata) @see Koordinata
     Koordinata elozo;   ///< játékos előző pozíciója, új vonal koordinátája (Koordinata) @see Koordinata
     double irany;       ///< játékos haladási iárnya fokban (double)
-    //SpecialisElem spec_elem;
+    SpecialisElem spec; ///< speciális elem (pajzs, nagy/sok lövés) (SpecialisElem) @see SpecialisElem
     bool* bal;          ///< mutató a játékos bal gombjára (bool*) @see Billentyuk
     bool* lo;           ///< mutató a játékos lövés gombjára (bool*) @see Billentyuk
     bool* tilt_lo;      ///< mutató a játékos lövésének tiltására (bool*) @see Billentyuk
@@ -224,7 +252,7 @@ typedef struct Vezerles {
     Pixel palya_meret;          ///< pixel típusú adattípus, mely tartalmazza a pálya szélességét és hosszát (Pixel) @see Pixel
     Lovedek* lovedekek;         ///< pointer, mely a lövedékekre (láncolt lista) mutat (Lovedek*) @see Lovedek
     Lyuk* lyukak;               ///< lyukakat tartalmazó láncolt lista, amiken való áthaladásért a játékosok jutalomban részesülnak (Lyuk*)
-    //FelvehetoElemek felv_e_K;
+    FelvehetoElem* buborekok;   ///< felvehető elemeket (buborékokat) tartalmazó láncolt lista (FelvehetoElem*) @see FelvehetoElem
     AnimacioTexturak ani;       ///> animációk textúráit tartalmazó struktúra (AnimacioTexturak) @see AnimacioTexturak
     Animacio* animaciok;        ///< animációkat (+1, halálfej) tartalmazó láncolt lista (Animacio*) @see Animacio
 } Vezerles;
@@ -428,6 +456,8 @@ void animacio_texturak_bezarasa(Vezerles* vez);
 /**
  * @brief Bezárja az animáció textrúráit
  * 
+ * A paraméterként fogadott vez struktúra tartalmazza a betöltött textúrákat, illetve az animációk láncolt listát is.
+ * 
  * @param[out] vez struktúra, mely tartalmazza az 'animaciok' láncolt listát, illetve a beolvasott textúrák címeit (Vezerles*) @see Vezerles
  */
 void animaciok_kezelese(Vezerles* vez);
@@ -441,5 +471,24 @@ void animaciok_kezelese(Vezerles* vez);
  * @param[out] vez játékvezérléshez szükséges adatokat tartalmazó struktúra (Vezerles*) @see Vezerles
  */
 void animaciokat_torol(Vezerles* vez);
+
+
+/**
+ * @brief Felvehető elemeket (buborékokat), illetve a speciális elemeket (a már felvett elemeket) kezeli
+ * 
+ * A paraméterként fogadott vez struktúra tartalmazza a buborékok (felvehető elemek) láncolt listát.
+ * 
+ * @param[out] vez játékvezérléshez szükséges adatokat tartalmazó struktúra (Vezerles*) @see Vezerles
+ * @param[out] jatekosok játékosokat tartalmazó dinamikus tömböt tartalmazza (Jatekos*) @see Jatekos
+ */
+void felveheto_elemek_kezelese(Vezerles* vez, Jatekos* jatekosok);
+
+
+/**
+ * @brief Kitörli a felvehető elemeket (buborékokat)
+ * 
+ * @param[out] vez játékvezérléshez szükséges adatokat tartalmazó struktúra (Vezerles*) @see Vezerles
+ */
+void felveheto_elemeket_torol(Vezerles* vez);
 
 #endif

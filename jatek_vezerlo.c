@@ -127,7 +127,7 @@ static void eletben_levo_jatekosok_pontjanak_novelese_halalkor(Jatekos* jatekoso
     for (int i=0; i < vez->jatekosszam; ++i) {
         if (jatekosok[i].eletben_van == false)
             continue;
-        jatekosok[i].pontszam += 3 + halottak_szama;
+        jatekosok[i].pontszam += 3 + halottak_szama + (4 - vez->jatekosszam);
     }
 }
 
@@ -313,7 +313,7 @@ static void jatek_hatteret_kirajzol(Ablak* jatek_ablak, Vezerles* vez) {
 static void loves_piktogramokat_rajzol(Vezerles* vez, Jatekos* jatekosok, Ablak* jatek_ablak) {
     for (int i=0; i < vez->jatekosszam; ++i) {
         /* Nincs loves */
-        if (jatekosok[i].eletben_van == false || (jatekosok[i].pontszam < 6 && jatekosok[i].spec.tipus != NAGY_LOV && jatekosok[i].spec.tipus != SOK_LOV))
+        if (jatekosok[i].eletben_van == false || (jatekosok[i].pontszam < 4 && jatekosok[i].spec.tipus != NAGY_LOV && jatekosok[i].spec.tipus != SOK_LOV))
             continue;
         /* Nagy loves */
         else if (jatekosok[i].spec.tipus == NAGY_LOV) {
@@ -356,7 +356,7 @@ static void loves_piktogramokat_rajzol(Vezerles* vez, Jatekos* jatekosok, Ablak*
             }
         }
         /* Normal loves */
-        else if (jatekosok[i].pontszam >= 6) {
+        else if (jatekosok[i].pontszam >= 4) {
             switch (jatekosok[i].szin) {
                 case PIROS:
                     piktogramot_rajzol(vez->ani.pirosNormalLov, 1450, 104 + i*50, jatek_ablak->megjelenito);
@@ -818,7 +818,7 @@ void halal_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
                 jatekosok[i].eletben_van = false;
                 animacio_hozzaadasa(HALALFEJ, (short) jatekosok[i].fej.x, (short) jatekosok[i].fej.y, vez);
                 ++halottak;
-                jatekosok[mozgo->szin].pontszam += 3;
+                jatekosok[mozgo->szin].pontszam += 5;
                 eletben_levo_jatekosok_pontjanak_novelese_halalkor(jatekosok, vez, halottak);
                 break;
             }
@@ -901,7 +901,7 @@ void loves_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
         if (jatekosok[i].eletben_van == false)
             continue;
 
-        if (*(jatekosok[i].lo) && !(*(jatekosok[i].tilt_lo)) && ((jatekosok[i].pontszam >= 6) || jatekosok[i].spec.tipus == NAGY_LOV || jatekosok[i].spec.tipus == SOK_LOV)){
+        if (*(jatekosok[i].lo) && !(*(jatekosok[i].tilt_lo)) && ((jatekosok[i].pontszam >= 4) || jatekosok[i].spec.tipus == NAGY_LOV || jatekosok[i].spec.tipus == SOK_LOV)){
             *(jatekosok[i].tilt_lo) = true;
             /* Ha van specialis lovese */
             // Nagy loves
@@ -935,7 +935,7 @@ void loves_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
 
             /* Normal loves */
             else {
-                jatekosok[i].pontszam -= 6;
+                jatekosok[i].pontszam -= 4;
                 loves_hozzaadasa(15.0, vez, &jatekosok[i], jatekosok[i].irany);
             }
         }

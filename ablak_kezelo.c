@@ -170,7 +170,8 @@ void sugot_kirajzol(Ablak* ablak, Betutipusok* bt) {
     szoveget_kiir("(2) normál méretű lövedékeket lőhessenek az előttük lévő 120 fokos tartományba", 50, 485, FEHER_SDL, SZURKE_SDL, bt->reg15, ablak->megjelenito, false);
     szoveget_kiir("(3) pajzs használatával védve legyenek az ütközésektől", 50, 505, FEHER_SDL, SZURKE_SDL, bt->reg15, ablak->megjelenito, false);
     
-    szoveget_kiir("A játéknak akkor van vége, ha a legnagyobb pontszám eléri a következőt: (N-1)*40, ahol N a játékosok száma.", 25, 550, FEHER_SDL, SZURKE_SDL, bt->reg15, ablak->megjelenito, false);
+    szoveget_kiir("A kilépés és a játék megállítása az Esc gombbal történik, míg a szőközzel lehet indítani és folytatni a játékot.", 25, 540, FEHER_SDL, SZURKE_SDL, bt->reg15, ablak->megjelenito, false);
+    szoveget_kiir("A játéknak akkor van vége, ha a legnagyobb pontszám eléri a következőt: (N-1)*40, ahol N a játékosok száma.", 25, 560, FEHER_SDL, SZURKE_SDL, bt->reg15, ablak->megjelenito, false);
     
     SDL_RenderPresent(ablak->megjelenito);
 

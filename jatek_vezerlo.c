@@ -306,10 +306,6 @@ void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, J
     }
 }
 
-static void jatek_hatteret_kirajzol(Ablak* jatek_ablak, Vezerles* vez) {
-    boxRGBA(jatek_ablak->megjelenito, 0, 0, 1600, 900, 30, 30, 30, 255);
-}
-
 static void loves_piktogramokat_rajzol(Vezerles* vez, Jatekos* jatekosok, Ablak* jatek_ablak) {
     for (int i=0; i < vez->jatekosszam; ++i) {
         /* Nincs loves */
@@ -421,8 +417,8 @@ void uj_menet(Vezerles* vez, Jatekos* jatekosok) {
 }
 
 void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Betutipusok* bt) {
-    /* Fix elemek */
-    jatek_hatteret_kirajzol(jatek_ablak, vez);
+    /* Hatter */
+    boxRGBA(jatek_ablak->megjelenito, 0, 0, 1600, 900, 30, 30, 30, 255);
     
     /* Fal */
     if (vez->jt_mod != FAL_NELKULI) {
@@ -598,15 +594,27 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Be
     }
     /* Jatek vege felirat */
     else if (vez->megallitva_jatek && vez->jatek_vege == true) {
-        boxRGBA(jatek_ablak->megjelenito, 400, 400-20, 999, 549-20, 20, 20, 20, 200);
-        szoveget_kiir("Játék vége", 655, 420-20, FEHER_SDL, SZURKE_SDL, bt->bold20, jatek_ablak->megjelenito, false);
+        boxRGBA(jatek_ablak->megjelenito, 400, 330, 999, 579, 20, 20, 20, 200);
+        szoveget_kiir("Játék vége", 655, 340, FEHER_SDL, SZURKE_SDL, bt->bold20, jatek_ablak->megjelenito, false);
         
         char max_pontszam_str[4+1];
         snprintf(max_pontszam_str, 4+1, "%d", vez->max_pontszam);
-        szoveget_kiir("Nyertes pontszáma:", 590, 460-20, FEHER_SDL, SZURKE_SDL, bt->reg20, jatek_ablak->megjelenito, false);
-        szoveget_kiir(max_pontszam_str, 790, 460-20, FEHER_SDL, SZURKE_SDL, bt->bold20, jatek_ablak->megjelenito, false);
+        szoveget_kiir("Nyertes pontszáma:", 590, 370, FEHER_SDL, SZURKE_SDL, bt->reg20, jatek_ablak->megjelenito, false);
+        szoveget_kiir(max_pontszam_str, 790, 370, FEHER_SDL, SZURKE_SDL, bt->bold20, jatek_ablak->megjelenito, false);
         
-        szoveget_kiir("A játékból való kilépéshez nyomja meg az Esc-et", 475, 490-20, FEHER_SDL, SZURKE_SDL, bt->reg20, jatek_ablak->megjelenito, false);
+        szoveget_kiir("Korábbi pontszámok:", 475, 410, FEHER_SDL, SZURKE_SDL, bt->reg20, jatek_ablak->megjelenito, false);
+        
+        // Elso regi pontszam
+        snprintf(max_pontszam_str, 4+1, "%d", vez->regi_pontszamok.elso);
+        szoveget_kiir(max_pontszam_str, 500, 440, FEHER_SDL, SZURKE_SDL, bt->bold20, jatek_ablak->megjelenito, false);
+        // Masodik regi pontszam
+        snprintf(max_pontszam_str, 4+1, "%d", vez->regi_pontszamok.masodik);
+        szoveget_kiir(max_pontszam_str, 500, 470, FEHER_SDL, SZURKE_SDL, bt->bold20, jatek_ablak->megjelenito, false);
+        // Harmadik regi pontszam
+        snprintf(max_pontszam_str, 4+1, "%d", vez->regi_pontszamok.harmadik);
+        szoveget_kiir(max_pontszam_str, 500, 500, FEHER_SDL, SZURKE_SDL, bt->bold20, jatek_ablak->megjelenito, false);
+
+        szoveget_kiir("A játékból való kilépéshez nyomja meg az Esc-et", 475, 535, FEHER_SDL, SZURKE_SDL, bt->reg20, jatek_ablak->megjelenito, false);
     }
 
     /*

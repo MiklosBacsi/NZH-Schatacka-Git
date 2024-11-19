@@ -308,3 +308,136 @@ void billentyuk_tiltasa(Billentyuk* bill) {
     /* Jatek - Esc */
     if (bill->jatek_Esc) bill->tilt_Esc = true;
 }
+
+OsszesPontszam regi_pontszamokat_betolt() {
+    /* Fajl megnyitasa */
+    FILE* fp;
+    fp = fopen("dicsoseglista.txt", "r");
+    
+    // Ha nem sikerult megnyitni
+    if (fp == NULL) {
+        perror("Nem sikerult menyitni a fajt.");
+        return (OsszesPontszam) {
+            .ketJatekos = (Pontszamok) {.elso = 0, .masodik = 0, .harmadik = 0},
+            .haromJatekos = (Pontszamok) {.elso = 0, .masodik = 0, .harmadik = 0},
+            .negyJatekos = (Pontszamok) {.elso = 0, .masodik = 0, .harmadik = 0},
+        };
+    }
+    
+    // Ha sikerult menyitni
+    char sor[30];
+    OsszesPontszam ossz_pt;
+    for (int i=2; i <= 4; ++i) {
+        fgets(sor, 30, fp);
+
+        // Ellenorzes
+        if (sor[0] - 48 != i) {
+            printf("Hiba a fajl beolvasasanal: nem megfelelo a sor :c\n");
+            fclose(fp);
+            return (OsszesPontszam) {
+                .ketJatekos = (Pontszamok) {.elso = 0, .masodik = 0, .harmadik = 0},
+                .haromJatekos = (Pontszamok) {.elso = 0, .masodik = 0, .harmadik = 0},
+                .negyJatekos = (Pontszamok) {.elso = 0, .masodik = 0, .harmadik = 0},
+            };
+        }
+        
+        char elso_str[5], masodik_str[5], harmadik_str[5];
+        sscanf(sor, "%*[^ ] %[^ ] %[^ ] %[^\n]", elso_str, masodik_str, harmadik_str);
+
+        int elso = atoi(elso_str);
+        int masodik = atoi(masodik_str);
+        int harmadik = atoi(harmadik_str);
+
+        // Ellenorzes
+        if (0>elso || elso>9999 || 0>masodik || masodik>9999 || 0>harmadik || harmadik>9999 || masodik > elso || harmadik > masodik) {
+            fclose(fp);
+            printf("Hiba a fajl beolvasasanal: hibas pontszamok :c\n");
+            return (OsszesPontszam) {
+                .ketJatekos = (Pontszamok) {.elso = 0, .masodik = 0, .harmadik = 0},
+                .haromJatekos = (Pontszamok) {.elso = 0, .masodik = 0, .harmadik = 0},
+                .negyJatekos = (Pontszamok) {.elso = 0, .masodik = 0, .harmadik = 0},
+            };
+        }
+        switch (i) {
+            case 2: ossz_pt.ketJatekos = (Pontszamok) {.elso = elso, .masodik = masodik, .harmadik = harmadik}; break;
+            case 3: ossz_pt.haromJatekos = (Pontszamok) {.elso = elso, .masodik = masodik, .harmadik = harmadik}; break;
+            case 4: ossz_pt.negyJatekos = (Pontszamok) {.elso = elso, .masodik = masodik, .harmadik = harmadik}; break;
+        }
+    }
+    // Helyesek az ertekek
+    return ossz_pt;
+}
+
+void pontszamok_frissitese(int max_pontszam, int jatekos_szam, const OsszesPontszam* pt) {
+    FILE* fp;
+    fp = fopen("dicsoseglista.txt", "w");
+    if (fp == NULL) {
+        perror("Nem sikerult megnyitni a fajlt :c\n");
+        return;
+    }
+    
+    switch (jatekos_szam) {
+    case 2: {
+        /*** 2. sor ***/
+        // Elso helyre irjuk a max-ot
+        if (max_pontszam >= pt->ketJatekos.elso)
+            fprintf(fp, "%d: %d %d %d\n", 2, max_pontszam, pt->ketJatekos.elso, pt->ketJatekos.masodik);
+        // Masodik helyre irjuk a max-ot
+        else if (max_pontszam >= pt->ketJatekos.masodik)
+            fprintf(fp, "%d: %d %d %d\n", 2, pt->ketJatekos.elso, max_pontszam, pt->ketJatekos.masodik);
+        // Harmadik helyre irjuk a max-ot
+        else if (max_pontszam >= pt->ketJatekos.harmadik)
+            fprintf(fp, "%d: %d %d %d\n", 2, pt->ketJatekos.elso, pt->ketJatekos.masodik, max_pontszam);
+        // Nem kell irni
+        else
+            fprintf(fp, "%d: %d %d %d\n", 2, pt->ketJatekos.elso, pt->ketJatekos.masodik, pt->ketJatekos.harmadik);
+        
+        /*** 3. es 4. sor ***/
+        fprintf(fp, "%d: %d %d %d\n", 3, pt->haromJatekos.elso, pt->haromJatekos.masodik, pt->haromJatekos.harmadik);
+        fprintf(fp, "%d: %d %d %d\n", 4, pt->negyJatekos.elso, pt->negyJatekos.masodik, pt->negyJatekos.harmadik);
+        break;
+    }
+    case 3: {
+        /*** 2. sor ***/
+        fprintf(fp, "%d: %d %d %d\n", 2, pt->ketJatekos.elso, pt->ketJatekos.masodik, pt->ketJatekos.harmadik);
+        /*** 3. sor ***/
+        // Elso helyre irjuk a max-ot
+        if (max_pontszam >= pt->haromJatekos.elso)
+            fprintf(fp, "%d: %d %d %d\n", 3, max_pontszam, pt->haromJatekos.elso, pt->haromJatekos.masodik);
+        // Masodik helyre irjuk a max-ot
+        else if (max_pontszam >= pt->haromJatekos.masodik)
+            fprintf(fp, "%d: %d %d %d\n", 3, pt->haromJatekos.elso, max_pontszam, pt->haromJatekos.masodik);
+        // Harmadik helyre irjuk a max-ot
+        else if (max_pontszam >= pt->haromJatekos.harmadik)
+            fprintf(fp, "%d: %d %d %d\n", 3, pt->haromJatekos.elso, pt->haromJatekos.masodik, max_pontszam);
+        // Nem kell irni
+        else
+            fprintf(fp, "%d: %d %d %d\n", 3, pt->haromJatekos.elso, pt->haromJatekos.masodik, pt->haromJatekos.harmadik);
+        
+        /*** 4. sor ***/
+        fprintf(fp, "%d: %d %d %d\n", 4, pt->negyJatekos.elso, pt->negyJatekos.masodik, pt->negyJatekos.harmadik);
+        break;
+    }
+    case 4: {
+        /*** 2. es 3. sor ***/
+        fprintf(fp, "%d: %d %d %d\n", 2, pt->ketJatekos.elso, pt->ketJatekos.masodik, pt->ketJatekos.harmadik);
+        fprintf(fp, "%d: %d %d %d\n", 3, pt->haromJatekos.elso, pt->haromJatekos.masodik, pt->haromJatekos.harmadik);
+        /*** 4. sor ***/
+        // Elso helyre irjuk a max-ot
+        if (max_pontszam >= pt->negyJatekos.elso)
+            fprintf(fp, "%d: %d %d %d\n", 4, max_pontszam, pt->negyJatekos.elso, pt->negyJatekos.masodik);
+        // Masodik helyre irjuk a max-ot
+        else if (max_pontszam >= pt->negyJatekos.masodik)
+            fprintf(fp, "%d: %d %d %d\n", 4, pt->negyJatekos.elso, max_pontszam, pt->negyJatekos.masodik);
+        // Harmadik helyre irjuk a max-ot
+        else if (max_pontszam >= pt->negyJatekos.harmadik)
+            fprintf(fp, "%d: %d %d %d\n", 4, pt->negyJatekos.elso, pt->negyJatekos.masodik, max_pontszam);
+        // Nem kell irni
+        else
+            fprintf(fp, "%d: %d %d %d\n", 4, pt->negyJatekos.elso, pt->negyJatekos.masodik, pt->negyJatekos.harmadik);
+        break;
+    }
+    }
+
+    fclose(fp);
+}

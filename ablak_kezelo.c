@@ -141,7 +141,7 @@ void sugo_es_dics_lista_ablakok_kezelese(Billentyuk* bill, Ablak* ablakok, Betut
 
 void sugot_kirajzol(Ablak* ablak, Betutipusok* bt) {
     /* *****SUGO KIRAJZOLASA***** */
-    boxRGBA(ablak->megjelenito, 0, 0, 800, 600, 30, 30, 30, 255);  
+    boxRGBA(ablak->megjelenito, 0, 0, 800, 600, 30, 30, 30, 255);
     
     /* Kepek betoltese */
     SDL_Texture* billenytu_kep = IMG_LoadTexture(ablak->megjelenito, "./Texturak/Schatacka_keyboard.png");
@@ -170,7 +170,7 @@ void sugot_kirajzol(Ablak* ablak, Betutipusok* bt) {
     szoveget_kiir("(2) normál méretű lövedékeket lőhessenek az előttük lévő 120 fokos tartományba", 50, 485, FEHER_SDL, SZURKE_SDL, bt->reg15, ablak->megjelenito, false);
     szoveget_kiir("(3) pajzs használatával védve legyenek az ütközésektől", 50, 505, FEHER_SDL, SZURKE_SDL, bt->reg15, ablak->megjelenito, false);
     
-    szoveget_kiir("A kilépés és a játék megállítása az Esc gombbal történik, míg a szőközzel lehet indítani és folytatni a játékot.", 25, 540, FEHER_SDL, SZURKE_SDL, bt->reg15, ablak->megjelenito, false);
+    szoveget_kiir("A kilépés és a játék megállítása az Esc gombbal történik, míg a szőközzel lehet indítani és folytatni a játékot.", 30, 540, FEHER_SDL, SZURKE_SDL, bt->reg15, ablak->megjelenito, false);
     szoveget_kiir("A játéknak akkor van vége, ha a legnagyobb pontszám eléri a következőt: (N-1)*40, ahol N a játékosok száma.", 25, 560, FEHER_SDL, SZURKE_SDL, bt->reg15, ablak->megjelenito, false);
     
     SDL_RenderPresent(ablak->megjelenito);
@@ -179,5 +179,51 @@ void sugot_kirajzol(Ablak* ablak, Betutipusok* bt) {
 }
 
 void dics_listat_kirajzol(Ablak* ablak, Betutipusok* bt) {
+    // Hatter, logo es fix szovegek
+    boxRGBA(ablak->megjelenito, 0, 0, 600, 250, 30, 30, 30, 255);
+    logot_rajzol(ablak, 410, 15);
+    
+    szoveget_kiir("DICSŐSÉGLISTA", 50, 20, FEHER_SDL, SZURKE_SDL, bt->bold20, ablak->megjelenito, false);
+
+    szoveget_kiir("2 játékos:", 50, 100, FEHER_SDL, SZURKE_SDL, bt->med20, ablak->megjelenito, false);
+    szoveget_kiir("3 játékos:", 250, 100, FEHER_SDL, SZURKE_SDL, bt->med20, ablak->megjelenito, false);
+    szoveget_kiir("4 játékos:", 450, 100, FEHER_SDL, SZURKE_SDL, bt->med20, ablak->megjelenito, false);
+    
+
+    /****Pontszamok kiirasa****/
+    OsszesPontszam pt = regi_pontszamokat_betolt();
+    char pontszam_str[4+1];
+
+    // Ket jatekos --> Elso
+    snprintf(pontszam_str, 4+1, "%d", pt.ketJatekos.elso);
+    szoveget_kiir(pontszam_str, 70, 135, FEHER_SDL, SZURKE_SDL, bt->reg20, ablak->megjelenito, false);
+    // Ket jatekos --> Masodik
+    snprintf(pontszam_str, 4+1, "%d", pt.ketJatekos.masodik);
+    szoveget_kiir(pontszam_str, 70, 170, FEHER_SDL, SZURKE_SDL, bt->reg20, ablak->megjelenito, false);
+    // Ket jatekos --> Harmadik
+    snprintf(pontszam_str, 4+1, "%d", pt.ketJatekos.harmadik);
+    szoveget_kiir(pontszam_str, 70, 205, FEHER_SDL, SZURKE_SDL, bt->reg20, ablak->megjelenito, false);
+
+    // Harom jatekos --> Elso
+    snprintf(pontszam_str, 4+1, "%d", pt.haromJatekos.elso);
+    szoveget_kiir(pontszam_str, 270, 135, FEHER_SDL, SZURKE_SDL, bt->reg20, ablak->megjelenito, false);
+    // Harom jatekos --> Masodik
+    snprintf(pontszam_str, 4+1, "%d", pt.haromJatekos.masodik);
+    szoveget_kiir(pontszam_str, 270, 170, FEHER_SDL, SZURKE_SDL, bt->reg20, ablak->megjelenito, false);
+    // Harom jatekos --> Harmadik
+    snprintf(pontszam_str, 4+1, "%d", pt.haromJatekos.harmadik);
+    szoveget_kiir(pontszam_str, 270, 205, FEHER_SDL, SZURKE_SDL, bt->reg20, ablak->megjelenito, false);
+
+    // Negy jatekos --> Elso
+    snprintf(pontszam_str, 4+1, "%d", pt.negyJatekos.elso);
+    szoveget_kiir(pontszam_str, 470, 135, FEHER_SDL, SZURKE_SDL, bt->reg20, ablak->megjelenito, false);
+    // Negy jatekos --> Masodik
+    snprintf(pontszam_str, 4+1, "%d", pt.negyJatekos.masodik);
+    szoveget_kiir(pontszam_str, 470, 170, FEHER_SDL, SZURKE_SDL, bt->reg20, ablak->megjelenito, false);
+    // Negy jatekos --> Harmadik
+    snprintf(pontszam_str, 4+1, "%d", pt.negyJatekos.harmadik);
+    szoveget_kiir(pontszam_str, 470, 205, FEHER_SDL, SZURKE_SDL, bt->reg20, ablak->megjelenito, false);
+
+    /* Megjelenites */
     SDL_RenderPresent(ablak->megjelenito);
 }

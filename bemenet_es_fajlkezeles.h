@@ -73,6 +73,27 @@ typedef struct Billentyuk {
     bool van_bemenet;   ///< jelzi, ha van bemenet (időzítő) (bool)
 } Billentyuk;
 
+
+/**
+ * @brief Dicsőséglista top 3 pontszáma bizonyos játékosszám esetén (Játék végekor)
+ */
+typedef struct Pontszamok {
+  int elso;     ///< 1. helyezett pontszáma (int)
+  int masodik;  ///< 2. helyezett pontszáma (int)
+  int harmadik; ///< 3. helyezett pontszáma (int)
+} Pontszamok;
+
+
+/**
+ * @brief Dicsőséglista top 3 topszámai az egyes játékosszámokhoz (Játék végekor)
+ */
+typedef struct OsszesPontszam {
+  Pontszamok ketJatekos;    ///< 2 játékos esetén top 3 pontszám (Pontszamok) @see Pontszamok
+  Pontszamok haromJatekos;  ///< 3 játékos esetén top 3 pontszám (Pontszamok) @see Pontszamok
+  Pontszamok negyJatekos;   ///< 4 játékos esetén top 3 pontszám (Pontszamok) @see Pontszamok
+} OsszesPontszam;
+
+
 /**
  * @brief Billentyűk érzékelése
  *
@@ -93,6 +114,7 @@ typedef struct Billentyuk {
  */
 void billentyuk_erzekelese(SDL_Event* event, Billentyuk* bill, Uint32* ablakIDk);
 
+
 /**
  * @brief Billentyűk tiltása egyszeri lenyomáshoz
  * 
@@ -103,5 +125,25 @@ void billentyuk_erzekelese(SDL_Event* event, Billentyuk* bill, Uint32* ablakIDk)
  * @param[out] bill billentyuk lenyomásának állapotai (Billentyuk*) @see Billentyuk
  */
 void billentyuk_tiltasa(Billentyuk* bill);
+
+
+/**
+ * @brief Fájlból beolvassa a régi pontszámokat, és visszatér egy azokat tartalmazó struktúrával
+ *  
+ * @return Összes pontszámot tartalmazó struktúra (OsszesPontszam) @see OsszesPontszam
+ */
+OsszesPontszam regi_pontszamokat_betolt();
+
+
+/**
+ * @brief Játék végekor frissíti a pontszámokat az nyertes pontszámával
+ * 
+ * A függvény felülírja a pontszámokat tartalmazó txt fájlt
+ * 
+ * @param[in] max_pontszam Nyertes pontszáma a játék végén (int)
+ * @param[in] jatekos_szam Kiválasztott játékosok száma (int)
+ * @param[in] pt Összes régi pontszámot tartalmazó struktúra (OsszesPontszam) @see OsszesPontszam
+ */
+void pontszamok_frissitese(int max_pontszam, int jatekos_szam, const OsszesPontszam* pt);
 
 #endif

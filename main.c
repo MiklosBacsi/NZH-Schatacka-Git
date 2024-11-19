@@ -49,7 +49,7 @@ int main(void) {
     ablakok[MENU] = (Ablak) { menu_ablak, menu_megj, 840, 360, "Schatacka - Menü", MENU, menu_logo, false};
     ablakok[JATEK] = (Ablak) { jatek_ablak, jatek_megj, 1600, 900, "Schatacka - Játék", JATEK, jatek_logo, false};
     ablakok[SUGO] = (Ablak) { sugo_ablak, sugo_megj, 800, 600, "Schatacka - Súgó", SUGO, sugo_logo, false};
-    ablakok[DICS_LISTA] = (Ablak) { dics_lista_ablak, dics_lista_megj, 1000, 500, "Schatacka - Dicsőség Lista", DICS_LISTA, dics_lista_logo, false};
+    ablakok[DICS_LISTA] = (Ablak) { dics_lista_ablak, dics_lista_megj, 600, 250, "Schatacka - Dicsőség Lista", DICS_LISTA, dics_lista_logo, false};
 
     Betutipusok bt = {NULL, NULL, NULL, NULL};
     Billentyuk bill = (Billentyuk) {false, false, false, false,false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
@@ -81,7 +81,7 @@ int main(void) {
 
         /*** JATEK ***/
         jatek_ablak_kezelese(&bill, ablakok+JATEK, &vez, &jatekosok, kiv.kiv_jt_mod, kiv.aktiv_jatekosok);
-        if (ablakok[JATEK].nyitva && bill.van_bemenet) {
+        if (ablakok[JATEK].nyitva && bill.van_bemenet && vez.jatek_vege == false) {
             /* Ha nincs megallitva */
             if (!vez.megallitva_felhasznalo && !vez.megallitva_jatek && !vez.jatek_vege) {
                 animaciok_kezelese(&vez);
@@ -100,12 +100,6 @@ int main(void) {
 
                 halal_vizsgalata(jatekosok, &vez); // + vonal torlese
 
-                
-
-
-
-
-
                 falak_es_lovekek_torlesenek_vizsgalata(&vez);
 
                 ++vez.menetido;
@@ -115,6 +109,20 @@ int main(void) {
             /* Menet vege -> Uj menet*/
             if (vez.menet_vege && bill.jatek_Szokoz)
                 uj_menet(&vez, jatekosok);
+
+            /* Jatek vege - Dicsoseglista kezelese*/
+            if (vez.jatek_vege) {
+                OsszesPontszam regi_pontszamok = regi_pontszamokat_betolt();
+                
+                // Pontszamok betoltese kiiratashoz
+                switch (vez.jatekosszam) {
+                    case 2: vez.regi_pontszamok = regi_pontszamok.ketJatekos; break;
+                    case 3: vez.regi_pontszamok = regi_pontszamok.haromJatekos; break;
+                    case 4: vez.regi_pontszamok = regi_pontszamok.negyJatekos; break;
+                }
+
+                pontszamok_frissitese(vez.max_pontszam, vez.jatekosszam, &regi_pontszamok);
+            }
             
             
             /* Jatek kirajzolasa */

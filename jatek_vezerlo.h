@@ -269,8 +269,9 @@ typedef struct Vezerles {
     Lovedek* lovedekek;         ///< pointer, mely a lövedékekre (láncolt lista) mutat (Lovedek*) @see Lovedek
     Lyuk* lyukak;               ///< lyukakat tartalmazó láncolt lista, amiken való áthaladásért a játékosok jutalomban részesülnak (Lyuk*)
     FelvehetoElem* buborekok;   ///< felvehető elemeket (buborékokat) tartalmazó láncolt lista (FelvehetoElem*) @see FelvehetoElem
-    AnimacioTexturak ani;       ///> animációk textúráit tartalmazó struktúra (AnimacioTexturak) @see AnimacioTexturak
+    AnimacioTexturak ani;       ///< animációk textúráit tartalmazó struktúra (AnimacioTexturak) @see AnimacioTexturak
     Animacio* animaciok;        ///< animációkat (+1, halálfej) tartalmazó láncolt lista (Animacio*) @see Animacio
+    Pontszamok regi_pontszamok; ///< kiiratásra kerülő régi pontszámok (Pontszamok) @see Pontszamok
 } Vezerles;
 
 

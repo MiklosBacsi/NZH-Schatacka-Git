@@ -4,7 +4,7 @@
   * Ez a fájl tartalmazza a grafikus megjelenítéshez szükséges adattípusokat és függvényeket.
   *
   * @author Bácsi Miklós
-  * @date 2024-11-10
+  * @date 2024-11-24
 */
 #ifndef ABLAK_KEZELO_H
 #define ABLAK_KEZELO_H

@@ -3,10 +3,10 @@
   *  
   *  Ez a fájl tartalmazza bool változókként a billenytűállapotot, illetve az
   *  azok rögzítéséhez szükséges függvényeket. Ezen kívül itt találhatók a
-  *  fájlkezeléshez szükséges adatstruktúrák, függvények is. (MÉG NEM!!!)
+  *  fájlkezeléshez szükséges adatstruktúrák, függvények is.
   *
   *  @author Bácsi Miklós
-  *  @date 2024-11-10
+  *  @date 2024-11-24
 */
 #ifndef BEMENET_ES_FAJLKEZELES_H
 #define BEMENET_ES_FAJLKEZELES_H

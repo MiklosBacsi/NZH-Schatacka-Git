@@ -617,25 +617,6 @@ void jatek_kirajzolasa(Ablak* jatek_ablak, Vezerles* vez, Jatekos* jatekosok, Be
         szoveget_kiir("A játékból való kilépéshez nyomja meg az Esc-et", 475, 535, FEHER_SDL, SZURKE_SDL, bt->reg20, jatek_ablak->megjelenito, false);
     }
 
-    /*
-    Lyuk* mozgoLyuk = vez->lyukak;
-    while (mozgoLyuk != NULL) {
-        circleRGBA(jatek_ablak->megjelenito, (Sint16)mozgoLyuk->eleje.x, (Sint16)mozgoLyuk->eleje.y, 3, 255, 255, 255, 255);
-        circleRGBA(jatek_ablak->megjelenito, (Sint16)mozgoLyuk->vege.x, (Sint16)mozgoLyuk->vege.y, 3, 255, 255, 255, 255);
-
-        mozgoLyuk = mozgoLyuk->kov;
-    }
-    */
-    //lineRGBA(jatek_ablak->megjelenito, 700, 0, 700, 900, 255, 0, 0, 255);
-    //lineRGBA(jatek_ablak->megjelenito, 0, 450, 1400, 450, 255, 0, 0, 255);
-
-    //lineRGBA(jatek_ablak->megjelenito, 640, 10, 640, 800, 0, 255, 0, 255);
-    //lineRGBA(jatek_ablak->megjelenito, 760, 10, 760, 800, 0, 255, 0, 255);
-
-    //lineRGBA(jatek_ablak->megjelenito, 900, 10, 900, 800, 0, 255, 255, 255);
-    //lineRGBA(jatek_ablak->megjelenito, 500, 10, 500, 800, 0, 255, 255, 255);
-
-
     // Logo
     logot_rajzol(jatek_ablak, 1425, 10);
 

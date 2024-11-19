@@ -18,7 +18,7 @@
   *   - Animációk
   *
   * @author Bácsi Miklós
-  * @date 2024-11-10
+  * @date 2024-11-24
 */
 
 #ifndef JATEK_VEZERLO_H

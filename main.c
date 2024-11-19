@@ -8,7 +8,7 @@
   * menüben történő kiválasztást és memória felszabadítást intézik.
   *
   * @author Bácsi Miklós
-  * @date 2024-11-10
+  * @date 2024-11-24
 */
 
 

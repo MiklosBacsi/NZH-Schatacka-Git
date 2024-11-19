@@ -1264,11 +1264,7 @@ void falak_es_lovekek_torlesenek_vizsgalata(Vezerles* vez) {
         }
     }
 }
-/*
-static bool athaladt_a_lyukon (Jatekos* jatekos, Vezerles* vez) {
 
-}
-*/
 void lyuk_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
     /* Lyuk lovedek altali torlese */
     Lovedek* mozgoLov = vez->lovedekek;

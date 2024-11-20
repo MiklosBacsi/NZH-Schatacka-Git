@@ -11,7 +11,7 @@
 #ifndef BEMENET_ES_FAJLKEZELES_H
 #define BEMENET_ES_FAJLKEZELES_H
 
-#include "SDL2/SDL.h"
+#include <SDL2/SDL.h>
 #include "debugmalloc.h"
 #include <stdbool.h>
 

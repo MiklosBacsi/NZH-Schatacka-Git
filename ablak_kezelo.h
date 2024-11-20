@@ -9,8 +9,8 @@
 #ifndef ABLAK_KEZELO_H
 #define ABLAK_KEZELO_H
 
-#include "SDL2/SDL.h"
-#include "SDL2/SDL2_gfxPrimitives.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL2_gfxPrimitives.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include "bemenet_es_fajlkezeles.h"

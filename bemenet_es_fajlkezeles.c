@@ -1,5 +1,5 @@
 #include "bemenet_es_fajlkezeles.h"
-#include "SDL2/SDL.h"
+#include <SDL2/SDL.h>
 #include "debugmalloc.h"
 #include <stdbool.h>
 

@@ -1265,6 +1265,21 @@ void falak_es_lovekek_torlesenek_vizsgalata(Vezerles* vez) {
     }
 }
 
+static bool athalad_a_lyukon(Koordinata eleje, Koordinata vege, Koordinata fej) {
+    // Kozel van a lyukhoz (2 vegpont kozeppontjanak 10 egyseg sugaru kornyezete)
+    if (tav(fej, (Koordinata){.x=(eleje.x+vege.x)/2, .y=(eleje.y+vege.y)/2}) < 10.0) {
+        double meredekseg_2pont = (eleje.y - vege.y) / (eleje.x - vege.x);
+        double meredekseg_eleje_fej = (eleje.y - fej.y) / (eleje.x - fej.x);
+        double meredekseg_vege_fej = (vege.y - fej.y) / (vege.x - fej.x);
+        // 2 pontra illesztett egyenes ~ megegyezik a fej es az egyik vegpont kozott huzott egyenessel (meredeksegevel)
+        if ((fabs(meredekseg_eleje_fej - meredekseg_2pont) < 0.3 && fabs(meredekseg_vege_fej - meredekseg_2pont) < 0.3) || (fabs((1 / meredekseg_eleje_fej) - (1 / meredekseg_2pont)) < 0.3 && fabs((1 / meredekseg_vege_fej) - (1 / meredekseg_2pont)) < 0.3)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void lyuk_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
     /* Lyuk lovedek altali torlese */
     Lovedek* mozgoLov = vez->lovedekek;
@@ -1303,7 +1318,7 @@ void lyuk_vizsgalata(Jatekos* jatekosok, Vezerles* vez) {
     for (int i=0; i < vez->jatekosszam; ++i) {
         Lyuk* mozgo = vez->lyukak;
         while (mozgo != NULL) {
-            if (tav(mozgo->eleje, jatekosok[i].fej) < 15.0 && tav(mozgo->vege, jatekosok[i].fej) < 15.0 && jatekosok[i].lyuk_tilt < vez->menetido && jatekosok[i].eletben_van && jatekosok[i].spec.tipus != PAJZS) {
+            if (athalad_a_lyukon(mozgo->eleje, mozgo->vege, jatekosok[i].fej) && jatekosok[i].lyuk_tilt < vez->menetido && jatekosok[i].eletben_van && jatekosok[i].spec.tipus != PAJZS) {
                 jatekosok[i].pontszam += 1;
                 jatekosok[i].lyuk_tilt = vez->menetido + 20;
                 

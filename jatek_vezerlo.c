@@ -275,7 +275,7 @@ void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, J
         uj_menet(vez, *cim_jatekosok);
     }
     /* Ablak bezarasa */
-    else if (bill->jatek_Esc && !bill->tilt_Esc && vez->megallitva_felhasznalo && jatek_ablak->nyitva) {
+    else if (((bill->jatek_Esc && !bill->tilt_Esc && vez->megallitva_felhasznalo) || bill->jatek_kilep) && jatek_ablak->nyitva) {
         animacio_texturak_bezarasa(vez);
         SDL_DestroyRenderer(jatek_ablak->megjelenito);
         SDL_DestroyWindow(jatek_ablak->ablak);
@@ -284,6 +284,7 @@ void jatek_ablak_kezelese(Billentyuk* bill, Ablak* jatek_ablak, Vezerles* vez, J
 
         jatek_ablak->nyitva = false;
         bill->jatek_Esc = false;
+        bill->jatek_kilep = false;
         vez->megallitva_felhasznalo = false;
         vez->megallitva_jatek = true;
         vez->jatek_vege = false;

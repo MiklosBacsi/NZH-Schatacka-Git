@@ -13,6 +13,22 @@ void billentyuk_erzekelese(SDL_Event* event, Billentyuk* bill, Uint32* ablakIDk)
     if (event->type == SDL_USEREVENT)
         bill->van_bemenet = true;
     
+    /* Ablak kiikszelese */
+    if ((event->type == SDL_WINDOWEVENT) && (event->window.event == SDL_WINDOWEVENT_CLOSE)) {
+        if (event->window.windowID == ablakIDk[MENU_ID]) {
+            bill->menu_Esc = true;
+        }
+        else if (event->window.windowID == ablakIDk[SUGO_ID]) {
+            bill->sugo_Esc = true;
+        }
+        else if (event->window.windowID == ablakIDk[DICS_ID]) {
+            bill->dics_Esc = true;
+        }
+        else if (event->window.windowID == ablakIDk[JATEK_ID]) {
+            bill->jatek_kilep = true;
+        }
+    }
+    
     /****** Billentyuk ******/
     // Esc
     if (event->key.keysym.sym == SDLK_ESCAPE) {

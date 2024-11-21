@@ -27,6 +27,7 @@ typedef struct Billentyuk {
     bool jatek_Esc;     ///< Esc gomb a játékban (bool)
     bool sugo_Esc;      ///< Esc gomb a súgóban (bool)
     bool dics_Esc;      ///< Esc gomb a dicsőség listában (bool)
+    bool jatek_kilep;   ///< Játék kiikszeléshez szükséges (bool)
 
     bool menu_F1;       ///< F1 gomb a menüben (bool)
     bool menu_F2;       ///< F2 gomb a menüben (bool)

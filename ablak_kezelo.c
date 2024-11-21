@@ -116,6 +116,7 @@ void sugo_es_dics_lista_ablakok_kezelese(Billentyuk* bill, Ablak* ablakok, Betut
         ablakok[SUGO].ablak = NULL;
         ablakok[SUGO].megjelenito = NULL;
         ablakok[SUGO].nyitva = false;
+        bill->sugo_Esc = false;
     }
     /* Dicsoseglista bezarasa */
     if (bill->dics_Esc && ablakok[DICS_LISTA].nyitva) {
@@ -124,6 +125,7 @@ void sugo_es_dics_lista_ablakok_kezelese(Billentyuk* bill, Ablak* ablakok, Betut
         ablakok[DICS_LISTA].ablak = NULL;
         ablakok[DICS_LISTA].megjelenito = NULL;
         ablakok[DICS_LISTA].nyitva = false;
+        bill->dics_Esc = false;
     }
     /* Sugo megnyitasa */
     if (bill->menu_F10 && !ablakok[SUGO].nyitva) {
